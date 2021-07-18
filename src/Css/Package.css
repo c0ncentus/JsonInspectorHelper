@@ -4944,7 +4944,7 @@
     left: 0%;
     top: 100%;
     bottom: auto;
-    width: 400px !important;
+    width: max-content !important;
     height: max-content;
     border-radius: 5px;
     display: none;

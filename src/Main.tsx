@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { JsonForm } from "./Util/CONST";
 import { initToValidate, pathLoBuild, deepPathString, setPathKeyInVal, onValidateJip } from "./Util/Lib";
-import { FormPushJip, CustomPicture, JIPSetting, ActionFunc, ExtraFormJip } from "./Util/Model";
+import { FormPushJip, CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets } from "./Util/Model";
 import { Glass_ } from "./Util/Package";
 import { process } from "uniqid";
 import { Obj_Jip } from "./Type";
@@ -14,10 +14,10 @@ interface JsonFormInspectState {
 }
 
 export interface JsonFormInspectProps {
-    obj_: any,
-    onValidate: (obj_: any) => any,
-    onUpdate: (obj: any) => any
-    isWithAccessory: boolean, IMG_ASST: CustomPicture, setting: JIPSetting
+    obj_: any, setting: JIPSetting
+    onValidate: (obj_: any) => any, onUpdate: (obj: any) => any
+    isWithAccessory: boolean, // ????
+    IMG_ASST: CustomPicture, IMG_INTERN: JipAssets
 }
 
 // 1- SOLUTION MAKE RECURSION on ARRAY => JFI oR JIP

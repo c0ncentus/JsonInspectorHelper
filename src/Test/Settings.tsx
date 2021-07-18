@@ -1,4 +1,7 @@
-import { KeyValue } from "../Util/Model";
+import { JsonFormInspect } from "../Main";
+import { CustomPicture, KeyValue } from "../Util/Model";
+import { objJipDemo } from "./Settings/ObjDemo";
+import { permission } from "./Settings/Permissions";
 
 function assign(obj: { [x: string]: any; }, keyPath: string[], value: any) {
     const lastKeyIndex = keyPath.length - 1;
@@ -32,4 +35,15 @@ export function importFolder(r: any, isImgArray: boolean = true, isDeep: boolean
 }
 
 
-const allImg = importFolder(require.context("./Assets", true), false, true);
+const IMG_ASST = importFolder(require.context("./Assets", true), false, true) as CustomPicture;
+
+
+export const demoJip = <JsonFormInspect {...{
+    IMG_ASST,
+    isWithAccessory: true,
+    setting: permission.BasicCrud,
+    obj_: objJipDemo.basic,
+    onUpdate: (() => { }), // not available
+    onValidate: ((obj) => { console.log(obj) }),
+}}
+/>

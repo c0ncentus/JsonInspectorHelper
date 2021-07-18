@@ -1,23 +1,6 @@
 import { GlobalJIPSetting, JipAssets } from "./Model"
 
-export const JsonInspectSettings: GlobalJIPSetting = {
-    start: {
-        css: {
-            autoFillDangerous: false,
-            NEW: true,
-            ONLY_READ: false,
-            UPDATE_EXIST: { keys: true, value: true },
-            UPDATE_NEW: { keys: true, value: true }
-        }
-    },
-    training: {
-        autoFillDangerous: false,
-        NEW: true,
-        ONLY_READ: false,
-        UPDATE_EXIST: { keys: true, value: true },
-        UPDATE_NEW: { keys: true, value: true }
-    }
-}
+
 
 export const INIT_VALUES_BY_TYPE = {
     word: "",
