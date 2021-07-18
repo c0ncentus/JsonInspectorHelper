@@ -1,12 +1,11 @@
-import { get } from "http";
-import { compact, set } from "lodash";
+import { compact, set, get } from "lodash";
 import { Component, CSSProperties } from "react";
-import { colorDeep, INIT_VALUES_BY_TYPE } from "./Util/CONST";
+import { colorDeep, ImgPackage, INIT_VALUES_BY_TYPE, JsonForm } from "./Util/CONST";
 import { initToValidate, pathLoBuild, deepPathString, setPathKeyInVal, onValidateJip, buildIIALastArray, swap, buildIIA, newIIA, returnType, returnImgByType, parentTo, detectObjsPath, allChildrenKeysByPath, lastKeyByType, inHlForm } from "./Util/Lib";
 import { toTypeByType, convertsButton } from "./Util/Libx";
 import { FormPushJip, TPS_ColorMode, TypePanel, MainTypeProps, CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, Array_JipProps, FormGetObjectJip, FormGetAddButt, FormGetPairKey, typeOfToJIType, FormGetRenderInputByType, FormGetJip } from "./Util/Model";
 import { Glass_, RadientNum, DropButton } from "./Util/Package";
-
+import {process} from "uniqid";
 
 
 interface JsonFormInspectState {

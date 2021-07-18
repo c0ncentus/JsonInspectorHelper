@@ -1,15 +1,7 @@
 import { cloneDeep, set, max, compact, uniq, get } from "lodash";
 import { FormPushJip, ItemArray, Handle, KeyValue, TypeProps, JipType, SupprtJip, typeOfToJIType, JipAssets } from "./Model";
 import { process } from "uniqid";
-let ImgPackage: JipAssets = {
-    Extra: { inputhttp: "", logoHttp: "", logoHttps: "", multi: "" },
-    JsonForm: { key: "", value: "" },
-    Type: {
-        array: "", assetImg: "", blob: "", boolean: "", color: "", date: "", http: "", https: "", img: "", null: "",
-        number: "", object: "", undefined: "", word: ""
-    }
-}
-
+import { ImgPackage } from "./CONST";
 
 export const rgx_dot = /\./gm
 export const rgx_crochePath = /\[\w+\]/gm
@@ -79,23 +71,7 @@ function byLvlDeep(obj: FormPushJip[]): FormPushJip[][] {
     return res
 }
 
-export function initValues(inherentValue: any, isItemArray?: ItemArray, isKey: boolean = false) {
-    return Array.isArray(isItemArray) === false || Array.isArray(inherentValue) === false
-        ? inherentValue
-        : isKey
-            ? lastKeyByType("Object", buildIIA(isItemArray!))
-            : get(inherentValue, buildIIA(isItemArray!))
-}
-
-
 export function newIIA(iia: ItemArray, value: (string | number)) { return typeof iia === "boolean" || typeof iia !== "object" ? [value] : [...iia, value] }
-
-
-export function inHlForm(handleValue: Handle, value?: any, isItemArray?: ItemArray, key?: string, isKey: boolean = false) {
-    const isPath = Array.isArray(isItemArray);
-    handleValue((isPath === false || isKey === false) ? false : true,
-        key, value, isPath ? buildIIA(isItemArray!) : undefined)
-}
 
 export function buildIIA(isItemArray: ItemArray) {
     return Array.isArray(isItemArray) ? isItemArray.map((el, i) => { return typeof el === "string" ? `${i !== 0 ? "" : "."}${el}` : `[${el}]` }).join("") : ""
