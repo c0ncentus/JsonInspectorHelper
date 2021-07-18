@@ -3,10 +3,10 @@ import { type } from "os";
 import { Component } from "react";
 import { SketchPicker } from "react-color";
 import { render } from "react-dom";
-import { INIT_VALUES_BY_TYPE } from "../CONST";
-import { initValues, inHlForm, regex_Img_http, regex_https, regex_BaseUrlHttp, regex_Assets, regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../Lib";
-import { TPS_ColorMode, FormGetJip } from "../Model";
-import { DropDownSquish } from "../Package";
+import { INIT_VALUES_BY_TYPE } from "../Util/CONST";
+import { initValues, inHlForm, regex_Img_http, regex_https, regex_BaseUrlHttp, regex_Assets, regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../Util/Lib";
+import { TPS_ColorMode, FormGetJip } from "../Util/Model";
+import { DropDownSquish } from "../Util/Package";
 
 
 
