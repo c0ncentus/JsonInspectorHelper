@@ -1,8 +1,8 @@
 import { Component } from "react";
 import { SketchPicker } from "react-color";
-import { Value_JipState } from "..";
+import { inHlForm, initValues, Value_JipState } from "..";
 import { INIT_VALUES_BY_TYPE } from "../../Util/CONST";
-import { initValues, regex_Rgb, regex_Hex, regex_Hsl, inHlForm, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../../Util/Lib";
+import {  regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../../Util/Lib";
 import { FormGetJip, TPS_ColorMode } from "../../Util/Model";
 import { DropDownSquish } from "../../Util/Package";
 
@@ -52,3 +52,5 @@ export class Color_Jip extends Component<FormGetJip, Value_JipState>{
         </div>
     }
 }
+
+

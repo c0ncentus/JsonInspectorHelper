@@ -1,8 +1,10 @@
-import { Component } from "react";
+import { Component, CSSProperties } from "react";
 import { Value_JipState } from "..";
 import { JsonForm } from "../../Util/CONST";
-import { initValues, inHlForm } from "../../Util/Lib";
+import { initValues, inHlForm } from "../Util";
 import { FormGetJip } from "../../Util/Model";
+// subStrChoice: "mot" | "titre" | "descriptif" | "Paragraphe" | null,
+const cssStyleInput: CSSProperties = { width: 200, height: 35, margin: 30, border: "black solid 2px" };
 
 export class Word_Jip extends Component<FormGetJip, Value_JipState>{
     constructor(props: any) { super(props); this.state = { value: "", firstChange: "" } }

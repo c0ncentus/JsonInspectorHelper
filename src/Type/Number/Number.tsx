@@ -1,7 +1,6 @@
 import { Component } from "react";
-import { Value_JipState } from "..";
+import { inHlForm, initValues, Value_JipState } from "..";
 import { JsonForm } from "../../Util/CONST";
-import { initValues, inHlForm } from "../../Util/Lib";
 import { FormGetJip } from "../../Util/Model";
 
 export class Number_Jip extends Component<FormGetJip, Value_JipState>{

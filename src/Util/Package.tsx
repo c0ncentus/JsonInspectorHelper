@@ -1,11 +1,9 @@
 import { flattenDeep } from "lodash"
 import { Component, CSSProperties } from "react"
-import { SketchPicker } from "react-color"
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom"
-import { INIT_VALUES_BY_TYPE } from "./CONST"
-import { rgbToAnotherRgb, initValues, inHlForm, regex_Img_http, regex_https, regex_BaseUrlHttp, regex_Assets, regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "./Lib"
+import { rgbToAnotherRgb } from "./Lib"
 import { websiteToMenusItems, gene_main, websiteToRouter, BallButton } from "./Libx"
-import { WebsiteStructure__, KeyValue, TPS_ColorMode, FormGetJip } from "./Model"
+import { WebsiteStructure__ } from "./Model"
 
 interface DropDownSquishState { value: string, active: boolean }
 

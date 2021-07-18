@@ -1,4 +1,8 @@
 import { Component } from "react";
+import { Value_JipState, initValues } from "..";
+import { INIT_VALUES_BY_TYPE, ImgPackage } from "../../Util/CONST";
+import { regex_Img_http, regex_https, regex_BaseUrlHttp } from "../../Util/Lib";
+import { FormGetJip } from "../../Util/Model";
 
 export class ImgHttpOrS extends Component<FormGetJip, Value_JipState>{
     constructor(props: any) { super(props); this.state = { value: "", } }

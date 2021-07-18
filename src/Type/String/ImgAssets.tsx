@@ -1,3 +1,9 @@
+import { Component } from "react";
+import { Value_JipState, initValues } from "..";
+import { regex_Assets } from "../../Util/Lib";
+import { FormGetJip } from "../../Util/Model";
+import { DropDownSquish } from "../../Util/Package";
+
 export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
     constructor(props: any) {
         super(props);
