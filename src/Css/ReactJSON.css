@@ -1,0 +1,264 @@
+.root_args__title {
+  font-size: 40px;
+  text-transform: uppercase;
+}
+
+.MuiFormLabel-root.MuiInputLabel-root {
+  font-size: 25px;
+}
+
+.rainbow.grey {
+  background-image: linear-gradient(90deg, hsl(0, 0%, 39%) 0%, rgb(255, 255, 255));
+}
+
+.rainbow.red.blue.green.pink.l4 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 25%, rgb(90, 61, 255) 50%, rgb(60, 160, 68) 75%, rgb(223, 97, 240) 100%);
+}
+
+.rainbow.red.green.pink.l3 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 33%, rgb(60, 160, 68) 65%, rgb(223, 97, 240) 100%);
+}
+
+.rainbow.red.blue.pink.l3 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 33%, rgb(42, 99, 255) 65%, rgb(223, 97, 240) 100%);
+}
+
+.rainbow.red.blue.green.l3 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 33%, rgb(42, 99, 255) 65.5%, rgb(60, 160, 68) 100%);
+}
+
+.rainbow.blue.green.pink.l3 {
+  background-image: linear-gradient(90deg, rgb(42, 99, 255) 33%, rgb(60, 160, 68) 65%, rgb(223, 97, 240) 100%);
+}
+
+.rainbow.red.blue.l2 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 25%, rgb(42, 99, 255) 37.5%);
+}
+
+.rainbow.red.green.l2 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 25%, rgb(60, 160, 68) 37.5%);
+}
+
+.rainbow.red.pink.l2 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 50%, rgb(223, 97, 240) 100%);
+}
+
+.rainbow.green.pink.l2 {
+  background-image: linear-gradient(90deg, rgb(60, 160, 68) 50%, rgb(223, 97, 240) 100%);
+}
+
+.rainbow.blue.green.l2 {
+  background-image: linear-gradient(90deg, rgb(42, 99, 255) 50%, rgb(60, 160, 68) 100%, );
+}
+
+.rainbow.red.l1 {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 99%, rgb(255, 255, 255) 100%);
+}
+
+.rainbow.blue.l1 {
+  background-image: linear-gradient(90deg, rgb(42, 99, 255) 99%, rgb(255, 255, 255) 100%);
+}
+
+.rainbow.green.l1 {
+  background-image: linear-gradient(90deg, rgb(60, 160, 68) 99%, rgb(255, 255, 255) 100%);
+}
+
+.rainbow.pink.l1 {
+  background-image: linear-gradient(90deg, rgb(223, 97, 240) 99%, rgb(255, 255, 255) 100%);
+}
+
+.rainbow {
+  background-size: 100% 50%;
+  background-repeat: repeat-x;
+  background-position: left 0% bottom 10%;
+}
+
+.rainbow.red.blue.green.pink {
+  background-image: linear-gradient(90deg, rgb(206, 52, 5) 25%, rgb(42, 99, 255) 50.5%, rgb(60, 160, 68) 75%, rgb(223, 97, 240) 100%);
+}
+
+.styled-input-single, .styled-input-single label {
+  height: 70px;
+  width: 160px;
+}
+
+/* ACCORDEON */
+
+.card h2 {
+  font-size: 18px !important;
+  color: #000 !important;
+}
+
+.cardSeriesChapterBlog .card button:hover {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.tinyColor .glassEffect .container {
+  width: 30px;
+  font-size: 9px !important;
+}
+
+.tinyColor .glassEffect .container .btn.effect01 span {
+  font-size: 18px;
+}
+
+.jsonInspector .glassEffect .container {
+  width: 120px;
+}
+
+.jsonInspector .minus .glassEffect .container {
+  width: 30px
+}
+
+.displayHide__input {
+  width: 40px;
+  background-color: #4fa46b;
+  border: #4fa46b 2px solid
+}
+
+.displayHide__input~.displayHide__content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.displayHide__input:checked~.displayHide__content {
+  visibility: collapse !important;
+  opacity: 0 !important;
+}
+
+.data-type-label {
+  font-size: 20px !important;
+}
+
+.smallDrop .dropDownSquish {
+  width: 8rem;
+}
+
+.big .sketch-picker {
+  width: 90vh !important
+}
+
+.sketch-picker .flexbox-fix {
+  visibility: collapse;
+  display: none !important;
+}
+
+.big .sketch-picker div.flexbox-fix:nth-child(3) {
+  visibility: visible;
+  display: flex !important;
+}
+
+.sketch-picker div.flexbox-fix:nth-child(2) {
+  visibility: visible;
+  display: flex !important;
+}
+
+.SmalPick .sketch-picker {
+  width: 10vh !important
+}
+
+.Menu2 .OpenMenu_Cpnt .b, .Menu2 .OpenMenu_Cpnt .a {
+  width: 100% !important;
+  height: 100%;
+}
+
+.sketch-picker~.dropDownSquish, .AssetImg .dropDownSquish {
+  height: 70px;
+  position: relative;
+}
+
+.sketch-picker~.dropDownSquish .value-list.value-list1.open, .AssetImg .dropDownSquish .value-list.value-list1.open {
+  position: absolute;
+  z-index: 100;
+}
+
+.DropButton_Cpnt, .Array .DropButton_Cpnt .BallButton_Cpnt {
+  width: min-content;
+  height: min-content;
+}
+
+.Array .DropButton_Cpnt {
+  margin: -10px;
+}
+
+.content .BallButton_Cpnt {
+  margin: 5px;
+  margin-left: -10px;
+}
+
+.Array .BallButton_Cpnt .ball.bubble, .content .BallButton_Cpnt .ball.bubble {
+  width: 30px !important;
+  height: 30px !important;
+  box-shadow: 0 0 0 1px #000, 0 0 0 2px #999, 0 0 0 4px #fa0, 0 0 0 5px #666, 0 0 0 7px #fd0, 0 0 0 0px #000;
+  border-radius: "50%" !important;
+}
+
+.AssetImg {
+  display: flex;
+}
+
+.AssetImg .dropDownSquish {
+  width: 5rem;
+}
+
+.DropButton_Cpnt .content {
+  top: 75% !important
+}
+
+.InputHttp_Cpnt {
+  position: relative;
+  height: 125px;
+}
+
+.InputHttp_Cpnt .title {
+  position: absolute;
+  right: 10%;
+  width: 62%;
+  top: 8%;
+  text-align: center;
+  color: #fad0d0;
+  font-size: 200%;
+  z-index: 10;
+}
+
+.InputHttp_Cpnt .emblem {
+  position: absolute;
+  top: 8%;
+  left: 1%;
+  width: 25%;
+  z-index: 4;
+}
+
+.InputHttp_Cpnt .desc {
+  position: absolute;
+  right: 7%;
+  top: 59%;
+  width: 63%;
+  z-index: 10;
+}
+
+.InputHttp_Cpnt .emblemColor {
+  -webkit-clip-path: polygon(50% 0%, 78% 19%, 98% 15%, 100% 60%, 88% 94%, 51% 100%, 17% 93%, 0 63%, 0 12%, 27% 18%);
+  clip-path: polygon(46.92% 0%, 74.91% 11.8%, 98% 15%, 96.92% 56.8%, 79.79% 78.8%, 48.95% 90.4%, 22.13% 80.2%, 3px 55.80%, 1px 16%, 28.03% 10.8%);
+  height: 100%;
+  width: 26%;
+}
+
+.InputHttp_Cpnt .descColor {
+  -webkit-clip-path: polygon(50% 0%, 78% 19%, 98% 15%, 100% 60%, 88% 94%, 51% 100%, 17% 93%, 0 63%, 0 12%, 27% 18%);
+  clip-path: polygon(76.33% 12%, 80.01% 9.4%, 100.09% 11%, 92.19% 44.8%, 72.62% 44.4%, 46.68% 46.4%, 32.35% 45.8%, 13px 43.8%, 31px 14.40%, 71.56% 14.8%);
+  height: 100%;
+  width: 77%;
+  top: 46%;
+  position: absolute;
+  right: 0%;
+}
+
+.linkInSwapBut {
+  font-size: 22px;
+  position: absolute;
+  z-index: 2;
+  top: 0px;
+  right: 38px;
+}
