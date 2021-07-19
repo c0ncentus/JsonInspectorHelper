@@ -1,7 +1,31 @@
 
-export interface JipType { assetImg: string, http: string, https: string, array: string, object: string, date: string, number: string, blob: string, boolean: string, color: string, word: string, undefined: string, img: string, null: string }
+export interface JipType {
+    assetImg: string,
+    http: string,
+    https: string,
+    array: string,
+    object: string,
+    date: string,
+    number: string,
+    blob: string,
+    boolean: string,
+    color: string,
+    word: string,
+    undefined: string,
+    img: string,
+    null: string
+}
 export interface JsonForm { key: string, value: string }
-export interface ExtraImg { multi: string, inputhttp: string, logoHttp: string, logoHttps: string }
+export interface ExtraImg {
+    multi: string,
+    inputHttp: string,
+    AscString: string,
+    DescString: string,
+    AscNum: string,
+    DescNum: string,
+    logoHttp: string,
+    logoHttps: string
+}
 
 export type KeyValue = { [key: string]: any; };
 

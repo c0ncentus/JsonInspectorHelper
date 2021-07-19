@@ -27,7 +27,7 @@ export class ImgHttpOrS extends Component<FormGetJip, Value_JipState>{
             <InputHttp {...{ color: "", img:{
                 http:extra!.IMG_INTERN!.Type.http,
                 https:extra!.IMG_INTERN!.Type.https,
-                input:extra!.IMG_INTERN!.Extra.inputhttp
+                input:extra!.IMG_INTERN!.Extra.inputHttp
             }, isS: this.state.isHttps!, words: { desc: this.state.value!, title: this.state.baseUrl! } }} />
         </div>
     }

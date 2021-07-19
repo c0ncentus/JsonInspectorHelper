@@ -22,17 +22,21 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
     }
     render() {
         const { extra, handleValue } = this.props;
+        let max = 0
         if (extra === undefined || extra.IMG_ASST === undefined) { return <></> }
         else {
             const { Png, Jpg, Svg } = extra!.IMG_ASST;
             let Cpnt = <></>;
             const displayI = extra !== undefined && this.state.imgType !== null && this.state.imgFormat !== null && (this.state.iImg !== null || this.state.isImgRdm === true)
             if (displayI) {
-                let max = {
+                let collectionMax = {
                     Png: { Square: Object.keys(Png.Square).length, Bac: Object.keys(Png.Bac).length, Phone: Object.keys(Png.Phone).length },
                     Jpg: { Square: Object.keys(Jpg.Square).length, Bac: Object.keys(Jpg.Bac).length, Phone: Object.keys(Jpg.Phone).length },
                     Svg: { Square: 0, Bac: 0, Phone: 0 }
-                }[this.state.imgType!][this.state.imgFormat!];
+                }
+                max = collectionMax[this.state.imgType!][this.state.imgFormat!];
+                console.log("max")
+                console.log(max)
                 const rdm = Math.trunc(Math.random() * max)
                 const iPic = this.state.isImgRdm ? rdm : this.state.iImg! < max ? this.state.iImg! : 0
                 const src = extra.IMG_ASST[this.state.imgType!][this.state.imgFormat!][iPic];
@@ -48,7 +52,9 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
                 {Cpnt}
                 <DropDownSquish choices={["Jpg", "Png", /*"Svg"*/]} onChange_={(type: string) => { this.setState({ imgType: type as "Jpg" | "Png" | "Svg" }) }} />
                 <DropDownSquish choices={["Bac", "Phone", "Square"]} onChange_={(type: string) => { this.setState({ imgFormat: type as "Bac" | "Phone" | "Square" }) }} />
-                {extra !== undefined && this.state.imgType !== null && this.state.imgFormat !== null && this.state.isImgRdm !== true ? <DropDownSquish choices={Array.from(new Array(4)).map((e, i) => { if (e) { }; return i.toString() })} onChange_={(iStr: string) => { this.setState({ iImg: parseInt(iStr, 10) }) }} /> : <></>}
+                {extra !== undefined && this.state.imgType !== null && this.state.imgFormat !== null && this.state.isImgRdm !== true
+                    ? <DropDownSquish choices={Array.from(new Array(max)).map((e, i) => { if (e) { }; return i.toString() })} onChange_={(iStr: string) => { this.setState({ iImg: parseInt(iStr, 10) }) }} />
+                    : <></>}
 
             </div>
         }
