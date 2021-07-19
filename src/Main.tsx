@@ -1,5 +1,4 @@
 import { Component } from "react";
-import { JsonForm } from "./Util/CONST";
 import { initToValidate, pathLoBuild, deepPathString, setPathKeyInVal, onValidateJip } from "./Util/Lib";
 import { FormPushJip, CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets } from "./Util/Model";
 import { Glass_ } from "./Util/Package";
@@ -78,15 +77,15 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     render() {
         if (this.state.toValidate.length === 0) { return <></> } else {
             const { inputKeys, toValidate } = this.state;
-            const { isWithAccessory, setting, obj_ } = this.props;
-            const extra: ExtraFormJip = { inputKeys, Img_ASSET: this.props.IMG_ASST }
+            const { isWithAccessory, setting, obj_ , IMG_INTERN, IMG_ASST} = this.props;
+            const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
             const idRoot = this.state.toValidate.find(y => y.path === "")!.id;
             return typeof obj_ === "object"
                 && (Object.keys(obj_).length !== 0)
                 ? <div>
                     <Glass_ text="♻️" onClick={() => { this.reboot() }} />
                     <div style={{ display: "flex" }}>
-                        <img src={JsonForm.key} style={{ width: 40 }} />
+                        <img src={extra.IMG_INTERN!.JsonForm.key} style={{ width: 40 }} />
                         Nouveaux Clefs : <input
                             style={{ width: 200, height: 40, border: "3px orange solid" }}
                             value={this.state.inputKeys}

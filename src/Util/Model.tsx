@@ -85,7 +85,7 @@ export interface Menuing {
 }
 
 export type ActionFunc = "getJipReplica" |
-"getPathToState" |
+    "getPathToState" |
     "getObj" | "update"
     | "getValidate" | "addValidate" | "deleteValidate" | "onValidate"
     | "setPanel";
@@ -96,7 +96,8 @@ export interface ExtraFormJip {
     valueAdd?: any | any[],
     isObjectAdd?: boolean,
     pushValue?: { newKey?: string, newValue?: string, },
-    Img_ASSET?: CustomPicture
+    IMG_ASST?: CustomPicture
+    IMG_INTERN?: JipAssets
 }
 export interface FormGetJip {
     inherentValue: any, handleValue: Handle,

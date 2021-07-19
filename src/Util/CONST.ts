@@ -1,7 +1,3 @@
-import { GlobalJIPSetting, JipAssets } from "./Model"
-
-
-
 export const INIT_VALUES_BY_TYPE = {
     word: "",
     color: "rgb(255,255,255)",
@@ -17,14 +13,3 @@ export const INIT_VALUES_BY_TYPE = {
 }
 
 export const colorDeep = ["#32be32", "#3281be", "#8b32be", "#be3232", "#e6e600", "#e69600"]
-
-export const ImgPackage: JipAssets = {
-    Extra: { inputhttp: "", logoHttp: "", logoHttps: "", multi: "" },
-    JsonForm: { key: "", value: "" },
-    Type: {
-        array: "", assetImg: "", blob: "", boolean: "", color: "", date: "", http: "", https: "", img: "", null: "",
-        number: "", object: "", undefined: "", word: ""
-    }
-}
-
-export const JsonForm = ImgPackage.JsonForm;

@@ -1,7 +1,7 @@
 import { compact, set, get } from "lodash";
 import { Component } from "react";
 import { inHlForm } from "..";
-import { colorDeep, INIT_VALUES_BY_TYPE, ImgPackage } from "../../Util/CONST";
+import { colorDeep, INIT_VALUES_BY_TYPE } from "../../Util/CONST";
 import { parentTo, buildIIA, detectObjsPath, allChildrenKeysByPath, deepPathString, pathLoBuild, newIIA, lastKeyByType, buildIIALastArray, returnType, returnImgByType } from "../../Util/Lib";
 import { toTypeByType, convertsButton } from "../../Util/Libx";
 import { FormGetObjectJip, FormGetAddButt, FormGetPairKey, typeOfToJIType } from "../../Util/Model";
@@ -145,12 +145,12 @@ class PairKeyValue_Jip extends Component<FormGetPairKey, { key: string, value: a
 
                     }} />
                     <DropButton
-                        imgMain={returnImgByType(typeProps!, ImgPackage.Type)}
+                        imgMain={returnImgByType(typeProps!, extra!.IMG_INTERN!.Type)}
                         jsx_Picture={
                             toTypeByType(typeProps!.main,
                                 this.state.value, ((value: any) => { this.setState({ value }) }),
-                                extra!.Img_ASSET!.Jpg.Bac[0])} />
-                    {convertsButton(((value: any) => { this.setState({ value }) }), extra!.Img_ASSET!.Jpg.Bac[0])}
+                                extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type)} />
+                    {convertsButton(((value: any) => { this.setState({ value }) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)}
                 </div>
             </div>
             : <></>

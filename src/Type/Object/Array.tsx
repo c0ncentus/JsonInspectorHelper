@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { JsonFormInspect, JsonFormInspectProps } from "../../Main";
-import { colorDeep, ImgPackage } from "../../Util/CONST";
+import { colorDeep } from "../../Util/CONST";
 import { buildIIA, buildIIALastArray, newIIA, returnImgByType, returnType, swap, } from "../../Util/Lib";
 import { toTypeByType, convertsButton } from "../../Util/Libx";
 import { Array_JipProps, FormGetJip } from "../../Util/Model";
@@ -77,8 +77,8 @@ export class Array_Jip extends Component<Array_JipProps, { swapItemArr: { iBegin
                         {type === null ? <></>
                             : <JsonFormInspect {...{ ...propsJip, obj_: itemValue, onValidate: ((obj) => { }), onUpdate: (() => { }) }} />}
                         {/* <RenderInputByType_Jip {...{ isKeys: false, isItemArray: newIsItemArray, id, handleValue, onAction, toValidate, type, deep, setting, extra, inherentValue }} />} */}
-                        <DropButton imgMain={returnImgByType(type!, ImgPackage.Type)} jsx_Picture={toTypeByType(type!.main, itemValue, ((value: any) => { handleValue!(false, undefined, value, buildIIA(newIsItemArray)) }), extra.Img_ASSET!.Jpg.Bac[0])} />
-                        {convertsButton((value: any) => { handleValue!(false, undefined, value, buildIIA(newIsItemArray)) }, extra.Img_ASSET!.Jpg.Bac[0])}
+                        <DropButton imgMain={returnImgByType(type!, extra?.IMG_INTERN!.Type)} jsx_Picture={toTypeByType(type!.main, itemValue, ((value: any) => { handleValue!(false, undefined, value, buildIIA(newIsItemArray)) }), extra.IMG_ASST!.Jpg.Bac[0], extra?.IMG_INTERN!.Type)} />
+                        {convertsButton((value: any) => { handleValue!(false, undefined, value, buildIIA(newIsItemArray)) }, extra.IMG_ASST!.Jpg.Bac[0], extra?.IMG_INTERN!.Type, extra?.IMG_INTERN!.Extra.multi)}
                     </div>
                 </div>
             })

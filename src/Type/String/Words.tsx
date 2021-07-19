@@ -1,6 +1,5 @@
 import { Component, CSSProperties } from "react";
 import { Value_JipState } from "..";
-import { JsonForm } from "../../Util/CONST";
 import { initValues, inHlForm } from "../Util";
 import { FormGetJip } from "../../Util/Model";
 // subStrChoice: "mot" | "titre" | "descriptif" | "Paragraphe" | null,
@@ -27,18 +26,18 @@ export class Word_Jip extends Component<FormGetJip, Value_JipState>{
             />
     }
     render() {
-        const { isKeys, isItemArray, initValue } = this.props;
+        const { isKeys, isItemArray, initValue, extra } = this.props;
         if (this.state.firstChange !== initValue) { this.setState({ firstChange: initValue, value: initValue }) }
         return typeof isItemArray === "number"
             ? this.form()
             : <div style={{ position: "relative", marginTop: 20, marginRight: isKeys === false ? 10 : 0 }}>
                 {isKeys
                     ? <div style={{ display: "flex" }}>
-                        <img style={{ height: 20, width: 20 }} src={JsonForm.key} />
+                        <img style={{ height: 20, width: 20 }} src={extra!.IMG_INTERN!.JsonForm.key} />
                         <p>Clef</p>
                     </div>
                     : <div style={{ display: "flex" }}>
-                        <img style={{ height: 20, width: 20 }} src={JsonForm.value} />
+                        <img style={{ height: 20, width: 20 }} src={extra!.IMG_INTERN!.JsonForm.value} />
                         <p>Valeur</p>
                     </div>}
 

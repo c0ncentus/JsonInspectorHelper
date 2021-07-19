@@ -1,5 +1,5 @@
 import { JsonFormInspect } from "../Main";
-import { CustomPicture, KeyValue } from "../Util/Model";
+import { CustomPicture, JipAssets, KeyValue } from "../Util/Model";
 import { objJipDemo } from "./Settings/ObjDemo";
 import { permission } from "./Settings/Permissions";
 
@@ -35,11 +35,10 @@ export function importFolder(r: any, isImgArray: boolean = true, isDeep: boolean
 }
 
 
-const IMG_ASST = importFolder(require.context("./Assets", true), false, true) as CustomPicture;
-
-
+const IMG_ASST = importFolder(require.context("./Assets/Custom", true), false, true) as CustomPicture;
+const IMG_INTERN = importFolder(require.context("./Assets/Custom", true), false, true) as JipAssets
 export const demoJip = <JsonFormInspect {...{
-    IMG_ASST,
+    IMG_ASST, IMG_INTERN,
     isWithAccessory: true,
     setting: permission.BasicCrud,
     obj_: objJipDemo.basic,

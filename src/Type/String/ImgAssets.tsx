@@ -15,16 +15,16 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
         const realValue = initValues(inherentValue, isItemArray, false);
 
         this.setState({
-            value: regex_Assets.test(realValue) ? realValue : extra?.Img_ASSET?.Jpg.Bac[0],
+            value: regex_Assets.test(realValue) ? realValue : extra?.IMG_ASST?.Jpg.Bac[0],
             iImg: null, imgFormat: null, imgOtherType: null, imgType: null, isImgRdm: false,
         })
 
     }
     render() {
         const { extra, handleValue } = this.props;
-        if (extra === undefined || extra.Img_ASSET === undefined) { return <></> }
+        if (extra === undefined || extra.IMG_ASST === undefined) { return <></> }
         else {
-            const { Png, Jpg, Svg } = extra!.Img_ASSET;
+            const { Png, Jpg, Svg } = extra!.IMG_ASST;
             let Cpnt = <></>;
             const displayI = extra !== undefined && this.state.imgType !== null && this.state.imgFormat !== null && (this.state.iImg !== null || this.state.isImgRdm === true)
             if (displayI) {
@@ -35,7 +35,7 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
                 }[this.state.imgType!][this.state.imgFormat!];
                 const rdm = Math.trunc(Math.random() * max)
                 const iPic = this.state.isImgRdm ? rdm : this.state.iImg! < max ? this.state.iImg! : 0
-                const src = extra.Img_ASSET[this.state.imgType!][this.state.imgFormat!][iPic];
+                const src = extra.IMG_ASST[this.state.imgType!][this.state.imgFormat!][iPic];
                 Cpnt = <img src={src} style={{ border: "2px red dotted", width: 100, height: 100 }} />
             }
 

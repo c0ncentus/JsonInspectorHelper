@@ -1,37 +1,28 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import {  regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType } from "./Lib";
+import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType } from "./Lib";
 import { JipAssets, typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, FormPushJip, ItemArray, Handle, KeyValue, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
 import { DropButton } from "./Package";
 import { INIT_VALUES_BY_TYPE } from "./CONST";
-let ImgPackage: JipAssets = {
-    Extra: { inputhttp: "", logoHttp: "", logoHttps: "", multi: "" },
-    JsonForm: { key: "", value: "" },
-    Type: {
-        array: "", assetImg: "", blob: "", boolean: "", color: "", date: "", http: "", https: "", img: "", null: "",
-        number: "", object: "", undefined: "", word: ""
-    }
-}
-
 
 export class BallButton extends Component<{ imgMain: string }, any>{ render() { return <section className="BallButton_Cpnt"><figure className="ball bubble" style={{ background: `url(${this.props.imgMain})` }} /></section> } }
-export function convertsButton(func: (value: any) => any, assetsImgInit: string) {
+export function convertsButton(func: (value: any) => any, assetsImgInit: string, imgType: JipType, multi: string) {
     return <DropButton
-        imgMain={ImgPackage.Extra.multi}
+        imgMain={multi}
         jsx_Picture={
             [
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.boolean) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.number) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.word) }}><BallButton imgMain={returnImgByType(typeOfToJIType.word,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.img) }}><BallButton imgMain={returnImgByType(typeOfToJIType.img,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.object) }}><BallButton imgMain={returnImgByType(typeOfToJIType.object,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.array) }}><BallButton imgMain={returnImgByType(typeOfToJIType.array,)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.boolean) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.number) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.word) }}><BallButton imgMain={returnImgByType(typeOfToJIType.word, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.img) }}><BallButton imgMain={returnImgByType(typeOfToJIType.img, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.object) }}><BallButton imgMain={returnImgByType(typeOfToJIType.object, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.array) }}><BallButton imgMain={returnImgByType(typeOfToJIType.array, imgType)} /></div>,
                 <></>, <></>, <></>, <></>, <></>, <></>, <></>, <></>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.https) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https,)} /></div>,
-                <div onClick={() => { func(INIT_VALUES_BY_TYPE.http) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http,)} /></div>,
-                <div onClick={() => { func(assetsImgInit) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg,)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.https) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https, imgType)} /></div>,
+                <div onClick={() => { func(INIT_VALUES_BY_TYPE.http) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http, imgType)} /></div>,
+                <div onClick={() => { func(assetsImgInit) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg, imgType)} /></div>,
 
 
 
@@ -39,56 +30,56 @@ export function convertsButton(func: (value: any) => any, assetsImgInit: string)
         } />
 }
 
-export function toTypeByType(type: MainTypeProps, value: any, func: (value: any) => any, assetsImgInit: string) {
+export function toTypeByType(type: MainTypeProps, value: any, func: (value: any) => any, assetsImgInit: string, imgType: JipType) {
     return {
         Array: [
-            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
-            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
+            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
+            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
         ],
         Object: [
-            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
-            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
+            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
+            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
         ],
         Number: [
-            <div onClick={() => { func(value.toString()) }}><BallButton imgMain={returnImgByType(typeOfToJIType.word,)} /></div>,
-            value >= 0 ? <div onClick={() => { func(value === 0 ? false : true) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean,)} /></div> : <></>,
+            <div onClick={() => { func(value.toString()) }}><BallButton imgMain={returnImgByType(typeOfToJIType.word, imgType)} /></div>,
+            value >= 0 ? <div onClick={() => { func(value === 0 ? false : true) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean, imgType)} /></div> : <></>,
 
-            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
-            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
+            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
+            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
         ],
         String: [
-            regex_Boolean.test(value) ? <div onClick={() => { func("false" === value ? false : true) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean,)} /></div> : <></>,
-            regex_Number.test(value) ? < div onClick={() => { func(parseInt(value, 10)) }} > <BallButton imgMain={returnImgByType(typeOfToJIType.number)} /></div > : <></>,
-            regex_Img.test(value) ? <div onClick={() => { func(INIT_VALUES_BY_TYPE.img) }}><BallButton imgMain={returnImgByType(typeOfToJIType.img,)} /></div> : <></>,
-            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
-            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
+            regex_Boolean.test(value) ? <div onClick={() => { func("false" === value ? false : true) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean, imgType)} /></div> : <></>,
+            regex_Number.test(value) ? < div onClick={() => { func(parseInt(value, 10)) }} > <BallButton imgMain={returnImgByType(typeOfToJIType.number, imgType)} /></div > : <></>,
+            regex_Img.test(value) ? <div onClick={() => { func(INIT_VALUES_BY_TYPE.img) }}><BallButton imgMain={returnImgByType(typeOfToJIType.img, imgType)} /></div> : <></>,
+            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
+            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
             <></>, <></>, <></>, <></>, <></>, <></>, <></>, <></>,
             regex_Img_http.test(value)
                 ? regex_https.test(value)
-                    ? <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https,)} /></div>
-                    : <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http,)} /></div>
+                    ? <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https, imgType)} /></div>
+                    : <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http, imgType)} /></div>
                 : regex_Assets ?
-                    <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg,)} /></div>
+                    <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg, imgType)} /></div>
                     : <></>,
 
         ],
         null: [
-            <div onClick={() => { func("null") }}><BallButton imgMain={returnImgByType(typeOfToJIType.word,)} /></div>,
-            <div onClick={() => { func(false) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean,)} /></div>,
-            <div onClick={() => { func(0) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number,)} /></div>,
-            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
+            <div onClick={() => { func("null") }}><BallButton imgMain={returnImgByType(typeOfToJIType.word, imgType)} /></div>,
+            <div onClick={() => { func(false) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean, imgType)} /></div>,
+            <div onClick={() => { func(0) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number, imgType)} /></div>,
+            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
         ],
         undefined: [
-            <div onClick={() => { func("undefined") }}><BallButton imgMain={returnImgByType(typeOfToJIType.word,)} /></div>,
-            <div onClick={() => { func(false) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean,)} /></div>,
-            <div onClick={() => { func(0) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number,)} /></div>,
-            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
+            <div onClick={() => { func("undefined") }}><BallButton imgMain={returnImgByType(typeOfToJIType.word, imgType)} /></div>,
+            <div onClick={() => { func(false) }}><BallButton imgMain={returnImgByType(typeOfToJIType.boolean, imgType)} /></div>,
+            <div onClick={() => { func(0) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number, imgType)} /></div>,
+            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
         ],
         Boolean: [
-            <div onClick={() => { func(value ? "true" : "false") }}><BallButton imgMain={returnImgByType(typeOfToJIType.word,)} /></div>,
-            <div onClick={() => { func(value ? 1 : 0) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number,)} /></div>,
-            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined,)} /></div>,
-            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null,)} /></div>,
+            <div onClick={() => { func(value ? "true" : "false") }}><BallButton imgMain={returnImgByType(typeOfToJIType.word, imgType)} /></div>,
+            <div onClick={() => { func(value ? 1 : 0) }}><BallButton imgMain={returnImgByType(typeOfToJIType.number, imgType)} /></div>,
+            <div onClick={() => { func(undefined) }}><BallButton imgMain={returnImgByType(typeOfToJIType.undefined, imgType)} /></div>,
+            <div onClick={() => { func(null) }}><BallButton imgMain={returnImgByType(typeOfToJIType.null, imgType)} /></div>,
         ],
     }[type]
 }
@@ -129,31 +120,33 @@ export function toTypeBySubType(type: SubTypeProps, func: (value: any) => any, a
 }
 
 
-export function strButTo(value: string) {
+export function strButTo(value: string, imgType: JipType) {
     let possibilities: SupprtJip = regexColor.test(value) ? "color"
         : regex_Img.test(value) ? "img"
             : regex_Boolean.test(value) ? "boolean"
                 : regex_Number.test(value) ? "number" : "word";
-    return <BallButton imgMain={returnImgByType(typeOfToJIType[possibilities])} />
+    return <BallButton imgMain={returnImgByType(typeOfToJIType[possibilities], imgType)} />
 }
 
-export function numButTo(value: number) {
+export function numButTo(value: number, imgType: JipType) {
     return [
-        <BallButton imgMain={ImgPackage.Type.word} />,
-        value === 0 || value === 1 ? <BallButton imgMain={ImgPackage.Type.boolean} /> : undefined
+        <BallButton imgMain={imgType.word} />,
+        value === 0 || value === 1 ? <BallButton imgMain={imgType.boolean} /> : undefined
     ]
 }
 
-export const boolButTo = [
-    <BallButton imgMain={ImgPackage.Type.word} />,
-    <BallButton imgMain={ImgPackage.Type.number} />
-]
+export const boolButTo = (imgType: JipType) => {
+    return [
+        <BallButton imgMain={imgType.word} />,
+        <BallButton imgMain={imgType.number} />
+    ]
+}
 
-export function convertButByType(type: TypeProps | null, value: any): any {
+export function convertButByType(type: TypeProps | null, value: any, imgType: JipType): any {
     return type === null ?
-        <></> : type.subSub === "Word" ? strButTo(value)
-            : (type.sub === "Color" || type.sub === "Date" || type.sub === "Img") ? strButTo("Word")
-                : type.main === "Number" ? numButTo(value)
+        <></> : type.subSub === "Word" ? strButTo(value, imgType)
+            : (type.sub === "Color" || type.sub === "Date" || type.sub === "Img") ? strButTo("Word", imgType)
+                : type.main === "Number" ? numButTo(value, imgType)
                     : type.main === "Boolean" ? boolButTo : <></>
 }
 

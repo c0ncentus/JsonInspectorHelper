@@ -1,7 +1,6 @@
 import { cloneDeep, set, max, compact, uniq, get } from "lodash";
 import { FormPushJip, ItemArray, Handle, KeyValue, TypeProps, JipType, SupprtJip, typeOfToJIType, JipAssets } from "./Model";
 import { process } from "uniqid";
-import { ImgPackage } from "./CONST";
 
 export const rgx_dot = /\./gm
 export const rgx_crochePath = /\[\w+\]/gm
@@ -481,7 +480,7 @@ export function initToValidate(obj: any): FormPushJip[] {
     return resTemp
 }
 
-export function returnImgByType(value: TypeProps | null | undefined, img: JipType = ImgPackage.Type): string {
+export function returnImgByType(value: TypeProps | null | undefined, img: JipType): string {
     return (value === undefined || (value !== null && value!.main === "undefined")) ? img.undefined : (value === null || value.main === "null") ? img.null :
         value.subSub === "http" ? img.http : value.subSub === "https" ? img.https : value.subSub === "assetImg" ? img.assetImg : value.main === "Array" ? img.array : value.main === "Object" ? img.object : value.subSub === "Word" ? img.word : value.main === "Number" ? img.number : value.sub === "Color" ? img.color : value.sub === "Img" ? img.img : value.main === "Boolean" ? img.boolean : value.sub === "Date" ? img.date : ""
 }

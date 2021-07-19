@@ -34,8 +34,8 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
                                     inherentValue: valueArr
                                 }} />
                                     : typeOfToJIType.object === type ? <Obj_Jip {...{ id, path: toValidate.find(x => x.id === id!)!.path, sub: genData, isItemArray, toValidate, deep, setting, extra, onAction, handleValue }} />
-                                        : typeOfToJIType.null === type ? <img style={cssImgOnlyRender} src={returnImgByType(null)} />
-                                            : typeOfToJIType.undefined === type ? <img style={cssImgOnlyRender} src={returnImgByType(undefined)} />
+                                        : typeOfToJIType.null === type ? <img style={cssImgOnlyRender} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
+                                            : typeOfToJIType.undefined === type ? <img style={cssImgOnlyRender} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
                                                 : <></>
     }
 }
