@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType } from "./Lib";
-import { JipAssets, typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, FormPushJip, ItemArray, Handle, KeyValue, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
+import {  typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
 import { DropButton } from "./Package";
 import { INIT_VALUES_BY_TYPE } from "./CONST";
 

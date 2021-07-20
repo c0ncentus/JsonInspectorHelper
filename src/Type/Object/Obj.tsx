@@ -1,4 +1,4 @@
-import { compact, set, get } from "lodash";
+import { set, get } from "lodash";
 import { Component } from "react";
 import { inHlForm } from "..";
 import { colorDeep, INIT_VALUES_BY_TYPE } from "../../Util/CONST";
@@ -13,15 +13,12 @@ export class Obj_Jip extends Component<FormGetObjectJip, any>{
         const { deep, setting, toValidate, extra, path, id, onAction, isItemArray, handleValue, inherentValue } = this.props;
         const onId = Array.isArray(isItemArray) ? id : path === "" ? id : toValidate.find(x => x.path === parentTo(path))!.id;
         let valueArray = "";
-        if (Array.isArray(isItemArray)) {
-            valueArray = get(toValidate.find(x => x.path === this.props.path)?.value, buildIIA(isItemArray));
-        }
-
+        if (Array.isArray(isItemArray)) { valueArray = get(toValidate.find(x => x.path === this.props.path)?.value, buildIIA(isItemArray)); }
         return <div className="Obj" style={{ display: "flex", marginLeft: 5 }}>
             <input type="checkbox" className="displayHide__input" />
             <div className="displayHide__content" style={{ border: `${colorDeep[deep]} 5px solid`, margin: deep * 10 }}>
                 {Array.isArray(isItemArray) === false && detectObjsPath(toValidate).includes(path) === true
-                    ? allChildrenKeysByPath(path, compact(toValidate.map((el) => { return deepPathString(el.path, false) > deep ? el.path : undefined })))
+                    ? allChildrenKeysByPath(path, toValidate.map((el) => { return el.path }))
                         .map((keysObjModified: string) => {
                             const newPath = pathLoBuild(path, "Object", { sub: keysObjModified, i: 0 });
                             return <PairKeyValue_Jip {...{

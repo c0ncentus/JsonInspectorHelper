@@ -371,19 +371,15 @@ export function setPathKeyInVal(obj: FormPushJip[], actual: { id: string, value:
 }
 
 export function allChildrenKeysByPath(pathRef: string, allPath: string[]): string[] {
-    if (allPath.length === 0) { return [] }
+    const lvlRef = deepPathString(pathRef, false);
+    const newAllPath = allPath.filter(x => lvlRef + 1 === deepPathString(x, false))
+    if (allPath.length === 0 && newAllPath.length === 0) { return [] }
     let res: string[] = []
     let tempRes: string[] = [];
-    if (pathRef === "") {
-        allPath.forEach((path) => {
-            const isSplitSecond = rgx_dot.test(path);
-            const pushData = isSplitSecond ? path.split(".")[0].replace(rgx_crochePath, "") : ""
-            res.push(isSplitSecond ? pushData : path);
-        })
-    }
+    if (pathRef === "") { return newAllPath }
     else {
         tempRes = pathRef.split(".");
-        allPath.forEach((path) => {
+        newAllPath.forEach((path) => {
             let tempPath = path.split(".");
             const communPath = detectedPath(tempRes, tempPath);
             if (typeof communPath === "number") {
@@ -437,48 +433,34 @@ export function rgbToAnotherRgb(str: string, isUp: boolean, diff: number) {
 //     }, {});
 // };
 
-export function getObjPath(obj: any, pathArray: string[][], busArray?: string[]) {
-    const tempPathArray: string[][] = pathArray ? pathArray : [];
-    if (isObject(obj)) {
-        for (const key in obj as KeyValue) {
-            if (obj.hasOwnProperty(key)) {
-                const tempBusArray: string[] = busArray !== undefined ? busArray : [];
-                if (isObject(obj[key])) {
-                    if (Object.keys(obj[key]).length === 0 && typeof key === "string") {
-                        if (busArray) { tempPathArray.push(tempBusArray.concat([key])) }
-                        else { tempPathArray.push([key]); }
-                    }
-                    else { getObjPath(obj[key], tempPathArray, tempBusArray); }
-                } else {
-                    if (busArray) { tempPathArray.push(tempBusArray.concat([key])) }
-                    else { tempPathArray.push([key]); }
-                }
-            }
-        }
+export function getObjPath(initialObj: any, obj: any, pathArray: string[], res: { path: string, value: any, /*type?: string,*/ key: string }[]) {
+    if (pathArray.length === 0) {
+        if (obj === null) { res.push({ path: "", value: null, /*type: "null", */ key: "" }) };
+        if (obj === undefined) { res.push({ path: "", value: undefined, /*type: "undefined", */ key: "" }) }
+        if (["string", "number", "boolean"].includes(typeof obj)) { res.push({ path: "", value: obj, /*type: typeof obj,*/ key: "" }) }
+        if (Array.isArray(obj)) { res.push({ path: "", value: obj, key: "" /* type: "tab"*/ }) }
     }
-    const res = pathArray.map((arrayStr) => { return arrayStr.join(".") })
-    return compact(res);
-}
+    let newRes = res;
+    const newPath = pathArray.join(".");
+    if (typeof obj === "object" && Array.isArray(obj) === false && obj !== null) {
+        newRes.push({ path: newPath, value: obj, key: pathArray[pathArray.length - 1] })
+        const allKeys = Object.keys(obj);
+        if (allKeys.length === 0) { }
+        else { allKeys.map((key) => { newRes = [...newRes, ...getObjPath(initialObj, obj[key], [...pathArray, key], res)] }) }
+    }
+    if (pathArray.length > 0) {
+        const key = pathArray[pathArray.length - 1]
 
-export function pathToValid(obj: any): { isUpToDate: boolean, path: string }[] {
-    const res = getObjPath(obj, [[]]);
-    let resState = res.map((e) => { return { isUpToDate: true, path: e } });
-    res.forEach((keyword) => { if (resState.filter((x) => { return x.path.search(keyword) !== -1 }).length > 1) { resState.splice(resState.findIndex((x) => { return x.path === keyword })) } })
-    return resState;
+        if (obj === null) { res.push({ path: newPath, value: null, /*type: "null",*/ key }) };
+        if (obj === undefined) { res.push({ path: newPath, value: undefined, /*type: "undefined",*/ key }) }
+        if (["string", "number", "boolean"].includes(typeof obj)) { res.push({ path: newPath, value: get(initialObj, newPath), /*type: typeof obj,*/ key }) }
+        if (Array.isArray(obj)) { res.push({ path: newPath, value: get(initialObj, newPath),/* type: "tab",*/ key }) }
+    }
+    console.log(newRes)
+    return uniq(compact(newRes));
 }
-
-export function initToValidate(obj: any): FormPushJip[] {
-    let resTemp = pathToValid(obj)
-        .map((elPathObj) => {
-            return {
-                value: get(obj, elPathObj.path), id: process(),
-                key: lastKeyByType("Object", elPathObj.path)!,
-                isUpToDate: true, path: elPathObj.path
-            }
-        })
-    if (typeof obj === "object") { if (Array.isArray(obj)) { } else { resTemp.push({ id: process(), isUpToDate: true, key: "", path: "", value: obj }) } }
-    return resTemp
-}
+// 
+export function initToValidate(obj: any): FormPushJip[] { return getObjPath(obj, obj, [], []).map((el) => { return { ...el, isUpToDate: true, id: process() } }) }
 
 export function returnImgByType(value: TypeProps | null | undefined, img: JipType): string {
     return (value === undefined || (value !== null && value!.main === "undefined")) ? img.undefined : (value === null || value.main === "null") ? img.null :

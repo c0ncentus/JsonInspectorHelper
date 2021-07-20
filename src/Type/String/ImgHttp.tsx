@@ -26,9 +26,9 @@ export class ImgHttpOrS extends Component<FormGetJip, Value_JipState>{
         return <div className="Http_s" style={{ position: "relative", width: 375, height: 200 }}>
             <InputHttp {...{ color: "", img:{
                 http:extra!.IMG_INTERN!.Extra.logoHttp,
-                https:extra!.IMG_INTERN!.Extra.logoHttp,
+                https:extra!.IMG_INTERN!.Extra.logoHttps,
                 input:extra!.IMG_INTERN!.Extra.inputHttp
-            }, isS: this.state.isHttps!, words: { desc: this.state.value!, title: this.state.baseUrl! } }} />
+            }, isS: this.state.isHttps===true, words: { desc: this.state.value!, title: this.state.baseUrl! } }} />
         </div>
     }
 }
@@ -38,7 +38,7 @@ class InputHttp extends Component<{ isS: boolean, words: { title: string, desc: 
         const { words, isS, img } = this.props;
         return <div className="InputHttp_Cpnt">
             <img src={img.input} style={{ position: "absolute", top: 0, height: "100%", zIndex: 3 }} />
-            <img src={isS ? img.http : img.https} className="emblem" />
+            <img src={isS ? img.https : img.http} className="emblem" />
             <p className="title">{words.title}</p>
             <p className="desc">{words.desc}</p>
             <div className="emblemColor" style={{ backgroundColor: isS ? "#7CC97D" : "#FB9F9F" }} />
