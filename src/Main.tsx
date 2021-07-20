@@ -39,10 +39,14 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
         })
     }
     onAction(id: string, action: ActionFunc, extra?: ExtraFormJip) {
-        if (action === "getJipReplica") { return this.props; }
         const { toValidate } = this.state;
+        console.log(this.state.toValidate)
+
+        console.log(`ON_ACTION => id =${id} &&  action ${action}`)
+        if (action === "getJipReplica") { return this.props; }
+        if (action = "getObjByPath") { return toValidate.find(x => x.path === id) }
         const objFind = toValidate.find((x) => { return x.id === id })!;
-        const { isUpToDate, key, path, value } = objFind;
+        const { path } = objFind;
         if (action === "getObj") { return objFind }
         if (action === "addValidate") {
             const initKeys = extra!.inputKeys!;
@@ -51,22 +55,10 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
             else { this.setState({ toValidate: [...toValidate, { id: process(), isUpToDate: true, path: initPath, key: initKeys, value: extra!.valueAdd! }] }) }
         }
         if (action === "deleteValidate") {
-            const delVals = path === "" ? [objFind.id]
-                : typeof value === "object" && Array.isArray(value)
-                    ? toValidate
-                        .filter(x => { return deepPathString(x.path, false) >= deepPathString(path, false) })
-                        // OBJ ISSUE A FIXER
-                        // .map((el) => { return { id: el.id, path: el.path } })
-                        // .filter(x => { return detectedPath(rgx_dot.test(path) ? [path] : path.split("."), rgx_dot.test(x.path) ? [x.path] : x.path.split(".")) })
-                        .map((el) => { return el.id })
-                    : [id];
-            this.setState({ toValidate: toValidate.filter(x => { return delVals.includes(x.id) === false }), })
-
+            this.setState({ toValidate: toValidate.filter(x => { return x.id !== id }) })
         }
-        if (action === "getValidate") { return isUpToDate }
         if (action === "onValidate") {
-            const newValue = extra?.pushValue?.newValue!;
-            const newKey = extra?.pushValue?.newKey!;
+            const newValue = extra?.pushValue?.newValue!; const newKey = extra?.pushValue?.newKey!;
             const validateValue = setPathKeyInVal(toValidate, { id, value: newValue, key: newKey, })
             this.setState({ toValidate: validateValue })
             if (this.props.onValidate !== undefined) { this.props.onValidate(onValidateJip(validateValue)) }
@@ -75,10 +67,10 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     componentDidMount() { this.setState({ toValidate: initToValidate(this.props.obj_), initVal: initToValidate(this.props.obj_) }) }
 
     render() {
-        // console.log(this.props)
+
         if (this.state.toValidate.length === 0) { return <></> } else {
             const { inputKeys, toValidate } = this.state;
-            const { isWithAccessory, setting, obj_, IMG_INTERN, IMG_ASST } = this.props;
+            const { setting, obj_, IMG_INTERN, IMG_ASST } = this.props;
             const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
             const idRoot = this.state.toValidate.find(y => y.path === "")!.id;
             return typeof obj_ === "object"

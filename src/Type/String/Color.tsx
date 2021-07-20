@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { SketchPicker } from "react-color";
-import { inHlForm, initValues, Value_JipState } from "..";
+import { inHlForm, Value_JipState } from "..";
 import { INIT_VALUES_BY_TYPE } from "../../Util/CONST";
 import {  regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../../Util/Lib";
 import { FormGetJip, TPS_ColorMode } from "../../Util/Model";
@@ -12,8 +12,8 @@ export class Color_Jip extends Component<FormGetJip, Value_JipState>{
         this.state = { value: "", colorMode: null }
     }
     componentDidMount() {
-        const { inherentValue, isItemArray } = this.props;
-        const realValue = initValues(inherentValue, isItemArray, false);
+        const { inherentValue } = this.props;
+        const realValue = inherentValue;
         const colorMode = regex_Rgb.test(realValue) ? "Rgb" : regex_Hex.test(realValue) ? "Hex" : regex_Hsl.test(realValue) ? "Hsl" : "None"
         if (colorMode === "None") { this.setState({ value: INIT_VALUES_BY_TYPE.color, colorMode: "Rgb" }) }
         else { this.setState({ value: realValue, colorMode }) }

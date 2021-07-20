@@ -1,6 +1,6 @@
 import { Component, CSSProperties } from "react";
 import { Value_JipState } from "..";
-import { initValues, inHlForm } from "../Util";
+import { inHlForm } from "../Util";
 import { FormGetJip } from "../../Util/Model";
 // subStrChoice: "mot" | "titre" | "descriptif" | "Paragraphe" | null,
 const cssStyleInput: CSSProperties = { width: 200, height: 35, margin: 30, border: "black solid 2px" };
@@ -8,8 +8,8 @@ const cssStyleInput: CSSProperties = { width: 200, height: 35, margin: 30, borde
 export class Word_Jip extends Component<FormGetJip, Value_JipState>{
     constructor(props: any) { super(props); this.state = { value: "", firstChange: "" } }
     componentDidMount() {
-        const { inherentValue, isItemArray, isKeys } = this.props;
-        this.setState({ value: initValues(inherentValue, isItemArray, isKeys) });
+        const { inherentValue } = this.props;
+        this.setState({ value: inherentValue });
     }
     form() {
         const { permission, isKeys, handleValue, isItemArray } = this.props;
@@ -30,7 +30,7 @@ export class Word_Jip extends Component<FormGetJip, Value_JipState>{
         if (this.state.firstChange !== initValue) { this.setState({ firstChange: initValue, value: initValue }) }
         return typeof isItemArray === "number"
             ? this.form()
-            : <div style={{ position: "relative", marginTop: 20, marginRight: isKeys === false ? 10 : 0 }}>
+            : <div style={{ position: "relative",  marginRight: isKeys === false ? 10 : 0 }}>
                 {isKeys
                     ? <div style={{ display: "flex" }}>
                         <img style={{ height: 20, width: 20 }} src={extra!.IMG_INTERN!.JsonForm.key} />
@@ -38,7 +38,7 @@ export class Word_Jip extends Component<FormGetJip, Value_JipState>{
                     </div>
                     : <div style={{ display: "flex" }}>
                         <img style={{ height: 20, width: 20 }} src={extra!.IMG_INTERN!.JsonForm.value} />
-                        <p>Valeur</p>
+                        <p>Val</p>
                     </div>}
 
                 {this.form()}

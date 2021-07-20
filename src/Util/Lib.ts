@@ -76,30 +76,6 @@ export function buildIIA(isItemArray: ItemArray) {
     return Array.isArray(isItemArray) ? isItemArray.map((el, i) => { return typeof el === "string" ? `${i !== 0 ? "" : "."}${el}` : `[${el}]` }).join("") : ""
 }
 
-export function buildIIALastArray(isItemArray: ItemArray) {
-    if (Array.isArray(isItemArray) === false) { return }
-    else {
-        let maxIndex = 0;
-        const allIndex = (isItemArray as any[])
-            .map(((y, indexA) => {
-                return typeof y === "number" ? indexA : undefined
-            }))
-            .filter((objF => { return objF !== undefined })) as number[];
-        maxIndex = max(allIndex)!;
-        return (isItemArray as any[])
-            .map((el, i) => {
-                return i <= maxIndex
-                    ? typeof el === "string"
-                        ? `${i !== 0 ? ""
-                            : "."}${el}`
-                        : `[${el}]`
-                    : undefined
-            })
-            .filter(r => { return r !== undefined })
-            .join("");
-    }
-}
-
 export function strToRgb(rgb: string): [number, number, number] {
     rgb.replace("rgb(", "").replace(")", "")
     return rgb.split(",").map((e) => { return parseInt(e, 10) }) as [number, number, number]
@@ -456,11 +432,18 @@ export function getObjPath(initialObj: any, obj: any, pathArray: string[], res: 
         if (["string", "number", "boolean"].includes(typeof obj)) { res.push({ path: newPath, value: get(initialObj, newPath), /*type: typeof obj,*/ key }) }
         if (Array.isArray(obj)) { res.push({ path: newPath, value: get(initialObj, newPath),/* type: "tab",*/ key }) }
     }
-    console.log(newRes)
     return uniq(compact(newRes));
 }
 // 
-export function initToValidate(obj: any): FormPushJip[] { return getObjPath(obj, obj, [], []).map((el) => { return { ...el, isUpToDate: true, id: process() } }) }
+export function initToValidate(obj: any): FormPushJip[] {
+    const root = { id: process(), isUpToDate: true, key: "", path: "", value: obj }
+    let res = getObjPath(obj, obj, [], []).map((el) => {
+        return { ...el, isUpToDate: true, id: process() }
+    })
+    if (res.filter(x => x.path === "").length === 0) { res.push(root) }
+    else { return [root, ...res.filter(x => x.path !== "")] }
+    return res;
+}
 
 export function returnImgByType(value: TypeProps | null | undefined, img: JipType): string {
     return (value === undefined || (value !== null && value!.main === "undefined")) ? img.undefined : (value === null || value.main === "null") ? img.null :

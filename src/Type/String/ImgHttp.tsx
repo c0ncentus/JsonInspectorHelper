@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Value_JipState, initValues } from "..";
+import { Value_JipState } from "..";
 import { INIT_VALUES_BY_TYPE } from "../../Util/CONST";
 import { regex_Img_http, regex_https, regex_BaseUrlHttp } from "../../Util/Lib";
 import { FormGetJip } from "../../Util/Model";
@@ -7,8 +7,8 @@ import { FormGetJip } from "../../Util/Model";
 export class ImgHttpOrS extends Component<FormGetJip, Value_JipState>{
     constructor(props: any) { super(props); this.state = { value: "", } }
     componentDidMount() {
-        const { inherentValue, isItemArray, extra } = this.props;
-        const initValue = initValues(inherentValue, isItemArray);
+        const { inherentValue, } = this.props;
+        const initValue = inherentValue;
 
         const realValue = regex_Img_http.test(initValue)
             ? initValue

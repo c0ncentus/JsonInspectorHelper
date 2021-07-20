@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Value_JipState, initValues } from "..";
+import { Value_JipState} from "..";
 import { regex_Assets } from "../../Util/Lib";
 import { FormGetJip } from "../../Util/Model";
 import { DropDownSquish } from "../../Util/Package";
@@ -12,7 +12,7 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
     componentDidMount() {
         const { inherentValue, isItemArray, extra } = this.props;
 
-        const realValue = initValues(inherentValue, isItemArray, false);
+        const realValue = (inherentValue);
 
         this.setState({
             value: regex_Assets.test(realValue) ? realValue : extra?.IMG_ASST?.Jpg.Bac[0],
@@ -35,8 +35,8 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
                     Svg: { Square: 0, Bac: 0, Phone: 0 }
                 }
                 max = collectionMax[this.state.imgType!][this.state.imgFormat!];
-                console.log("max")
-                console.log(max)
+                // console.log("max")
+                // console.log(max)
                 const rdm = Math.trunc(Math.random() * max)
                 const iPic = this.state.isImgRdm ? rdm : this.state.iImg! < max ? this.state.iImg! : 0
                 const src = extra.IMG_ASST[this.state.imgType!][this.state.imgFormat!][iPic];

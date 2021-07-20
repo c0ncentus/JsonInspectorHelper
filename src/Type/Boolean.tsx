@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { Value_JipState } from ".";
-import { initValues, inHlForm } from "./Util";
+import { inHlForm } from "./Util";
 import { FormGetJip } from "../Util/Model";
 
 export class Boolean_Jip extends Component<FormGetJip, Value_JipState>{
@@ -9,8 +9,8 @@ export class Boolean_Jip extends Component<FormGetJip, Value_JipState>{
         this.state = { value: false }
     }
     componentDidMount() {
-        const { inherentValue, isItemArray, initValue } = this.props;
-        const realValue = initValues(inherentValue, isItemArray, false);
+        const { inherentValue } = this.props;
+        const realValue = inherentValue;
 
         this.setState({ value: realValue })
     }
@@ -30,7 +30,7 @@ export class Boolean_Jip extends Component<FormGetJip, Value_JipState>{
             : <div style={{ position: "relative", marginRight: 10 }}>
                 <div style={{ position: "relative", height: 40, width: "100%" }}>
                     <img style={{ height: 20, width: 20 }} src={extra!.IMG_INTERN?.JsonForm.value} />
-                    <p>Valeur</p>
+                    <p>Val</p>
                 </div>
                 {this.form()}
             </div>

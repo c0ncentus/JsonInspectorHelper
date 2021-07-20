@@ -108,10 +108,8 @@ export interface Menuing {
     items: MenuItem[];
 }
 
-export type ActionFunc = "getJipReplica" |
-    "getPathToState" |
-    "getObj" | "update"
-    | "getValidate" | "addValidate" | "deleteValidate" | "onValidate"
+export type ActionFunc = "getJipReplica" | "getObj" | "getObjByPath"
+    | "addValidate" | "deleteValidate" | "onValidate"
     | "setPanel";
 export type ActionFuncParameter = (id: string, action: ActionFunc, extra?: ExtraFormJip, isKeys?: boolean) => any;
 export interface ExtraFormJip {
@@ -150,19 +148,19 @@ interface BaseGetComplex {
     setting: JIPSetting,
 }
 
-type ValidForm = (id: string, key?: string, value?: string) => any;
 export type Handle = (isKeys: boolean, key?: string, value?: any, pathItem?: string, isAddOnArray?: boolean, valueAdd?: any) => any;
-export type ItemArray = (string | number)[] | boolean
+export type ItemArray = number | false
 export interface FormGetRenderInputByType extends BaseGetComplex {
     isKeys: boolean,
     type: TypeProps,
 }
 export interface Array_JipProps extends BaseGetComplex { }
 export interface FormGetPairKey extends BaseGetComplex {
+    initKey: string,
+    initValue: any,
     isWithAccessory: boolean,
     idParent: string
     newPath: string,
-    isArrayKey?: string
 }
 export interface FormGetObjectJip extends BaseGetComplex { path: string }
 export interface FormGetAddButt extends BaseGetComplex { }
