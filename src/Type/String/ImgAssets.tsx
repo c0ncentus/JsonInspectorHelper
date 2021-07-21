@@ -12,7 +12,7 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
     componentDidMount() {
         const { inherentValue, isItemArray, extra } = this.props;
 
-        const realValue = (inherentValue);
+        const realValue = inherentValue;
 
         this.setState({
             value: regex_Assets.test(realValue) ? realValue : extra?.IMG_ASST?.Jpg.Bac[0],
@@ -21,6 +21,7 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
 
     }
     render() {
+        // TODO handleValue
         const { extra, handleValue } = this.props;
         let max = 0
         if (extra === undefined || extra.IMG_ASST === undefined) { return <></> }
@@ -37,17 +38,11 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
                 max = collectionMax[this.state.imgType!][this.state.imgFormat!];
             }
             if (displayI) {
-
-                // console.log("max")
-                // console.log(max)
                 const rdm = Math.trunc(Math.random() * max)
                 const iPic = this.state.isImgRdm ? rdm : this.state.iImg! < max ? this.state.iImg! : 0
-
-
                 const src = extra.IMG_ASST[this.state.imgType!][this.state.imgFormat!][iPic];
                 Cpnt = <img src={src} style={{ border: "2px red dotted", width: 100, height: 100 }} />
             }
-            console.log(max)
             return <div className="AssetImg" style={{ marginLeft: 20 }}>
                 <div style={{ position: "relative" }}><p style={{ position: "absolute", top: 0, left: -34, zIndex: -1 }}>Est Random</p><input type="checkbox" onChange={(e) => {
                     const check = e.currentTarget.checked;

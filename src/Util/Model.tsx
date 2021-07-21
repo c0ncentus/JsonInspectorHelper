@@ -115,8 +115,7 @@ export type ActionFuncParameter = (id: string, action: ActionFunc, extra?: Extra
 export interface ExtraFormJip {
     inputKeys?: string,
     colorMode?: TPS_ColorMode | null,
-    valueAdd?: any | any[],
-    idAdd?: string
+    add?: {value:any | any[], key:string, id:string, path:string},
     isObjectAdd?: boolean,
     pushValue?: { newKey?: string, newValue?: string, },
     IMG_ASST?: CustomPicture
@@ -144,7 +143,6 @@ interface BaseGetComplex {
     handleValue?: Handle,
     deep: number,
     extra: ExtraFormJip,
-    toValidate: FormPushJip[],
     inherentValue?: any
     setting: JIPSetting,
 }

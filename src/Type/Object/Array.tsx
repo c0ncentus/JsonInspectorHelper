@@ -28,7 +28,7 @@ export class Array_Jip extends Component<Array_JipProps, { swapItemArr: { iBegin
         // this.props.handleValue!(false, undefined, temp, pathToMod === "" ? undefined : pathToMod)
     }
     render() {
-        const { deep, onAction, extra, setting, id, handleValue, toValidate, inherentValue, isItemArray } = this.props;
+        const { deep, onAction, extra, setting, id, handleValue, inherentValue, isItemArray } = this.props;
         const { swapItemArr } = this.state;
         const propsJip = onAction("", "getJipReplica") as JsonFormInspectProps;
 

@@ -110,7 +110,9 @@
 .jsonInspector .minus .glassEffect .container {
   width: 30px
 }
-
+.ButtonsAdd .glassEffect .container{
+  width: 100px !important;
+}
 .displayHide__input {
   width: 40px;
   background-color: #4fa46b;
