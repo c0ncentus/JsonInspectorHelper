@@ -110,12 +110,13 @@ export interface Menuing {
 
 export type ActionFunc = "getJipReplica" | "getObj" | "getObjByPath"
     | "addValidate" | "deleteValidate" | "onValidate"
-    | "setPanel";
+    | "setPanel" | "getValS";
 export type ActionFuncParameter = (id: string, action: ActionFunc, extra?: ExtraFormJip, isKeys?: boolean) => any;
 export interface ExtraFormJip {
     inputKeys?: string,
     colorMode?: TPS_ColorMode | null,
     valueAdd?: any | any[],
+    idAdd?: string
     isObjectAdd?: boolean,
     pushValue?: { newKey?: string, newValue?: string, },
     IMG_ASST?: CustomPicture
@@ -148,7 +149,9 @@ interface BaseGetComplex {
     setting: JIPSetting,
 }
 
-export type Handle = (isKeys: boolean, key?: string, value?: any, pathItem?: string, isAddOnArray?: boolean, valueAdd?: any) => any;
+export type Handle = (
+    isKeys: boolean, key?: string, value?: any, pathItem?: string,
+    isAddOnArray?: boolean, valueAdd?: any, id?: string) => any;
 export type ItemArray = number | false
 export interface FormGetRenderInputByType extends BaseGetComplex {
     isKeys: boolean,
@@ -163,7 +166,9 @@ export interface FormGetPairKey extends BaseGetComplex {
     newPath: string,
 }
 export interface FormGetObjectJip extends BaseGetComplex { path: string }
-export interface FormGetAddButt extends BaseGetComplex { }
+export interface FormGetAddButt extends BaseGetComplex {
+    onAdding: (value: any, newId: string) => any
+}
 
 export interface JIPSetting {
     autoFillDangerous: boolean

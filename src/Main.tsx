@@ -40,19 +40,25 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     }
     onAction(id: string, action: ActionFunc, extra?: ExtraFormJip) {
         const { toValidate } = this.state;
-        console.log(this.state.toValidate)
+        // console.log(`ON_ACTION => id =${id} &&  action ${action}`)
+        // console.log("TO VALIDATE")
+        // console.log(this.state.toValidate)
 
-        console.log(`ON_ACTION => id =${id} &&  action ${action}`)
+
         if (action === "getJipReplica") { return this.props; }
-        if (action = "getObjByPath") { return toValidate.find(x => x.path === id) }
+        if (action === "getValS") { return toValidate; }
+        if (action === "getObjByPath") { return toValidate.find(x => x.path === id) }
+
+
         const objFind = toValidate.find((x) => { return x.id === id })!;
+        if (objFind === undefined) { return undefined }
         const { path } = objFind;
         if (action === "getObj") { return objFind }
         if (action === "addValidate") {
             const initKeys = extra!.inputKeys!;
             const initPath = pathLoBuild(path, "Object", { sub: extra!.inputKeys!, i: 0 });
             if (toValidate.some(x => { return x.key === initKeys, x.path === initPath })) { }
-            else { this.setState({ toValidate: [...toValidate, { id: process(), isUpToDate: true, path: initPath, key: initKeys, value: extra!.valueAdd! }] }) }
+            else { this.setState({ toValidate: [...toValidate, { id: extra!.idAdd!, isUpToDate: true, path: initPath, key: initKeys, value: extra!.valueAdd! }] }) }
         }
         if (action === "deleteValidate") {
             this.setState({ toValidate: toValidate.filter(x => { return x.id !== id }) })

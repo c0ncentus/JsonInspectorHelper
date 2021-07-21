@@ -1,5 +1,6 @@
 import { set, get } from "lodash";
 import { Component } from "react";
+import { process } from "uniqid";
 import { inHlForm } from "..";
 import { colorDeep, INIT_VALUES_BY_TYPE } from "../../Util/CONST";
 import { parentTo, allChildrenKeysByPath, pathLoBuild, returnType, returnImgByType } from "../../Util/Lib";
@@ -8,39 +9,48 @@ import { FormGetObjectJip, FormGetAddButt, FormGetPairKey, typeOfToJIType, FormP
 import { DropButton, Glass_ } from "../../Util/Package";
 import { RenderInputByType_Jip } from "../RenderAll";
 
-export class Obj_Jip extends Component<FormGetObjectJip, any>{
+export class Obj_Jip extends Component<FormGetObjectJip, { formPushs: FormPushJip[], mainPath: string }>{
+    constructor(props: any) {
+        super(props);
+        const { path } = this.props; this.onAdding = this.onAdding.bind(this);
+        this.state = { formPushs: [], mainPath: path }
+    }
+    buildNewPath() {
+        return `${this.state.mainPath === "" ? "" : "."}${this.state.mainPath === "" ? "" : "."}${this.props.extra!.inputKeys!}`
+    }
+    onAdding(value: any, newId: string) {
+        if (this.state.formPushs.some(x => { return x.key === this.props.extra!.inputKeys, x.path === this.buildNewPath() })) { }
+        else { this.setState({ formPushs: [...this.state.formPushs, { id: newId, isUpToDate: true, key: this.props.extra!.inputKeys!, value, path: this.buildNewPath() }] }) }
+    }
+    componentDidMount() {
+        const { path, onAction } = this.props;
+        this.setState({ formPushs: allChildrenKeysByPath(path, (onAction("", "getValS") as FormPushJip[]).map((el => { return el.path }))).map((el => { return onAction(el, "getObjByPath") as FormPushJip })) })
+    }
     render() {
         const { deep, setting, toValidate, extra, path, id, onAction, isItemArray, handleValue, inherentValue } = this.props;
-        const currontObj = onAction(id!,"getObj") as FormPushJip ;
-        
+        console.log(this.state)
+        const currontObj = onAction(id!, "getObj") as FormPushJip;
+
         const onId = isItemArray === false ? path === "" ? id : onAction(parentTo(path), "getObjByPath").id : id;
         let valueArray = "";
-        console.log(allChildrenKeysByPath(path, toValidate.map((el) => { return el.path })))
         if (isItemArray !== false) { valueArray = get(currontObj?.value, currontObj?.value); }
         return <div className="Obj" style={{ display: "flex", marginLeft: 5 }}>
             <input type="checkbox" className="displayHide__input" />
             <div className="displayHide__content" style={{ border: `${colorDeep[deep]} 5px solid`, margin: deep * 10 }}>
-                {/* {isItemArray === false && detectObjsPath(toValidate).includes(path) === true */}
-                {allChildrenKeysByPath(path, toValidate.map((el) => { return el.path }))
-                    .map((keysObjModified: string) => {
-                       
-                        const newPath = pathLoBuild(path, "Object", { sub: keysObjModified, i: 0 });
-                        const newObj =  onAction(parentTo(newPath), "getObjByPath");
+                {
+                    // allChildrenKeysByPath(path, (onAction(parentTo(path), "getValS") as FormPushJip[]).map((el) => { return el.path }))
+                    this.state.formPushs.map((keysObj) => {
                         return <div style={{ display: "flex" }}>
                             <PairKeyValue_Jip {...{
-                                setting, onAction, toValidate, extra, isWithAccessory: true,
-                                id: newObj.id!, initKey: newObj.key, initValue: newObj.value,
-                                isItemArray, newPath, deep: deep + 1, idParent: id!
+                                setting, onAction, toValidate: (onAction("", "getValS") as FormPushJip[]), extra, isWithAccessory: true,
+                                id: keysObj.id!, initKey: keysObj.key, initValue: keysObj.value,
+                                isItemArray, newPath: keysObj.path, deep: deep + 1, idParent: id!
                             }} />
-                            <div className="minus" style={{ marginLeft: 2, display: "flex" }}>
-                                <Glass_ text="✊" onClick={() => {/* onAction("", "setPanel")*/ }} />
-                                <Glass_ text="➖" onClick={() => { onAction(newObj!.id!, "deleteValidate") }} />
-                            </div>
                         </div>
                     })
                 }
                 <AddButtons_Jip {...{
-                    onAction, extra, isItemArray, inherentValue, deep, setting, toValidate,
+                    onAdding: this.onAdding, onAction, extra, isItemArray, inherentValue, deep, setting, toValidate,
                     handleValue, id: isItemArray === false ? id! : onId!, isAutoFill: setting.autoFillDangerous,
                 }} />
             </div >
@@ -50,25 +60,20 @@ export class Obj_Jip extends Component<FormGetObjectJip, any>{
 
 class AddButtons_Jip extends Component<FormGetAddButt, any>{
     mainOperation(value: any) {
-        const { onAction, id, extra, isItemArray, handleValue, toValidate, } = this.props;
-        const obj = onAction(id!,"getObj") as FormPushJip;
-        handleValue!(false, extra!.inputKeys!, obj!.value, isItemArray === false ? obj?.path : `${obj?.path}[${isItemArray}"]`, true, value);
+        const { onAction, id, extra, isItemArray, handleValue, onAdding } = this.props;
+        const obj = onAction(id!, "getObj") as FormPushJip;
+        const newId = process();
+        onAdding(value, newId);
+        if (handleValue !== undefined) { handleValue!(false, extra!.inputKeys!, obj!.value, isItemArray === false ? obj?.path : `${obj?.path}[${isItemArray}"]`, true, value,) }
+        onAction(id!, "addValidate", { valueAdd: value, idAdd: newId })
     }
     render() {
         const { onAction, id, extra, isItemArray, handleValue } = this.props;
-        return isItemArray === false
-            ? <div style={{ display: "flex" }}>
-                <Glass_ text="➕ Txt" onClick={() => { onAction(id!, "addValidate", { inputKeys: extra?.inputKeys!, valueAdd: INIT_VALUES_BY_TYPE.word }) }} />
-                <Glass_ text="➕ Obj" onClick={() => { onAction(id!, "addValidate", { inputKeys: extra?.inputKeys!, valueAdd: INIT_VALUES_BY_TYPE.object }) }} />
-                <Glass_ text="➕ Tab" onClick={() => { onAction(id!, "addValidate", { inputKeys: extra?.inputKeys!, valueAdd: INIT_VALUES_BY_TYPE.array }) }} />
-            </div>
-            : handleValue !== undefined
-                ? <div style={{ display: "flex" }}>
-                    <Glass_ text="➕ Txt" onClick={() => { this.mainOperation("") }} />
-                    <Glass_ text="➕ Obj" onClick={() => { this.mainOperation({}) }} />
-                    <Glass_ text="➕ Tab" onClick={() => { this.mainOperation([]) }} />
-                </div>
-                : <></>
+        return <div style={{ display: "flex" }}>
+            <Glass_ text="➕ Txt" onClick={() => { this.mainOperation(INIT_VALUES_BY_TYPE.word) }} />
+            <Glass_ text="➕ Obj" onClick={() => { this.mainOperation(INIT_VALUES_BY_TYPE.object) }} />
+            <Glass_ text="➕ Tab" onClick={() => { this.mainOperation(INIT_VALUES_BY_TYPE.array) }} />
+        </div >
     }
 }
 
@@ -107,22 +112,23 @@ class PairKeyValue_Jip extends Component<FormGetPairKey, { key: string, value: a
         setTimeout(() => { this.setState({ shielVal: false }) }, 6000)
     }
     render() {
-        const { toValidate, newPath, id, onAction, setting, extra, deep, isItemArray } = this.props;
-        const newPathObj = onAction(newPath, "getObjByPath" )
-        const realId = isItemArray === false ? newPathObj!.id : id
+        const { toValidate, id, onAction, setting, extra, deep, isItemArray, } = this.props;
+        const newObj = onAction(id!, "getObj");
         const typeProps = returnType(this.state.value);
-        if (isItemArray === false && newPathObj!.isUpToDate === false && this.state.shielVal === false) { this.validForm() }
+        if (newObj !== undefined && isItemArray === false && newObj!.isUpToDate === false && this.state.shielVal === false) { this.validForm() }
 
-        return this.state.isLoaded
+        return this.state.isLoaded && newObj !== undefined
             ? <div style={{ display: "flex" }}>
                 <RenderInputByType_Jip {...{
-                    deep, extra, id: realId, onAction, setting, toValidate, inherentValue: this.state.key,
+                    deep, extra, id, onAction, setting, toValidate, inherentValue: this.state.key,
                     type: typeOfToJIType["word"], handleValue: this.handleValue, isItemArray: false, isKeys: true
                 }} />
                 <RenderInputByType_Jip {...{
-                    deep, extra, id: realId, onAction, setting, toValidate, type: typeProps!,
+                    deep, extra, id, onAction, setting, toValidate, type: typeProps!,
                     inherentValue: this.state.value, handleValue: this.handleValue, isItemArray, isKeys: false
                 }} />
+                <Glass_ text="✊" onClick={() => {/* onAction("", "setPanel")*/ }} />
+                <Glass_ text="➖" onClick={() => { onAction(id!, "deleteValidate") }} />
                 <DropButton
                     imgMain={returnImgByType(typeProps!, extra!.IMG_INTERN!.Type)}
                     jsx_Picture={
