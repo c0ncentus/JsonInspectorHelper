@@ -25,9 +25,6 @@ export function convertsButton(func: (value: any) => any, assetsImgInit: string,
                 <div onClick={() => { func(INIT_VALUES_BY_TYPE.https) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https, imgType)} /></div>,
                 <div onClick={() => { func(INIT_VALUES_BY_TYPE.http) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http, imgType)} /></div>,
                 <div onClick={() => { func(assetsImgInit) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg, imgType)} /></div>,
-
-
-
             ]
         } />
 }

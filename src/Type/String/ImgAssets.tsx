@@ -22,7 +22,7 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
     }
     render() {
         // TODO handleValue
-        const { extra, handleValue } = this.props;
+        const { extra } = this.props;
         let max = 0
         if (extra === undefined || extra.IMG_ASST === undefined) { return <></> }
         else {

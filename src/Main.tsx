@@ -1,6 +1,6 @@
 import { Component } from "react";
-import {returnType, getLastArrayByPath,  parentTo, parentArrayTo, lastKeyByType, arrayByNum } from "./Util/Lib";
-import {  CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets } from "./Util/Model";
+import { returnType, getLastArrayByPath, parentTo, parentArrayTo, lastKeyByType, arrayByNum } from "./Util/Lib";
+import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets } from "./Util/Model";
 import { DropDownSquish, Glass_ } from "./Util/Package";
 import { RenderInputByType_Jip } from "./Type/RenderAll";
 import { cloneDeep, get, has, set } from "lodash";
@@ -9,7 +9,7 @@ import { saveAs } from "file-saver";
 const STORE_KEY_LOCAL = "__JFI__";
 const isJson = (str: string) => { return /\{/gm.test(str) && /\}/gm.test(str) && /\:/gm.test(str) }
 
-interface JsonFormInspectState { objUpdate: any, inputKeys: string, valuePathChange: string | null, isUpToDate: boolean }
+interface JsonFormInspectState { objUpdate: any, inputKeys: string, valuePathChange: string | null, isUpToDate: boolean, isLoad: boolean }
 
 export interface JsonFormInspectProps {
     obj_: any, setting: JIPSetting,
@@ -22,7 +22,7 @@ export interface JsonFormInspectProps {
 export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormInspectState>{
     constructor(props: any) {
         super(props); this.onAction = this.onAction.bind(this);
-        this.state = { inputKeys: "futureKeyName", objUpdate: {}, valuePathChange: null, isUpToDate: true }
+        this.state = { inputKeys: "futureKeyName", objUpdate: {}, valuePathChange: null, isUpToDate: true, isLoad: false }
 
     }
     reboot() { this.setState({ objUpdate: this.props.obj_ }) }
@@ -101,7 +101,7 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
         }
     }
 
-    componentDidMount() { this.setState({ objUpdate: this.props.obj_ }) }
+    componentDidMount() { this.setState({ objUpdate: this.props.obj_, isLoad: true }) }
     getMaxLocalStorage() { let count = 0; while (typeof localStorage.getItem(STORE_KEY_LOCAL + count) === "string") { count = count + 1; }; return count; }
     downloadTemplateSave() {
         const jsonDownload = arrayByNum(this.getMaxLocalStorage()).map((el) => {
@@ -110,53 +110,54 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
         })
         saveAs(jsonDownload.join(","), "JsonFormInspect_Template_.json")
     }
-    uploadTemplateSave() {
-
-    }
+    uploadTemplateSave() { }
     render() {
-        const { inputKeys, objUpdate } = this.state;
-        const { setting, obj_, IMG_INTERN, IMG_ASST } = this.props;
+        const { inputKeys, objUpdate, isLoad } = this.state;
+        if (isLoad === false) { return <></> }
+        else {
+            const { setting, obj_, IMG_INTERN, IMG_ASST } = this.props;
 
-        const maxLocalStorage = this.getMaxLocalStorage();
-        const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
-        return <div>
-            <div style={{ display: "flex" }}>
-                <Glass_ text="♻️ Reboot" onClick={() => { this.reboot() }} />
+            const maxLocalStorage = this.getMaxLocalStorage();
+            const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
+            return <div>
+                <div style={{ display: "flex" }}>
+                    <Glass_ text="♻️ Reboot" onClick={() => { this.reboot() }} />
 
-                <DropDownSquish onChange_={((choice) => {
-                    const res = localStorage.getItem(STORE_KEY_LOCAL + choice)!
-                    this.setState({ objUpdate: isJson(res) ? JSON.parse(res) : res })
-                })} choices={arrayByNum(this.getMaxLocalStorage())} />
-                <Glass_ text="💾 Save N+1" onClick={() => {
-                    localStorage.setItem(
-                        STORE_KEY_LOCAL + maxLocalStorage,
-                        (typeof objUpdate === "object" && objUpdate !== null && objUpdate !== undefined) ? JSON.stringify(objUpdate) : objUpdate === null ? "null" : objUpdate === undefined ? "undefined" : String(objUpdate)
-                    )
-                }} />
-                <Glass_ text="📤 Upload Json" onClick={() => { this.uploadTemplateSave() }} />
-                <Glass_ text="📥 to Files N+1" onClick={() => { this.downloadTemplateSave() }} />
+                    <DropDownSquish onChange_={((choice) => {
+                        const res = localStorage.getItem(STORE_KEY_LOCAL + choice)!
+                        this.setState({ objUpdate: isJson(res) ? JSON.parse(res) : res })
+                    })} choices={arrayByNum(this.getMaxLocalStorage())} />
+                    <Glass_ text="💾 Save N+1" onClick={() => {
+                        localStorage.setItem(
+                            STORE_KEY_LOCAL + maxLocalStorage,
+                            (typeof objUpdate === "object" && objUpdate !== null && objUpdate !== undefined) ? JSON.stringify(objUpdate) : objUpdate === null ? "null" : objUpdate === undefined ? "undefined" : String(objUpdate)
+                        )
+                    }} />
+                    <Glass_ text="📤 Upload Json" onClick={() => { this.uploadTemplateSave() }} />
+                    <Glass_ text="📥 to Files N+1" onClick={() => { this.downloadTemplateSave() }} />
 
 
+                </div>
+
+                <div style={{ display: "flex" }}>
+                    <img src={extra.IMG_INTERN!.JsonForm.key} style={{ width: 40 }} />
+                    Nouveaux Clefs : <input
+                        style={{ width: 200, height: 40, border: "3px orange solid" }}
+                        value={this.state.inputKeys}
+                        onChange={(e) => { this.setState({ inputKeys: e.currentTarget.value }) }}
+                    />
+                </div>
+                <div className="jsonInspector">
+                    <RenderInputByType_Jip {...{
+                        extra, setting, handleValue: undefined, deep: 0, isItemArray: false, isKeys: false, onAction: this.onAction,
+                        inherentValue: objUpdate, type: returnType(objUpdate)!, path: ""
+                    }} />
+                </div>
+
+
+                <Glass_ text="🚨 Valider 🚨" onClick={() => { this.onAction("", "onValidate") }} />
             </div>
-
-            <div style={{ display: "flex" }}>
-                <img src={extra.IMG_INTERN!.JsonForm.key} style={{ width: 40 }} />
-                Nouveaux Clefs : <input
-                    style={{ width: 200, height: 40, border: "3px orange solid" }}
-                    value={this.state.inputKeys}
-                    onChange={(e) => { this.setState({ inputKeys: e.currentTarget.value }) }}
-                />
-            </div>
-            <div className="jsonInspector">
-                <RenderInputByType_Jip {...{
-                    extra, setting, handleValue: undefined, deep: 0, isItemArray: false, isKeys: false, onAction: this.onAction,
-                    inherentValue: objUpdate, type: returnType(objUpdate)!, path: ""
-                }} />
-            </div>
-
-
-            <Glass_ text="🚨 Valider 🚨" onClick={() => { this.onAction("", "onValidate") }} />
-        </div>
+        }
     }
 }
 

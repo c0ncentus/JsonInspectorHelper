@@ -16,12 +16,10 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
         // this.props.setting.ONLY_READ|| (isKey === true && setting.UPDATE_EXIST.value === false && setting.UPDATE_NEW.value === false)
         // || (isKey === true && this.props.setting.UPDATE_EXIST.value === false && this.ALL_PATH_INIT_OBJECT.includes(path))
         // || (isKey === true && this.props.setting.UPDATE_EXIST.value === false && this.ALL_PATH_INIT_OBJECT.includes(path) === false);
+
+        
         const permission = { isAutoFill: setting.autoFillDangerous, key: isReadKey, value: isReadValue }
         const genData = { extra, permission, isItemArray, isKeys, inherentValue, onAction, path } as FormGetJip
-        // if (deep > 0 && typeOfToJIType.object === type) {
-        //     console.log(id)
-        //     console.log(onAction(id!, "getObj"))
-        // }
         return (type === typeOfToJIType.word) ? <Word_Jip {...genData} />
             : typeOfToJIType.assetImg === type ? <AssetImg_Jip {...genData} />
                 : (typeOfToJIType.http === type || typeOfToJIType.https === type) ? <ImgHttpOrS {...genData} />
@@ -32,7 +30,7 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
                                 //     deep, extra, isItemArray, handleValue, id, onAction, setting, toValidate,
                                 //     inherentValue: valueArr
                                 // }} />
-                                : typeOfToJIType.object === type ? <Obj_Jip {...{ path, sub: genData, isItemArray, deep, setting, extra, onAction }} />
+                                : typeOfToJIType.object === type ? <Obj_Jip {...{ path, sub: genData, isItemArray, deep, setting, extra, onAction, inherentValue }} />
                                     : typeOfToJIType.null === type ? <img style={cssImgOnlyRender} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
                                         : typeOfToJIType.undefined === type ? <img style={cssImgOnlyRender} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
                                             : <></>

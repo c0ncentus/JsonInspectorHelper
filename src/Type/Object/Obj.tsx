@@ -1,12 +1,11 @@
-import { set, get } from "lodash";
 import { Component } from "react";
-import { process } from "uniqid";
 import { colorDeep, INIT_VALUES_BY_TYPE } from "../../Util/CONST";
 import { pathLoBuild, returnType, returnImgByType } from "../../Util/Lib";
 import { toTypeByType, convertsButton } from "../../Util/Libx";
 import { FormGetObjectJip, FormGetAddButt, FormGetPairKey, typeOfToJIType } from "../../Util/Model";
 import { DropButton, Glass_ } from "../../Util/Package";
 import { RenderInputByType_Jip } from "../RenderAll";
+import { upFormVal } from "../Util";
 
 
 
@@ -24,12 +23,13 @@ export class Obj_Jip extends Component<FormGetObjectJip, any>{
                             path: newPath, deep: deep + 1, initKey: keysObj, initValue: currentObj[keysObj],
                             isItemArray: false, setting, onAction, extra, isWithAccessory: true,
                         }} />
-                        <Glass_ text="✊" onClick={() => {/* onAction("", "setPanel")*/ }} />
+                        {/*
+                        <Glass_ text="✊" onClick={() => { onAction("", "setPanel") }} />
                         <Glass_ text="➖" onClick={() => { onAction(path, "deleteValue", { deleteValue: { supprKey: path } }); }} />
-
+                        */}
                     </div>
                 })}
-                <AddButtons_Jip {...{ onAction, extra, isItemArray, inherentValue, deep, setting, isAutoFill: setting.autoFillDangerous, path, }} />
+                {/* <AddButtons_Jip {...{ onAction, extra, isItemArray, inherentValue, deep, setting, isAutoFill: setting.autoFillDangerous, path, }} /> */}
             </div >
         </div>
     }
@@ -53,24 +53,23 @@ class AddButtons_Jip extends Component<FormGetAddButt, any>{
 class PairKeyValue_Jip extends Component<FormGetPairKey, any>{
     render() {
         const { onAction, setting, extra, deep, isItemArray, path, initKey, initValue } = this.props;
-        const typeProps = returnType(this.state.value);
-
+        const typeProps = returnType(initValue);
         return <div style={{ display: "flex" }} className="minus">
             <RenderInputByType_Jip {...{
                 deep, extra, onAction, setting, inherentValue: initKey, path,
-                type: typeOfToJIType["word"], isItemArray: false, isKeys: true
+                type: typeOfToJIType["word"], isItemArray, isKeys: true
             }} />
             <RenderInputByType_Jip {...{
                 deep, extra, onAction, setting, type: typeProps!, path,
                 inherentValue: initValue, isItemArray, isKeys: false
             }} />
-            <DropButton
+            {/* <DropButton
                 imgMain={returnImgByType(typeProps!, extra!.IMG_INTERN!.Type)}
                 jsx_Picture={
                     toTypeByType(typeProps!.main,
-                        this.state.value, ((value: any) => { this.setState({ value }) }),
+                        initValue, ((value: any) => { upFormVal(onAction, path, value, isItemArray) }),
                         extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type)} />
-            {convertsButton(((value: any) => { this.setState({ value }) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)}
+            {convertsButton(((value: any) => { upFormVal(onAction, path, value, isItemArray) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)} */}
         </div>
     }
 }

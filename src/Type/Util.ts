@@ -1,6 +1,6 @@
 import { get } from "lodash";
 import { buildIIA, lastKeyByType } from "../Util/Lib";
-import { ItemArray, TPS_ColorMode } from "../Util/Model";
+import { ActionFuncParameter, ItemArray, TPS_ColorMode } from "../Util/Model";
 
 export interface Value_JipState {
     value: any, firstChange?: string,
@@ -21,3 +21,5 @@ export function initValues(inherentValue: any, isItemArray?: ItemArray, isKey: b
             ? lastKeyByType("Object", buildIIA(isItemArray!))
             : get(inherentValue, buildIIA(isItemArray!))
 }
+
+export function upFormVal(onAction: ActionFuncParameter, path: string, value: any, isItemArray?: ItemArray, isKeys: boolean = false) { onAction(path, "updateValue", { updateValue: { ...isItemArray === false ? { iUpdate: undefined } : { iUpdate: isItemArray }, newKey: isKeys ? value : undefined, newValue: isKeys ? undefined : value } }) }
