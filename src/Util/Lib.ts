@@ -1,6 +1,9 @@
 import { cloneDeep, set, max, compact, uniq, get } from "lodash";
-import { FormPushJip, ItemArray, Handle, KeyValue, TypeProps, JipType, SupprtJip, typeOfToJIType, JipAssets } from "./Model";
+import { ItemArray, TypeProps, JipType, SupprtJip, typeOfToJIType } from "./Model";
 import { process } from "uniqid";
+
+export const regex_lastArray = /^.*\[\d+\]/gm
+
 
 export const rgx_dot = /\./gm
 export const rgx_crochePath = /\[\w+\]/gm
@@ -38,36 +41,6 @@ function renameGoodKey(objRef: any, pathParent: string, key: string, newKey: str
     return pathParent === ""
         ? renamObj
         : set(objTemp, pathParent + "." + newKey, renamObj)
-}
-export function buildObjByTriJip(obj: FormPushJip[][]): any {
-    let tempObj = {};
-    obj.forEach((contain) => {
-        contain.forEach((element) => {
-            tempObj = set(tempObj, element.path, element.value)
-        })
-    })
-    obj.forEach((contain) => {
-        contain.forEach((element) => {
-            tempObj = renameGoodKey(tempObj,
-                extractKeyByPath(element.path, "Object", { type: "PrvsLast", levelOnlyKey: 0 }, "")!,
-                lastKeyByType("Object", element.path)!,
-                element.key)
-        })
-    })
-    return tempObj;
-}
-export function onValidateJip(obj: FormPushJip[]): any {
-    return buildObjByTriJip(byLvlDeep(obj));
-}
-function byLvlDeep(obj: FormPushJip[]): FormPushJip[][] {
-    const objPlusDeepLvl = obj.map((elObj) => { return { ...elObj, lvl: deepPathString(elObj.path, true) } });
-    const lvlMax = Math.max(...objPlusDeepLvl.map((elObj) => { return elObj.lvl }));
-    let res: FormPushJip[][] = [];
-    for (let index = 1; index < lvlMax + 1; index++) {
-        const element = objPlusDeepLvl.filter(x => { return x.lvl === index }).map((elObj) => { const { lvl, ...rest } = elObj; return rest; });
-        res.push(element);
-    }
-    return res
 }
 
 export function newIIA(iia: ItemArray, value: (string | number)) { return typeof iia === "boolean" || typeof iia !== "object" ? [value] : [...iia, value] }
@@ -193,45 +166,13 @@ export function hslToHex(h: number, s: number, l: number) {
     return `#${f(0)}${f(8)}${f(4)}`;
 }
 
-export function detectObjsPath(obj: FormPushJip[]): string[] {
-    const allPathHaveValue = compact(obj.map((el) => {
-        return deepPathString(el.path, false) === 1
-            ? undefined
-            : el.path
-    }))
-    const originalPath: string[] = typeof obj.find(x => x.path === "") === "object" ? [""] : []
-    if (obj.length === 0 || allPathHaveValue.length === 0 || allPathHaveValue[0] === undefined) { return originalPath }
-    const objTemp = [];
-
-
-    if (allPathHaveValue[0][0] !== "[") { objTemp.push("") }
-
-    allPathHaveValue.forEach((path) => {
-        const split = path.split(".");
-        //lol.loz
-        const deepObj = deepPathString(path, false);
-        if (deepObj < 2) { return }
-        else {
-            let joinSplatter = ""
-            for (let i = 0; i < split.length - 1; i++) {
-                const res = joinSplatter === "" ? split[i] : joinSplatter + "." + split[i];
-                objTemp.push(res);
-                joinSplatter = res;
-            }
-        }
-    })
-    originalPath.forEach((e) => { objTemp.push(e) })
-
-    return uniq(objTemp)
-}
-
-export function pathLoBuild(key: string, type: "Array" | "MixedObject" | "MixedArray" | "Simple" | "Object", extra: { sub: string, i: number } = { sub: "", i: 0 }) {
+export function pathLoBuild(basePath: string, type: "Array" | "MixedObject" | "MixedArray" | "Simple" | "Object", extra: { sub: string, i: number } = { sub: "", i: 0 }) {
     const { i, sub } = extra;
-    if (type === "Simple") { return key };
-    if (type === "Array") { return `${key}[${i}]` };
-    if (type === "Object") { return key === "" ? sub : `${key}.${sub}` };
-    if (type === "MixedArray") { return `${key}[${i}].${sub}` };
-    if (type === "MixedObject") { return key === "" ? `${sub}[${i}]` : `${key}.${sub}[${i}]` };
+    if (type === "Simple") { return basePath };
+    if (type === "Array") { return `${basePath}[${i}]` };
+    if (type === "Object") { return basePath === "" ? sub : `${basePath}.${sub}` };
+    if (type === "MixedArray") { return `${basePath}[${i}].${sub}` };
+    if (type === "MixedObject") { return basePath === "" ? `${sub}[${i}]` : `${basePath}.${sub}[${i}]` };
     return ""
 }
 
@@ -318,33 +259,7 @@ function remplacePath(pathParent: string[], pathB: string[]) {
     return pathStrA + "." + pathStrBCut;
 }
 
-function setPathKey(actualKey: FormPushJip, newKey: string): FormPushJip {
-    const deep = deepPathString(actualKey.path, false);
-    const newPath = deep === 1 ? newKey : [...compact(actualKey.path.split(".").map((el, i) => { return deep - 1 === i ? el : undefined })), actualKey.value].join(".")
-    return {
-        ...actualKey,
-        key: newKey,
-        isUpToDate: true,
-        path: newPath,
-    }
-}
-
-export function setPathKeyInVal(obj: FormPushJip[], actual: { id: string, value: any, key: string }): any[] {
-    if (obj.length === 0) { return [] }
-    const { id, key, value } = actual;
-    const originalObj = obj.find(x => x.id === id)!;
-    const path = originalObj.path; let objTemp = cloneDeep(obj);
-
-    objTemp[objTemp.findIndex(x => x.id === id)] = { ...setPathKey(originalObj, key), key, value, isUpToDate: true };
-    const isSplitMain = rgx_dot.test(path);
-    const pathSplit = isSplitMain ? path.split(".") : [path];
-    obj
-        .map(r => { return { path: r.path, id: r.id } })
-        .filter(x => deepPathString(x.path, false) > deepPathString(path, false))
-        .filter((xEl) => { return rgx_dot.test(xEl.path) && typeof detectedPath(pathSplit, xEl.path.split(".")) === "number" })
-        .forEach((solve) => { objTemp[objTemp.findIndex(y => y.id === solve.id)].path = remplacePath(pathSplit, solve.path.split(".")) as string })
-    return objTemp
-}
+export function getLastArrayByPath(path: string): string | false { return regex_lastArray.test(path) ? path.match(regex_lastArray)![0] : false }
 
 export function allChildrenKeysByPath(pathRef: string, allPath: string[]): string[] {
     const lvlRef = deepPathString(pathRef, false);
@@ -379,6 +294,11 @@ export function parentTo(path: string) {
                 return arr.length - 1 === i ? undefined : el
             })).join(".")
 }
+
+
+//lol.ki[0] => lol.ki
+// lol.ju[9].ki =>lol.ju
+export function parentArrayTo(path: string) { return (getLastArrayByPath(path) as string).replace(/\[\d+\]$/gm, ""); }
 
 export function ptF(arr: string[], withSlash: boolean = true): string { return `${withSlash ? `/` : ""}${arr.join("/")}` }
 
@@ -434,16 +354,6 @@ export function getObjPath(initialObj: any, obj: any, pathArray: string[], res: 
     }
     return uniq(compact(newRes));
 }
-// 
-export function initToValidate(obj: any): FormPushJip[] {
-    const root = { id: process(), isUpToDate: true, key: "", path: "", value: obj }
-    let res = getObjPath(obj, obj, [], []).map((el) => {
-        return { ...el, isUpToDate: true, id: process() }
-    })
-    if (res.filter(x => x.path === "").length === 0) { res.push(root) }
-    else { return [root, ...res.filter(x => x.path !== "")] }
-    return res;
-}
 
 export function returnImgByType(value: TypeProps | null | undefined, img: JipType): string {
     return (value === undefined || (value !== null && value!.main === "undefined")) ? img.undefined : (value === null || value.main === "null") ? img.null :
@@ -477,3 +387,6 @@ export function swap(input: any, index_A: number, index_B: number) {
     cloneInput[index_B] = temp;
     return cloneInput;
 }
+
+
+export function arrayByNum(num: number) { return Array.from(new Array(num)) }

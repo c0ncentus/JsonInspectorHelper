@@ -1,7 +1,4 @@
-import { JsonFormInspect } from "../Main";
 import { CustomPicture, JipAssets, KeyValue } from "../Util/Model";
-import { objJipDemo } from "./Settings/ObjDemo";
-import { permission } from "./Settings/Permissions";
 
 function assign(obj: { [x: string]: any; }, keyPath: string[], value: any) {
     const lastKeyIndex = keyPath.length - 1;

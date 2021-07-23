@@ -108,48 +108,37 @@ export interface Menuing {
     items: MenuItem[];
 }
 
-export type ActionFunc = "getJipReplica" | "getObj" | "getObjByPath"
-    | "addValidate" | "deleteValidate" | "onValidate"
+export type ActionFunc = "getJip" | "getStateObj"
+    | "addValue" | "deleteValue" | "updateValue"
+    | "getObjByPath" | "onValidate"
     | "setPanel" | "getValS";
-export type ActionFuncParameter = (id: string, action: ActionFunc, extra?: ExtraFormJip, isKeys?: boolean) => any;
+export type ActionFuncParameter = (path: string, action: ActionFunc, extra?: ExtraFormJip) => any;
 export interface ExtraFormJip {
     inputKeys?: string,
     colorMode?: TPS_ColorMode | null,
-    add?: {value:any | any[], key:string, id:string, path:string},
-    isObjectAdd?: boolean,
-    pushValue?: { newKey?: string, newValue?: string, },
+    addValue?: { newKey?: string, newValue?: string, },
+    updateValue?: { newKey?: string, newValue?: any, iUpdate?: number }
+    deleteValue?: { supprKey?: string, suprrValue?: any, supprI?: number, isSuprAllSameValue?: boolean }
     IMG_ASST?: CustomPicture
     IMG_INTERN?: JipAssets
 }
 export interface FormGetJip {
-    inherentValue: any, handleValue: Handle,
-    permission: { value: boolean, key: boolean, isAutoFill: boolean },
-    extra?: ExtraFormJip, isItemArray?: ItemArray, isKeys: boolean, initValue?: any
-}
-
-export interface FormPushJip {
-    path: string,
-    key: string,
-    id: string
-    value: any,
-    isUpToDate: boolean,
+    inherentValue: any, onAction: ActionFuncParameter,
+    permission: { value: boolean, key: boolean, isAutoFill: boolean }, path: string,
+    extra?: ExtraFormJip, isItemArray?: ItemArray, isKeys: boolean, initValue?: any,
 }
 
 
 interface BaseGetComplex {
     isItemArray: ItemArray,
-    id?: string,
     onAction: ActionFuncParameter,
-    handleValue?: Handle,
     deep: number,
     extra: ExtraFormJip,
     inherentValue?: any
     setting: JIPSetting,
+    path: string
 }
 
-export type Handle = (
-    isKeys: boolean, key?: string, value?: any, pathItem?: string,
-    isAddOnArray?: boolean, valueAdd?: any, id?: string) => any;
 export type ItemArray = number | false
 export interface FormGetRenderInputByType extends BaseGetComplex {
     isKeys: boolean,
@@ -160,26 +149,16 @@ export interface FormGetPairKey extends BaseGetComplex {
     initKey: string,
     initValue: any,
     isWithAccessory: boolean,
-    idParent: string
-    newPath: string,
 }
 export interface FormGetObjectJip extends BaseGetComplex { path: string }
-export interface FormGetAddButt extends BaseGetComplex {
-    onAdding: (value: any, newId: string) => any
-}
+export interface FormGetAddButt extends BaseGetComplex { }
 
 export interface JIPSetting {
     autoFillDangerous: boolean
     NEW: boolean;
     ONLY_READ: boolean;
-    UPDATE_EXIST: {
-        keys: boolean;
-        value: boolean;
-    };
-    UPDATE_NEW: {
-        keys: boolean;
-        value: boolean;
-    }
+    UPDATE_EXIST: { keys: boolean; value: boolean; };
+    UPDATE_NEW: { keys: boolean; value: boolean; }
 }
 
 export interface GlobalJIPSetting { start: { css: JIPSetting }, training: JIPSetting }

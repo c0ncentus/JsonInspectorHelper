@@ -1,9 +1,11 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType } from "./Lib";
-import {  typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
+import { typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
 import { DropButton } from "./Package";
 import { INIT_VALUES_BY_TYPE } from "./CONST";
+
+
 
 export class BallButton extends Component<{ imgMain: string }, any>{ render() { return <section className="BallButton_Cpnt"><figure className="ball bubble" style={{ background: `url(${this.props.imgMain})` }} /></section> } }
 export function convertsButton(func: (value: any) => any, assetsImgInit: string, imgType: JipType, multi: string) {
