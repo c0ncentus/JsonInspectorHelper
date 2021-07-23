@@ -1,4 +1,4 @@
-import { set, get } from "lodash";
+import { set, get, cloneDeep } from "lodash";
 import { Component } from "react";
 import { process } from "uniqid";
 import { inHlForm } from "..";
@@ -17,14 +17,15 @@ export class Obj_Jip extends Component<FormGetObjectJip, { formPushs: FormPushJi
         const { path } = this.props; this.onAdding = this.onAdding.bind(this);
         this.state = { formPushs: [], mainPath: path }
     }
-    buildNewPath() {
-        return `${this.state.mainPath === "" ? "" : this.state.mainPath + "."}${this.props.extra!.inputKeys!}`
-    }
+    buildNewPath() {return `${this.state.mainPath === "" ? "" : this.state.mainPath + "."}${this.props.extra!.inputKeys!}`}
     onAdding(value: any, newId: string) {
         if (this.state.formPushs.some(x => { return x.key === this.props.extra!.inputKeys, x.path === this.buildNewPath() })) { }
         else { this.setState({ formPushs: [...this.state.formPushs, { id: newId, isUpToDate: true, key: this.props.extra!.inputKeys!, value, path: this.buildNewPath() }] }) }
     }
-    onDelete(id: string) { this.setState({ formPushs: this.state.formPushs.filter(x => { return x.id !== id }) }) }
+    onDelete(id: string) {
+        const res = this.state.formPushs.filter(x => { return x.id !== id })
+        this.setState({ formPushs: res })
+    }
     componentDidMount() {
         const { path, onAction } = this.props;
         this.setState({ formPushs: allChildrenKeysByPath(path, (onAction("", "getValS") as FormPushJip[]).map((el => { return el.path }))).map((el => { return onAction(el, "getObjByPath") as FormPushJip })) })
@@ -34,12 +35,13 @@ export class Obj_Jip extends Component<FormGetObjectJip, { formPushs: FormPushJi
         const onId = isItemArray === false || path === ""
             ? id
             : onAction(parentTo(path), "getObjByPath").id;
-        console.log("OBJ_JIP")
-        console.log(this.state.formPushs)
+        const form = cloneDeep(this.state.formPushs);
+        console.log(form)
         return <div className="Obj" style={{ display: "flex", marginLeft: 5 }}>
             <input type="checkbox" className="displayHide__input" />
             <div className="displayHide__content" style={{ border: `${colorDeep[deep]} 5px solid`, margin: deep * 10 }}>
-                {this.state.formPushs.map((keysObj, i) => {
+                {form.map((keysObj, i) => {
+                    
                     return <div key={i} style={{ display: "flex" }}>
                         <PairKeyValue_Jip  {...{
                             setting, onAction, extra, isWithAccessory: true,

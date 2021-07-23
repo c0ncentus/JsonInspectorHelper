@@ -76,7 +76,7 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     componentDidMount() { this.setState({ toValidate: initToValidate(this.props.obj_), initVal: initToValidate(this.props.obj_) }) }
 
     render() {
-        console.log(this.state.toValidate)
+        // console.log(this.state.toValidate)
         if (this.state.toValidate.length === 0) { return <></> } else {
             const { inputKeys } = this.state;
             const { setting, obj_, IMG_INTERN, IMG_ASST } = this.props;
