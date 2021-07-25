@@ -6,6 +6,7 @@ import { FormGetRenderInputByType, FormGetJip, typeOfToJIType } from "../Util/Mo
 import { DropButton } from "../Util/Package";
 import { Boolean_Jip } from "./Boolean";
 import { Color_Jip } from "./String/Color";
+
 const cssImgOnlyRender: CSSProperties = { width: 100, height: 100, border: "red 7px ridge" }
 export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, any>{
     render() {
@@ -27,15 +28,12 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
                         : typeOfToJIType.color === type ? <Color_Jip {...genData} />
                             : typeOfToJIType.number === type ? <Number_Jip {...genData} />
                                 : typeOfToJIType.boolean === type ? <Boolean_Jip {...genData} />
-                                    // : typeOfToJIType.array === type ? <Array_Jip {...{
-                                    //     deep, extra, isItemArray, handleValue, id, onAction, setting, toValidate,
-                                    //     inherentValue: valueArr
-                                    // }} />
-                                    : typeOfToJIType.object === type ? <Obj_Jip {...{ path, sub: genData, isItemArray, deep, setting, extra, onAction, inherentValue }} />
-                                        : typeOfToJIType.null === type ? <img style={cssImgOnlyRender} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
-                                            : typeOfToJIType.undefined === type ? <img style={cssImgOnlyRender} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
-                                                : <></>}
-            {isKeys === false
+                                    : typeOfToJIType.array === type ? <Array_Jip {...{ deep, extra, isItemArray, onAction, setting, inherentValue, path }} />
+                                        : typeOfToJIType.object === type ? <Obj_Jip {...{ path, sub: genData, isItemArray, deep, setting, extra, onAction, inherentValue }} />
+                                            : typeOfToJIType.null === type ? <img style={{ ...cssImgOnlyRender, width: 55, height: 55, marginRight: 5 }} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
+                                                : typeOfToJIType.undefined === type ? <img style={{ ...cssImgOnlyRender, width: 55, height: 55, marginRight: 5 }} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
+                                                    : <></>}
+            {isKeys === false && isItemArray === false
                 ? <div style={{ display: "flex" }}>
                     <DropButton
                         imgMain={returnImgByType(type!, extra!.IMG_INTERN!.Type)}

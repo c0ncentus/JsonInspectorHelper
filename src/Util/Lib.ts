@@ -1,9 +1,7 @@
-import { cloneDeep, set, max, compact, uniq, get } from "lodash";
-import { ItemArray, TypeProps, JipType, SupprtJip, typeOfToJIType } from "./Model";
-import { process } from "uniqid";
+import { cloneDeep, set, compact, uniq, get, has } from "lodash";
+import { ItemArray, TypeProps, JipType, SupprtJip, typeOfToJIType, ActionFunc, ExtraFormJip } from "./Model";
 
 export const regex_lastArray = /^.*\[\d+\]/gm
-
 
 export const rgx_dot = /\./gm
 export const rgx_crochePath = /\[\w+\]/gm
@@ -22,6 +20,93 @@ export const regex_Number = /^\d+$/;
 export const regex_Boolean = /^(true|false)$/;
 export const regex_Date = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/gm
 export const regex_BaseUrlHttp = /^.+?[^\/:](?=[?\/]|$)/gmi
+
+
+
+
+export function operationObj(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
+
+    let addValue: any = undefined; let updateValue: any = undefined; let deleteValue: any = undefined;
+    if (extra !== undefined && extra.addValue !== undefined) { addValue = extra.addValue }
+    if (extra !== undefined && extra.updateValue !== undefined) { updateValue = extra.updateValue }
+    if (extra !== undefined && extra.deleteValue !== undefined) { deleteValue = extra.deleteValue }
+    let res = undefined;
+
+    if (action === "addValue") {
+        const { newKey, newValue } = addValue!;
+        const isObject = typeof newKey === "string"
+        if (extra!.onArrVal === true) {
+            const parentPath = parentArrayTo(path)
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            parentObj.push(newValue);
+            res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+        }
+        else {
+            const parentPath = parentTo(path);
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            if (isObject && (Object.keys(parentObj) as string[]).includes(newKey) === false) {
+                parentObj[newKey!] = newValue;
+                res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+            }
+        }
+    }
+
+    if (action === "deleteValue") {
+        const { supprKey, supprValue, supprI, isSuprAllSameValue } = deleteValue!;
+        const isObject = typeof supprKey === "string"
+        if (extra!.onArrVal === true) {
+            const parentPath = parentArrayTo(path);
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            if (isSuprAllSameValue) { parentObj = parentObj.filter((x: any) => x !== supprValue); }
+            else { parentObj.splice(supprI !== undefined ? supprI : parentObj.findIndex((x: any) => x === supprValue), 1) }
+            res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+        }
+        else {
+            if (isObject) {
+                const parentPath = parentTo(path);
+                let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+                let anotherObj: any = {};
+                Object.keys(parentObj).forEach((key) => { if (key === supprKey) { } else { anotherObj[key] = cloneDeep(parentObj[key]) } })
+                res = parentPath === "" ? anotherObj : set(objUpdate, parentPath, anotherObj);
+            }
+        }
+    }
+
+    if (action === "updateValue") {
+        const { newKey, newValue, iUpdate } = updateValue!;
+        const isObject = typeof newKey === "string"
+        if (extra!.onArrVal! === true) {
+            const parentPath = parentArrayTo(path)
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            parentObj[iUpdate] = newValue;
+            console.log("update")
+            console.log(set(objUpdate, parentPath, parentObj))
+            res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+        }
+        else {
+            if (isObject) {
+                const parentPath = parentTo(path);
+                let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+                const ancientKey = lastKeyByType("Object", path)!;
+                parentObj[newKey!] = newValue === undefined ? get(objUpdate, path) : newValue;
+                let anotherObj: any = {};
+                Object.keys(parentObj).forEach((key) => { anotherObj[key === ancientKey ? newKey : key] = cloneDeep(parentObj[key]); })
+                res = parentPath === "" ? anotherObj : set(objUpdate, parentPath, anotherObj);
+            }
+            else { res = has(objUpdate, path) ? set(objUpdate, path, newValue) : "" }
+        }
+    }
+    return res;
+}
+
+export function operationArr(path: string, action: ActionFunc, extra?: ExtraFormJip) {
+
+}
+
+export function operationPrim(path: string, action: ActionFunc, extra?: ExtraFormJip) {
+
+}
+
 
 
 
@@ -252,7 +337,7 @@ function remplacePath(pathParent: string[], pathB: string[]) {
     return pathStrA + "." + pathStrBCut;
 }
 
-export function getLastArrayByPath(path: string): string | false { return regex_lastArray.test(path) ? path.match(regex_lastArray)![0] : false }
+export function getLastArrayByPath(path: string): string | false { return regex_lastArray.test(path) ? path.match(regex_lastArray)![0] : path }
 
 export function allChildrenKeysByPath(pathRef: string, allPath: string[]): string[] {
     const lvlRef = deepPathString(pathRef, false);
@@ -279,7 +364,10 @@ export function allChildrenKeysByPath(pathRef: string, allPath: string[]): strin
 }
 
 export function parentTo(path: string) {
-    if (/\./gm.test(path) === false || path === "") { return "" }
+    console.log(`path ${path}`)
+    console.log(deepPathString(path, false))
+
+    if (deepPathString(path, false) < 2 || path === "") { return "" }
     else {
         let split = path.split(".");
         split.pop();
@@ -290,7 +378,10 @@ export function parentTo(path: string) {
 
 //lol.ki[0] => lol.ki
 // lol.ju[9].ki =>lol.ju
-export function parentArrayTo(path: string) { return (getLastArrayByPath(path) as string).replace(/\[\d+\]$/gm, ""); }
+export function parentArrayTo(path: string) {
+    console.log(getLastArrayByPath(path))
+    return (getLastArrayByPath(path) as string).replace(/\[\d+\]$/gm, "");
+}
 
 export function ptF(arr: string[], withSlash: boolean = true): string { return `${withSlash ? `/` : ""}${arr.join("/")}` }
 

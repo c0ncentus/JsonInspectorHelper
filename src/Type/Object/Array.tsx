@@ -24,13 +24,12 @@ export class Array_Jip extends Component<Array_JipProps, { swapItemArr: { iBegin
                 </div>
                 : <></>}
             {inherentValue.map((itemValue: any, i: number) => {
-                const newIsItemArray = newIIA(isItemArray, i);
                 const type = returnType(itemValue);
                 return <div>
                     <div style={{ display: "flex" }}>
                         <div className="minus">
                             <Glass_ text="➖" onClick={() => { onAction(path, "deleteValue", { onArrVal: true, }) }} /></div>
-                        <div style={{ position: "relative", width: 85, margin: 5, marginRight: 10 }}>
+                        <div style={{ position: "relative", width: 44, margin: 5, marginRight: 10 }}>
                             <p className="linkInSwapBut">
                                 {swapItemArr.iBegin === i
                                     ? "🪂"
@@ -55,19 +54,19 @@ export class Array_Jip extends Component<Array_JipProps, { swapItemArr: { iBegin
                         </div>
                         <JsonFormInspect {...{
                             ...propsJip, obj_: itemValue, onValidate: ((obj) => {
-                                onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: obj } })
-                            }), onUpdate: (() => { }), isWithAccessory: false
+                                onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: obj }, onArrVal: true })
+                            }), onUpdate: (() => { }), isWithAccessory: false, isItemArray: i
                         }} />
                         <DropButton
                             imgMain={returnImgByType(type!, extra?.IMG_INTERN!.Type)}
-                            jsx_Picture={toTypeByType(type!.main, itemValue, ((value: any) => { onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: value } }) }), extra.IMG_ASST!.Jpg.Bac[0], extra?.IMG_INTERN!.Type)} />
-                        {convertsButton((value: any) => { onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: value } }) }, extra.IMG_ASST!.Jpg.Bac[0], extra?.IMG_INTERN!.Type, extra?.IMG_INTERN!.Extra.multi)}
+                            jsx_Picture={toTypeByType(type!.main, itemValue, ((value: any) => { onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: value }, onArrVal: true }) }), extra.IMG_ASST!.Jpg.Bac[0], extra?.IMG_INTERN!.Type)} />
+                        {convertsButton((value: any) => { onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: value }, onArrVal: true }) }, extra.IMG_ASST!.Jpg.Bac[0], extra?.IMG_INTERN!.Type, extra?.IMG_INTERN!.Extra.multi)}
                     </div>
                 </div>
             })
             }
             <div style={{ textAlign: "center" }}><Glass_ text="➕ 1ier Item" onClick={() => {
-                onAction(path, "updateValue", { updateValue: { newValue: [...inherentValue, undefined] } })
+                onAction(path, "updateValue", { updateValue: { newValue: [...inherentValue, undefined] }, onArrVal: false }) 
             }} /></div>
         </div >
     }

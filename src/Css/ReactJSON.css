@@ -262,5 +262,9 @@
   position: absolute;
   z-index: 2;
   top: 0px;
-  right: 38px;
+  right: -4px;
+}
+
+.JIP_Valid .glassEffect .container{
+  width: 150px !important;
 }

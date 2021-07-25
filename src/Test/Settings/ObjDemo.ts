@@ -7,12 +7,14 @@ const allPrim = {
     bool: true
 }
 export const objJipDemo = {
-    basic: { str: "A monkey with a stick" },
+    basicStr: "wwwwwoooooosh", basicBool: true, basicNum: 3, basicNull: null, bascUndefined: undefined,
+    basicArr: [], basicObj: { str: "A monkey with a stick" },
     allPrimitive: allPrim,
     allObj: {
-        o0: {}, t0: [],
-        o0D: { data: "" }, t0D: [""],
-        o1: { gg: {} }, t1: [["Tab 1"], "Tab 2"],
+        o0: {}, t0: [null],
+        // o0D: { data: "" },
+        //  T0D: ["Prems","Deus"],
+        // o1: { gg: {} }, T1: [["Tab 1"], "Tab 2"],
         // o1D, t1D
         // o2o1: { gg: { gg: {} } }, o2t1: { gg }, t2o1: { gg: {} }, t2t1: [["Tab 1"], "Tab 2"],
     },

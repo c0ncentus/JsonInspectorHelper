@@ -2,7 +2,7 @@ import { Component } from "react";
 import { colorDeep, INIT_VALUES_BY_TYPE } from "../../Util/CONST";
 import { pathLoBuild, returnType } from "../../Util/Lib";
 import { FormGetObjectJip, FormGetAddButt, FormGetPairKey, typeOfToJIType } from "../../Util/Model";
-import {  Glass_ } from "../../Util/Package";
+import { Glass_ } from "../../Util/Package";
 import { RenderInputByType_Jip } from "../RenderAll";
 
 
@@ -45,7 +45,7 @@ class PairKeyValue_Jip extends Component<FormGetPairKey, any>{
     render() {
         const { onAction, setting, extra, deep, isItemArray, path, initKey, initValue } = this.props;
         const typeProps = returnType(initValue);
-        return <div style={{ display: "flex" }} className="minus">
+        return <div style={{ display: "flex" }}>
             <RenderInputByType_Jip {...{
                 deep, extra, onAction, setting, inherentValue: initKey, path,
                 type: typeOfToJIType["word"], isItemArray, isKeys: true
@@ -54,8 +54,10 @@ class PairKeyValue_Jip extends Component<FormGetPairKey, any>{
                 deep, extra, onAction, setting, type: typeProps!, path,
                 inherentValue: initValue, isItemArray, isKeys: false
             }} />
-            <Glass_ text="✊" onClick={() => { onAction("", "setPanel") }} />
-            <Glass_ text="➖" onClick={() => { onAction(pathLoBuild(path, "Object", { i: 0, sub: initKey }), "deleteValue", { deleteValue: { supprKey: initKey, }, onArrVal: false }); }} />
+            <div style={{ display: "flex" }} className="minus">
+                <Glass_ text="✊" onClick={() => { onAction("", "setPanel") }} />
+                <Glass_ text="➖" onClick={() => { onAction(path, "deleteValue", { deleteValue: { supprKey: initKey, }, onArrVal: false }); }} />
+            </div>
         </div>
     }
 }

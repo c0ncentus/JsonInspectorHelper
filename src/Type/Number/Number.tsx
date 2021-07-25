@@ -16,6 +16,7 @@ export class Number_Jip extends Component<FormGetJip, Value_JipState>{
     }
     form() {
         const { isItemArray, path, onAction } = this.props
+        console.log(isItemArray)
         return <input onChange={(e) => {
             const val = e.currentTarget.value;
             const value = parseInt((typeof val !== "string" || /^\d+$/gsi.test(val) === false) ? "0" : val, 10);
