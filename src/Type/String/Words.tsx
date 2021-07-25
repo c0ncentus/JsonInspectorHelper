@@ -1,6 +1,7 @@
 import { Component, CSSProperties } from "react";
 import { upFormVal, Value_JipState } from "..";
 import { FormGetJip } from "../../Util/Model";
+import { Glass_ } from "../../Util/Package";
 // subStrChoice: "mot" | "titre" | "descriptif" | "Paragraphe" | null,
 const cssStyleInput: CSSProperties = { width: 200, height: 35, margin: 30, border: "black solid 2px" };
 
@@ -11,17 +12,18 @@ export class Word_Jip extends Component<FormGetJip, Value_JipState>{
         this.setState({ value: inherentValue });
     }
     form() {
-        const { permission, isKeys, onAction, isItemArray, path } = this.props;
+        const { permission, isKeys, onAction, isItemArray, path, inherentValue } = this.props;
         return ((isKeys && permission.key) || (permission.value && isKeys === false))
             ? <p>{this.state.value}</p>
-            : <input
-                style={{ ...cssStyleInput, margin: 5, width: 50 }}
-                onChange={(e) => {
-                    const value = e.currentTarget.value; this.setState({ value });
-                    upFormVal(onAction, path, value, isItemArray,isKeys)
-                }}
-                value={this.state.value}
-            />
+            : <div style={{ display: "flex" }} className="minus">
+                <input style={{ ...cssStyleInput, margin: 5, width: 50 }}
+                    onChange={(e) => { const value = e.currentTarget.value; this.setState({ value }); }}
+                    value={this.state.value}
+                />
+                {this.state.value !== inherentValue
+                    ? <Glass_ text="✔️" onClick={() => {upFormVal(onAction, path, this.state.value, isItemArray, isKeys)}} />
+                    : <></>}
+            </div>
     }
     render() {
         const { isKeys, isItemArray, extra } = this.props;

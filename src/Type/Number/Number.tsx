@@ -20,6 +20,10 @@ export class Number_Jip extends Component<FormGetJip, Value_JipState>{
             const val = e.currentTarget.value;
             const value = parseInt((typeof val !== "string" || /^\d+$/gsi.test(val) === false) ? "0" : val, 10);
             this.setState({ value });
+        }} onMouseDown={(e) => {
+            const val = e.currentTarget.value;
+            const value = parseInt((typeof val !== "string" || /^\d+$/gsi.test(val) === false) ? "0" : val, 10);
+            this.setState({ value });
             upFormVal(onAction, path, value, isItemArray)
         }}
             type="range" min={0} max={100} step={1} value={`${this.state.value}`} style={{ width: 50 }} />
