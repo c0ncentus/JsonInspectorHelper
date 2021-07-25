@@ -212,14 +212,7 @@ export function extractKeyByPath(path: string,
             if (isSplitObj === false) { return path.replaceAll(/\[.*\]/gs, "") }
             else {
                 const splitDot = path.split(".").reverse();
-                let found = false; let res = "";
-                splitDot.forEach((els) => {
-                    if (found === false) {
-                        const r: string = els; const verify = r.replace(/\[.*\]/gs, "");
-                        if (verify.length !== 0 && /\w+/.test(verify)) { found = true; res = verify }
-                    }
-                })
-                return res
+                return splitDot[0]
             }
         }
         if (objSub.type === "PrvsLast") {
@@ -286,13 +279,12 @@ export function allChildrenKeysByPath(pathRef: string, allPath: string[]): strin
 }
 
 export function parentTo(path: string) {
-    return deepPathString(path, false) === 1 || rgx_dot.test(path) === false
-        ? ""
-        : compact(path
-            .split(".")
-            .map((el, i, arr) => {
-                return arr.length - 1 === i ? undefined : el
-            })).join(".")
+    if (/\./gm.test(path) === false || path === "") { return "" }
+    else {
+        let split = path.split(".");
+        split.pop();
+        return split.join(".");
+    }
 }
 
 
@@ -389,4 +381,4 @@ export function swap(input: any, index_A: number, index_B: number) {
 }
 
 
-export function arrayByNum(num: number) { return Array.from(new Array(num)) }
+export function arrayByNum(num: number) { return Array.from(new Array(num)).map((el, i) => { return i.toString() }) }

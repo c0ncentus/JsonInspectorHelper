@@ -1,7 +1,9 @@
 import { CSSProperties, Component } from "react";
-import { Word_Jip, AssetImg_Jip, ImgHttpOrS, Number_Jip, Obj_Jip, Array_Jip } from ".";
+import { Word_Jip, AssetImg_Jip, ImgHttpOrS, Number_Jip, Obj_Jip, Array_Jip, upFormVal } from ".";
 import { returnImgByType } from "../Util/Lib";
+import { convertsButton, toTypeByType } from "../Util/Libx";
 import { FormGetRenderInputByType, FormGetJip, typeOfToJIType } from "../Util/Model";
+import { DropButton } from "../Util/Package";
 import { Boolean_Jip } from "./Boolean";
 import { Color_Jip } from "./String/Color";
 const cssImgOnlyRender: CSSProperties = { width: 100, height: 100, border: "red 7px ridge" }
@@ -16,23 +18,38 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
         // this.props.setting.ONLY_READ|| (isKey === true && setting.UPDATE_EXIST.value === false && setting.UPDATE_NEW.value === false)
         // || (isKey === true && this.props.setting.UPDATE_EXIST.value === false && this.ALL_PATH_INIT_OBJECT.includes(path))
         // || (isKey === true && this.props.setting.UPDATE_EXIST.value === false && this.ALL_PATH_INIT_OBJECT.includes(path) === false);
-
-        
         const permission = { isAutoFill: setting.autoFillDangerous, key: isReadKey, value: isReadValue }
         const genData = { extra, permission, isItemArray, isKeys, inherentValue, onAction, path } as FormGetJip
-        return (type === typeOfToJIType.word) ? <Word_Jip {...genData} />
-            : typeOfToJIType.assetImg === type ? <AssetImg_Jip {...genData} />
-                : (typeOfToJIType.http === type || typeOfToJIType.https === type) ? <ImgHttpOrS {...genData} />
-                    : typeOfToJIType.color === type ? <Color_Jip {...genData} />
-                        : typeOfToJIType.number === type ? <Number_Jip {...genData} />
-                            : typeOfToJIType.boolean === type ? <Boolean_Jip {...genData} />
-                                // : typeOfToJIType.array === type ? <Array_Jip {...{
-                                //     deep, extra, isItemArray, handleValue, id, onAction, setting, toValidate,
-                                //     inherentValue: valueArr
-                                // }} />
-                                : typeOfToJIType.object === type ? <Obj_Jip {...{ path, sub: genData, isItemArray, deep, setting, extra, onAction, inherentValue }} />
-                                    : typeOfToJIType.null === type ? <img style={cssImgOnlyRender} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
-                                        : typeOfToJIType.undefined === type ? <img style={cssImgOnlyRender} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
-                                            : <></>
+        return <div style={{ display: "flex" }}>
+            {(type === typeOfToJIType.word) ? <Word_Jip {...genData} />
+                : typeOfToJIType.assetImg === type ? <AssetImg_Jip {...genData} />
+                    : (typeOfToJIType.http === type || typeOfToJIType.https === type) ? <ImgHttpOrS {...genData} />
+                        : typeOfToJIType.color === type ? <Color_Jip {...genData} />
+                            : typeOfToJIType.number === type ? <Number_Jip {...genData} />
+                                : typeOfToJIType.boolean === type ? <Boolean_Jip {...genData} />
+                                    // : typeOfToJIType.array === type ? <Array_Jip {...{
+                                    //     deep, extra, isItemArray, handleValue, id, onAction, setting, toValidate,
+                                    //     inherentValue: valueArr
+                                    // }} />
+                                    : typeOfToJIType.object === type ? <Obj_Jip {...{ path, sub: genData, isItemArray, deep, setting, extra, onAction, inherentValue }} />
+                                        : typeOfToJIType.null === type ? <img style={cssImgOnlyRender} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
+                                            : typeOfToJIType.undefined === type ? <img style={cssImgOnlyRender} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
+                                                : <></>}
+            {isKeys === false
+                ? <div style={{ display: "flex" }}>
+                    <DropButton
+                        imgMain={returnImgByType(type!, extra!.IMG_INTERN!.Type)}
+                        jsx_Picture={
+                            toTypeByType(type!.main,
+                                inherentValue, ((value: any) => { upFormVal(onAction, path, value, isItemArray) }),
+                                extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type)
+                        } />
+                    {convertsButton(((value: any) => { upFormVal(onAction, path, value, isItemArray) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)}
+                </div>
+                : <></>}
+
+
+        </div>
     }
 }
+

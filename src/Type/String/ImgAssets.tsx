@@ -53,7 +53,7 @@ export class AssetImg_Jip extends Component<FormGetJip, Value_JipState>{
                 <DropDownSquish choices={["Jpg", "Png", /*"Svg"*/]} onChange_={(type: string) => { this.setState({ imgType: type as "Jpg" | "Png" | "Svg" }) }} />
                 <DropDownSquish choices={["Bac", "Phone", "Square"]} onChange_={(type: string) => { this.setState({ imgFormat: type as "Bac" | "Phone" | "Square" }) }} />
                 {extra !== undefined && this.state.imgType !== null && this.state.imgFormat !== null && this.state.isImgRdm !== true
-                    ? <DropDownSquish choices={arrayByNum(max).map((e, i) => { if (e) { }; return i.toString() })} onChange_={(iStr: string) => { this.setState({ iImg: parseInt(iStr, 10) }) }} />
+                    ? <DropDownSquish choices={arrayByNum(max)} onChange_={(iStr: string) => { this.setState({ iImg: parseInt(iStr, 10) }) }} />
                     : <></>}
 
             </div>

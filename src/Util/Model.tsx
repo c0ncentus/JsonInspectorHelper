@@ -116,6 +116,7 @@ export type ActionFuncParameter = (path: string, action: ActionFunc, extra?: Ext
 export interface ExtraFormJip {
     inputKeys?: string,
     colorMode?: TPS_ColorMode | null,
+    onArrVal?: boolean
     addValue?: { newKey?: string, newValue?: string, },
     updateValue?: { newKey?: string, newValue?: any, iUpdate?: number }
     deleteValue?: { supprKey?: string, suprrValue?: any, supprI?: number, isSuprAllSameValue?: boolean }

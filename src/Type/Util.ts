@@ -22,4 +22,17 @@ export function initValues(inherentValue: any, isItemArray?: ItemArray, isKey: b
             : get(inherentValue, buildIIA(isItemArray!))
 }
 
-export function upFormVal(onAction: ActionFuncParameter, path: string, value: any, isItemArray?: ItemArray, isKeys: boolean = false) { onAction(path, "updateValue", { updateValue: { ...isItemArray === false ? { iUpdate: undefined } : { iUpdate: isItemArray }, newKey: isKeys ? value : undefined, newValue: isKeys ? undefined : value } }) }
+export function upFormVal(onAction: ActionFuncParameter, path: string, value: any, isItemArray?: ItemArray, isKeys: boolean = false) {
+    onAction(
+        path,
+        "updateValue",
+        {
+            updateValue: {
+                iUpdate: isItemArray === false ? undefined : isItemArray,
+                newKey: isKeys ? value : undefined,
+                newValue: isKeys ? undefined : value
+            },
+            onArrVal: /]$/gm.test(path)
+        }
+    )
+}

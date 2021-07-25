@@ -24,8 +24,7 @@ export class Word_Jip extends Component<FormGetJip, Value_JipState>{
             />
     }
     render() {
-        const { isKeys, isItemArray, initValue, extra } = this.props;
-        if (this.state.firstChange !== initValue) { this.setState({ firstChange: initValue, value: initValue }) }
+        const { isKeys, isItemArray, extra } = this.props;
         return typeof isItemArray === "number"
             ? this.form()
             : <div style={{ position: "relative", marginRight: isKeys === false ? 10 : 0 }}>
