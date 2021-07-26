@@ -28,7 +28,9 @@ export function allJipOperation(objUpdate: any, path: string, action: ActionFunc
         return operationObj(cloneDeep(objUpdate), path, action, extra)
     }
     // []
-    if (Array.isArray(objUpdate) === true || extra!.onArrVal === true) { operationArr(objUpdate, path, action, extra); }
+    if (Array.isArray(objUpdate) === true || extra!.onArrVal === true) {
+        return operationArr(objUpdate, path, action, extra);
+    }
     // type primitif
     if (["number", "string", "boolean", "undefined"].includes(typeof objUpdate) || objUpdate === null) {
         return extra === undefined ? undefined : extra.updateValue === undefined ? undefined : extra!.updateValue!.newValue;
@@ -64,24 +66,13 @@ export function operationObj(objUpdate: any, path: string, action: ActionFunc, e
     }
 
     if (action === "deleteValue") {
-        const { supprKey, supprValue, supprI, isSuprAllSameValue } = deleteValue!;
+        const { supprKey } = deleteValue!;
         const isObject = typeof supprKey === "string"
-        if (extra!.onArrVal === true) {
-            const parentPath = parentArrayTo(path);
-            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
-            if (isSuprAllSameValue) { parentObj = parentObj.filter((x: any) => x !== supprValue); }
-            else { parentObj.splice(supprI !== undefined ? supprI : parentObj.findIndex((x: any) => x === supprValue), 1) }
-            res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
-        }
-        else {
-            if (isObject) {
-                const parentPath = parentTo(path);
-                let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
-                let anotherObj: any = {};
-                Object.keys(parentObj).forEach((key) => { if (key === supprKey) { } else { anotherObj[key] = cloneDeep(parentObj[key]) } })
-                res = parentPath === "" ? anotherObj : set(objUpdate, parentPath, anotherObj);
-            }
-        }
+        const parentPath = parentTo(path);
+        let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+        let anotherObj: any = {};
+        Object.keys(parentObj).forEach((key) => { if (key === supprKey) { } else { anotherObj[key] = cloneDeep(parentObj[key]) } })
+        res = parentPath === "" ? anotherObj : set(objUpdate, parentPath, anotherObj);
     }
 
     if (action === "updateValue") {
@@ -91,8 +82,6 @@ export function operationObj(objUpdate: any, path: string, action: ActionFunc, e
             const parentPath = parentArrayTo(path)
             let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
             parentObj[iUpdate] = newValue;
-            console.log("update")
-            console.log(set(objUpdate, parentPath, parentObj))
             res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
         }
         else {
@@ -116,27 +105,22 @@ export function operationArr(objUpdate: any, path: string, action: ActionFunc, e
     const objOfRes = path === "" ? objUpdate : get(objUpdate, path);
     if (action === "addValue") { res = [...objOfRes, undefined]; }
     if (action === "deleteValue") {
+        const { isSuprAllSameValue, supprI, supprKey, suprrValue } = extra!.deleteValue!;
         let arrayObj: any[] = path === "" ? objUpdate : get(objUpdate, path);
-        arrayObj.splice(extra!.deleteValue!.supprI!, 1);
+        if (isSuprAllSameValue) { arrayObj = arrayObj.filter((x: any) => x !== suprrValue); }
+        else { arrayObj.splice(supprI !== undefined ? supprI : arrayObj.findIndex((x: any) => x === suprrValue), 1) }
+        res = path === "" ? arrayObj : set(objUpdate, path, arrayObj);
         res = arrayObj;
+
+        console.log(res)
     }
     if (action === "updateValue") {
         let newArray = objOfRes;
         newArray[extra!.updateValue!.iUpdate!] = extra!.updateValue!.newValue;
         res = newArray;
     }
-    console.log("array operation")
-    console.log(res)
     return path === "" ? res : set(objUpdate, path, res)
 }
-
-export function operationPrim(path: string, action: ActionFunc, extra?: ExtraFormJip) {
-
-}
-
-
-
-
 
 export const renameKey = (object: any, key: string, newKey: string) => {
     const clonedObj = cloneDeep(object);
@@ -391,9 +375,6 @@ export function allChildrenKeysByPath(pathRef: string, allPath: string[]): strin
 }
 
 export function parentTo(path: string) {
-    console.log(`path ${path}`)
-    console.log(deepPathString(path, false))
-
     if (deepPathString(path, false) < 2 || path === "") { return "" }
     else {
         let split = path.split(".");

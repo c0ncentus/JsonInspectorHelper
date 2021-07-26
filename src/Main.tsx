@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { returnType, arrayByNum, allJipOperation } from "./Util/Lib";
+import { returnType, arrayByNum, allJipOperation, parentTo } from "./Util/Lib";
 import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets, ItemArray } from "./Util/Model";
 import { DropDownSquish, Glass_ } from "./Util/Package";
 import { RenderInputByType_Jip } from "./Type/RenderAll";
@@ -39,11 +39,12 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
         if (action === "getJip") { return this.props; }
         if (action === "getStateObj") { return objUpdate; }
         if (action === "addValue" || action === "deleteValue" || action === "updateValue") {
-            if (this.props.isMain !== false) { this.setState({ isUpToDate: false }) }
-            const reObjOnDel = (typeof objUpdate === "object" && action === "deleteValue" && typeof extra !== undefined
-                && extra!.deleteValue !== undefined && extra!.deleteValue.supprKey === "string");
-
-            if (reObjOnDel) { this.setState({ objUpdate: null }); setTimeout(() => { this.setState({ objUpdate: allJipOperation(cloneDeep(objUpdate), path, action, extra) }) }, 500) }
+            if (this.props.isMain !== false && extra!.onArrVal === true) { this.setState({ isUpToDate: false }) }
+            const reObjOnDel = ( action === "deleteValue");
+            if (reObjOnDel === true) {
+                this.setState({ objUpdate: null });
+                setTimeout(() => { this.setState({ objUpdate: allJipOperation(cloneDeep(objUpdate), path, action, extra) }) }, 500)
+            }
             else { this.setState({ objUpdate: allJipOperation(cloneDeep(objUpdate), path, action, extra) }) }
         }
         if (action === "getObjByPath") { return path === "" ? this.onAction("", "getStateObj") : get(objUpdate, path) }
@@ -70,18 +71,6 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
                 this.setState({ objUpdate: this.props.inherentValue, isUpToDate: true })
             }
             const { setting, IMG_INTERN, IMG_ASST, isItemArray } = this.props;
-            // if (this.props.isMain === false && this.props.obj_ !== this.props.inherentValue) { this.setState({ objUpdate: this.props.inherentValue }) }
-            // if (this.props.isMain === false) {
-            //     console.log(this.props.obj_)
-
-            //     console.log("Secondary JsonFormInspect")
-            //     console.log("________________________")
-            //     console.log("inherent")
-            //     console.log(this.props.inherentValue)
-            //     console.log("obj upd")
-            //     console.log(objUpdate)
-            //     console.log("________________________")
-            // }
             const maxLocalStorage = this.getMaxLocalStorage();
             const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
             return <div>

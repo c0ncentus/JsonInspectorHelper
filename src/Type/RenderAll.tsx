@@ -3,7 +3,7 @@ import { Word_Jip, AssetImg_Jip, ImgHttpOrS, Number_Jip, Obj_Jip, Array_Jip, upF
 import { returnImgByType } from "../Util/Lib";
 import { convertsButton, toTypeByType } from "../Util/Libx";
 import { FormGetRenderInputByType, FormGetJip, typeOfToJIType } from "../Util/Model";
-import { DropButton } from "../Util/Package";
+import { DropButton, Glass_ } from "../Util/Package";
 import { Boolean_Jip } from "./Boolean";
 import { Color_Jip } from "./String/Color";
 
@@ -34,7 +34,9 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
                                                 : typeOfToJIType.undefined === type ? <img style={{ ...cssImgOnlyRender, width: 55, height: 55, marginRight: 5 }} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
                                                     : <></>}
             {isKeys === false && isItemArray === false
-                ? <div style={{ display: "flex" }}>
+                ? <div style={{ display: "flex", marginLeft:-8 }} className="minus">
+                    <Glass_ text="✊" onClick={() => { onAction(path, "setPanel") }} />
+
                     <DropButton
                         imgMain={returnImgByType(type!, extra!.IMG_INTERN!.Type)}
                         jsx_Picture={
@@ -43,6 +45,7 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
                                 extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type)
                         } />
                     {convertsButton(((value: any) => { upFormVal(onAction, path, value, isItemArray) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)}
+
                 </div>
                 : <></>}
 

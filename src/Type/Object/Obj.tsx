@@ -55,7 +55,6 @@ class PairKeyValue_Jip extends Component<FormGetPairKey, any>{
                 inherentValue: initValue, isItemArray, isKeys: false
             }} />
             <div style={{ display: "flex" }} className="minus">
-                <Glass_ text="✊" onClick={() => { onAction("", "setPanel") }} />
                 <Glass_ text="➖" onClick={() => { onAction(path, "deleteValue", { deleteValue: { supprKey: initKey, }, onArrVal: false }); }} />
             </div>
         </div>
