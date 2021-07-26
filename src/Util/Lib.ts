@@ -22,6 +22,18 @@ export const regex_Date = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)
 export const regex_BaseUrlHttp = /^.+?[^\/:](?=[?\/]|$)/gmi
 
 
+export function allJipOperation(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
+    // Obj
+    if (objUpdate !== null && typeof objUpdate === "object" && Array.isArray(objUpdate) === false && extra!.onArrVal !== true) {
+        return operationObj(cloneDeep(objUpdate), path, action, extra)
+    }
+    // []
+    if (Array.isArray(objUpdate) === true || extra!.onArrVal === true) { operationArr(objUpdate, path, action, extra); }
+    // type primitif
+    if (["number", "string", "boolean", "undefined"].includes(typeof objUpdate) || objUpdate === null) {
+        return extra === undefined ? undefined : extra.updateValue === undefined ? undefined : extra!.updateValue!.newValue;
+    }
+}
 
 
 export function operationObj(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
@@ -99,8 +111,23 @@ export function operationObj(objUpdate: any, path: string, action: ActionFunc, e
     return res;
 }
 
-export function operationArr(path: string, action: ActionFunc, extra?: ExtraFormJip) {
-
+export function operationArr(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
+    let res = undefined;
+    const objOfRes = path === "" ? objUpdate : get(objUpdate, path);
+    if (action === "addValue") { res = [...objOfRes, undefined]; }
+    if (action === "deleteValue") {
+        let arrayObj: any[] = path === "" ? objUpdate : get(objUpdate, path);
+        arrayObj.splice(extra!.deleteValue!.supprI!, 1);
+        res = arrayObj;
+    }
+    if (action === "updateValue") {
+        let newArray = objOfRes;
+        newArray[extra!.updateValue!.iUpdate!] = extra!.updateValue!.newValue;
+        res = newArray;
+    }
+    console.log("array operation")
+    console.log(res)
+    return path === "" ? res : set(objUpdate, path, res)
 }
 
 export function operationPrim(path: string, action: ActionFunc, extra?: ExtraFormJip) {

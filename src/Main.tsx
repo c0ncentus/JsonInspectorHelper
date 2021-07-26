@@ -1,28 +1,36 @@
 import { Component } from "react";
-import { returnType, parentTo, parentArrayTo, lastKeyByType, arrayByNum, operationObj } from "./Util/Lib";
+import { returnType, arrayByNum, allJipOperation } from "./Util/Lib";
 import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets, ItemArray } from "./Util/Model";
 import { DropDownSquish, Glass_ } from "./Util/Package";
 import { RenderInputByType_Jip } from "./Type/RenderAll";
-import { cloneDeep, get, has, isEqual, set } from "lodash";
+import { cloneDeep, get, isEqual } from "lodash";
 import { saveAs } from "file-saver";
 
 const STORE_KEY_LOCAL = "__JFI__";
 const isJson = (str: string) => { return /\{/gm.test(str) && /\}/gm.test(str) && /\:/gm.test(str) }
 
-interface JsonFormInspectState { objUpdate: any, objSave: any, inputKeys: string, valuePathChange: string | null, isUpToDate: boolean, isLoad: boolean }
+interface JsonFormInspectState {
+    isUpToDate: boolean,
+    objUpdate: any, objSave: any,
+    inputKeys: string, valuePathChange: string | null, isLoad: boolean
+}
 
 export interface JsonFormInspectProps {
     obj_: any, setting: JIPSetting,
     onValidate: (obj_: any) => any, onUpdate: (obj: any) => any
     isWithAccessory: boolean, isItemArray: ItemArray,
-    IMG_ASST: CustomPicture, IMG_INTERN: JipAssets
+    IMG_ASST: CustomPicture, IMG_INTERN: JipAssets, isMain: boolean,
+    inherentValue?: any, isUpdatingSecondary_Jip: boolean
 }
 
 
 export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormInspectState>{
     constructor(props: any) {
         super(props); this.onAction = this.onAction.bind(this);
-        this.state = { inputKeys: "futureKeyName", objUpdate: {}, objSave: {}, valuePathChange: null, isUpToDate: true, isLoad: false }
+        this.state = {
+            inputKeys: "futureKeyName", objUpdate: {}, objSave: {}, valuePathChange: null,
+            isLoad: false, isUpToDate: false,
+        }
     }
     reboot() { this.setState({ objUpdate: this.props.obj_ }) }
     onAction(path: string, action: ActionFunc, extra?: ExtraFormJip): any {
@@ -31,34 +39,17 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
         if (action === "getJip") { return this.props; }
         if (action === "getStateObj") { return objUpdate; }
         if (action === "addValue" || action === "deleteValue" || action === "updateValue") {
-            if (objUpdate !== null && typeof objUpdate === "object" && Array.isArray(objUpdate) === false) {
-                console.log("lol")
-                if (action === "deleteValue"
-                    && typeof extra !== undefined
-                    && extra!.deleteValue !== undefined &&
-                    extra!.deleteValue.supprKey === "string") {
-                    this.setState({ objUpdate: operationObj(cloneDeep(this.state.objUpdate), path, action, extra) }); setTimeout(() => { }, 500)
-                }
-                else { this.setState({ objUpdate: operationObj(cloneDeep(this.state.objUpdate), path, action, extra) }) }
-            }
-            if (Array.isArray(objUpdate) === true) {
-                if (extra!.onArrVal!) {
-                    let newArray = cloneDeep(objUpdate);
-                    newArray[extra!.updateValue!.iUpdate!] = extra!.updateValue!.newValue;
-                    this.setState({ objUpdate: newArray })
-                }
-                else { this.setState({ objUpdate: extra!.updateValue!.newValue }) }
-            }
-            if (["number", "string", "boolean", "undefined"].includes(typeof objUpdate) || objUpdate === null) {
-                this.setState({ objUpdate: extra === undefined ? undefined : extra.updateValue === undefined ? undefined : extra?.updateValue!.newValue })
-            }
+            if (this.props.isMain !== false) { this.setState({ isUpToDate: false }) }
+            const reObjOnDel = (typeof objUpdate === "object" && action === "deleteValue" && typeof extra !== undefined
+                && extra!.deleteValue !== undefined && extra!.deleteValue.supprKey === "string");
+
+            if (reObjOnDel) { this.setState({ objUpdate: null }); setTimeout(() => { this.setState({ objUpdate: allJipOperation(cloneDeep(objUpdate), path, action, extra) }) }, 500) }
+            else { this.setState({ objUpdate: allJipOperation(cloneDeep(objUpdate), path, action, extra) }) }
         }
         if (action === "getObjByPath") { return path === "" ? this.onAction("", "getStateObj") : get(objUpdate, path) }
-
-
     }
-
     componentDidMount() { this.setState({ objUpdate: this.props.obj_, objSave: this.props.obj_, isLoad: true }) }
+
     getMaxLocalStorage() { let count = 0; while (typeof localStorage.getItem(STORE_KEY_LOCAL + count) === "string") { count = count + 1; }; return count; }
     downloadTemplateSave() {
         const jsonDownload = arrayByNum(this.getMaxLocalStorage()).map((el) => {
@@ -73,8 +64,24 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
 
         if (isLoad === false) { return <></> }
         else {
+            if (this.props.isMain === false
+                && this.props.isUpdatingSecondary_Jip === true
+                && this.state.isUpToDate === false) {
+                this.setState({ objUpdate: this.props.inherentValue, isUpToDate: true })
+            }
             const { setting, IMG_INTERN, IMG_ASST, isItemArray } = this.props;
-            console.log(objUpdate)
+            // if (this.props.isMain === false && this.props.obj_ !== this.props.inherentValue) { this.setState({ objUpdate: this.props.inherentValue }) }
+            // if (this.props.isMain === false) {
+            //     console.log(this.props.obj_)
+
+            //     console.log("Secondary JsonFormInspect")
+            //     console.log("________________________")
+            //     console.log("inherent")
+            //     console.log(this.props.inherentValue)
+            //     console.log("obj upd")
+            //     console.log(objUpdate)
+            //     console.log("________________________")
+            // }
             const maxLocalStorage = this.getMaxLocalStorage();
             const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
             return <div>
