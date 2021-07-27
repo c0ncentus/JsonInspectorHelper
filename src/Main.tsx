@@ -35,6 +35,7 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     reboot() { this.setState({ objUpdate: this.props.obj_ }) }
     onAction(path: string, action: ActionFunc, extra?: ExtraFormJip): any {
         const objUpdate = cloneDeep(this.state.objUpdate);
+        // if(action==="setPanel"){return panelView(path, this.onAction, t )}
         if (action === "onValidate") { return objUpdate }
         if (action === "getJip") { return this.props; }
         if (action === "getStateObj") { return objUpdate; }

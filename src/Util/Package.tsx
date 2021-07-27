@@ -1,9 +1,11 @@
-import { flattenDeep } from "lodash"
+import { cloneDeep, flattenDeep } from "lodash"
 import { Component, CSSProperties } from "react"
+import ReactModal from "react-modal"
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom"
+import { CONDITION_PANEL_VIEW, PANEL_VIEW_KEY } from "./CONST"
 import { rgbToAnotherRgb } from "./Lib"
 import { websiteToMenusItems, gene_main, websiteToRouter, BallButton } from "./Libx"
-import { WebsiteStructure__ } from "./Model"
+import { ActionFuncParameter, ChoiceCPV, KeyValue, Letter, TypeProps, WebsiteStructure__ } from "./Model"
 
 interface DropDownSquishState { value: string, active: boolean }
 
@@ -677,5 +679,146 @@ export class DropButton extends Component<{ imgMain: string, jsx_Picture: JSX.El
             <div className="profile-pic" ><BallButton imgMain={this.props.imgMain} /></div>
             <div className="content down" style={this.state.isActive ? cssIsActive : {}} onMouseLeave={() => { this.setState({ isActive: false }) }} onMouseEnter={() => { this.setState({ isActive: true }) }}>{this.props.jsx_Picture}</div>
         </div>
+    }
+}
+interface PanelViewTsxProps {
+    arrValue: ChoiceCPV[],
+    initAsstImg: { isRandom: boolean }
+    initChoices: any[],
+    onAction: ActionFuncParameter;
+    path: string, iUpdate?: number, onArrVal?: boolean, isKey: boolean
+}
+interface PanelViewTsxState {
+    isRandom: boolean;
+    choicesLetter: Letter[];
+    choiceSlc: (string | undefined)[]
+}
+
+export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState>{
+    constructor(props: any) { super(props); this.state = { choiceSlc: [], choicesLetter: [], isRandom: false } }
+    customChoices(element: any) {
+        if (element !== "CUSTOM") { return null }
+        let haveGoodCustom: any[] | null = this.props.arrValue;
+        this.state.choiceSlc.forEach((el) => {
+            if (haveGoodCustom === null || typeof el !== "string" || (haveGoodCustom as KeyValue)[el as string] === undefined) { haveGoodCustom = null }
+            else { haveGoodCustom = (haveGoodCustom as KeyValue)[el as string] };
+        })
+        if (Array.isArray(haveGoodCustom)
+            && haveGoodCustom.length !== 0
+            && haveGoodCustom.every((x => typeof x === "string"))
+        ) { return null }
+        return haveGoodCustom;
+    }
+
+    chosenValue() {
+        if (this.state.choiceSlc.every((x) => typeof x === "string") === false
+            || this.state.choiceSlc.length !== this.props.arrValue.length) { return null }
+        else {
+            let haveGoodCustom: any | any[] | null = this.props.arrValue;
+            this.state.choiceSlc.forEach((el) => {
+                if (haveGoodCustom === null || typeof el !== "string" || (haveGoodCustom as KeyValue)[el as string] === undefined) { haveGoodCustom = null }
+                haveGoodCustom = (haveGoodCustom as KeyValue)[el as string];
+            })
+            return haveGoodCustom;
+        }
+    }
+    choiceToString(el: ChoiceCPV) {
+        const isArrayString = Array.isArray(el) && el.every(x => typeof x === "string");
+        let objCustomChoice: string[] = this.customChoices(el)!;
+
+        const arrayString = Array.isArray(el) && el.every(x => typeof x === "string") ? el : null;
+        const isChoices = (el !== null && typeof el === "object" && Object.keys(el)[0].replace(PANEL_VIEW_KEY, "").length === 1)
+
+        return (isArrayString ? arrayString!
+            : isChoices ? Object.keys(el)
+                : el !== "CUSTOM" ? (el as string[])
+                    : objCustomChoice!)
+    }
+    render() {
+        const { isKey, onAction, path, iUpdate, onArrVal, arrValue } = this.props;
+        const { isRandom, choicesLetter, choiceSlc } = this.state;
+        return <div style={{ display: "flex" }}>
+            <input type="checkbox"
+                checked={isRandom}
+                onChange={(e) => {
+                    const chkd = e.currentTarget.checked;
+                    this.setState({ isRandom: chkd })
+                }} />
+
+            {arrValue.map((el, i) => {
+
+                const isNotPassed = (this.state.choiceSlc.length < i)
+                    // el === null
+                    // || (isChoices && choicesLetter.length <= i)
+                    // || (objCustomChoice === null)
+                    ;
+                if (isNotPassed) { return <></> }
+                else {
+                    console.log("isPASssssssssed")
+                    console.log(el)
+                    return <DropDownSquish
+                        choices={this.choiceToString(el)}
+                        onChange_={(el) => {
+                            let count = cloneDeep(choiceSlc.length); let total = cloneDeep(choiceSlc.length);
+                            if (total - 1 < i) {
+                                while (count - 2 < i) {
+                                    this.setState({ choiceSlc: [...this.state.choiceSlc, undefined] });
+                                    count = count + 1;
+                                }
+                                this.setState({ choiceSlc: [...this.state.choiceSlc, el] });
+                            }
+                            else {
+                                let newSelec = cloneDeep(choiceSlc);
+                                newSelec[i] = el;
+                                this.setState({ choiceSlc: newSelec })
+                            }
+                        }}
+                    />
+                }
+            })}
+            <Glass_ text="Valider" onClick={() => {
+                if (this.state.choiceSlc.every(x => typeof x === "string")) {
+                    const valueChoosen = this.chosenValue()!
+                    onAction(path,
+                        "updateValue",
+                        {
+                            updateValue: {
+                                newKey: isKey ? valueChoosen : undefined,
+                                newValue: isKey ? undefined : valueChoosen,
+                                iUpdate
+                            },
+                            onArrVal
+                        })
+                }
+                else { alert("Tout les séléections ne sont pas séléctionnés ...") }
+            }} />
+        </div>
+    }
+}
+
+export class BasicModal extends Component<{ iUpdate?: number, onArrVal?: boolean, onAction: ActionFuncParameter, path: string, type: "assetImg" | "key" | "word" }, { showModal: boolean }>{
+    constructor(props: any) {
+        super(props);
+        this.state = { showModal: false };
+        this.open = this.open.bind(this); this.close = this.close.bind(this);
+    }
+    open() { this.setState({ showModal: true }); }
+    close() { this.setState({ showModal: false }); }
+
+    render() {
+        const { onAction, path, type, iUpdate, onArrVal } = this.props;
+        return (
+            <div>
+                <Glass_ text="✊" onClick={() => { this.open() }} />
+                <ReactModal isOpen={this.state.showModal} contentLabel="Minimal Modal Example">
+                    <Glass_ onClick={() => { this.close() }} text="Fermer" />
+                    <PanelViewTsx  {...{
+                        isKey: type === "key", onAction, path, arrValue: CONDITION_PANEL_VIEW[type],
+                        onArrVal, iUpdate, initAsstImg: { isRandom: true }, initChoices: [""]
+
+                    }} />
+                </ReactModal>
+            </div>
+        );
     }
 }
