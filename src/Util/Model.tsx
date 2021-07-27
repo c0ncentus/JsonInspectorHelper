@@ -10,35 +10,8 @@ export interface JipType {
 }
 export type Letter = ("A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z");
 
-export type ChoiceCPV = ChoicesConditionPanel | "CUSTOM" | string[];
-export interface ChoicesConditionPanel {
-    choiceA?: string[];
-    choiceB?: string[];
-    choiceC?: string[];
-    choiceD?: string[];
-    choiceE?: string[];
-    choiceF?: string[];
-    choiceG?: string[];
-    choiceH?: string[];
-    choiceI?: string[];
-    choiceJ?: string[];
-    choiceK?: string[];
-    choiceL?: string[];
-    choiceM?: string[];
-    choiceN?: string[];
-    choiceO?: string[];
-    choiceP?: string[];
-    choiceQ?: string[];
-    choiceR?: string[];
-    choiceS?: string[];
-    choiceT?: string[];
-    choiceU?: string[];
-    choiceV?: string[];
-    choiceW?: string[];
-    choiceX?: string[];
-    choiceY?: string[];
-    choiceZ?: string[];
-}
+export type ChoiceCPV = KeyValue;
+
 export type WordTypePanel = typeof PANEL_CHOICE.word.type[number];
 export type WordWidthPanel = typeof PANEL_CHOICE.word.width[number];
 export type KeyTypePanel = typeof PANEL_CHOICE.key.type[number];

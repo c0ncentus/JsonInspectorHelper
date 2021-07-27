@@ -1,4 +1,4 @@
-import { ChoiceCPV, typeOfToJIType } from "./Model";
+import { ChoiceCPV, KeyValue, typeOfToJIType } from "./Model";
 
 export const INIT_VALUES_BY_TYPE = {
     word: "",
@@ -50,22 +50,35 @@ export const PAL_CNR = {
         array: ["WIP"]
     }
 }
-
-export const CONDITION_PANEL_VIEW = {
-    word: [
-        PAL_CNR.word.type,
-        PAL_CNR.word.width,
-        "CUSTOM"
-    ] as ChoiceCPV[],
-    assetImg: [
-        PAL_CNR.assetImg.type,
-        PAL_CNR.assetImg.format,
-        { choiceA: "CUSTOM", choiceB: null }
-    ] as ChoiceCPV[],
-    key: [
-        PAL_CNR.key.type,
-        { choiceA: PAL_CNR.key.prim, choiceB: PAL_CNR.key.object, choiceC: PAL_CNR.key.array },
-        { choiceA: PAL_CNR.key.string, choiceB: PAL_CNR.key.number, choiceC: PAL_CNR.key.boolean, choiceD: null },
-        "CUSTOM"
-    ] as ChoiceCPV[]
+export const CONST_PNLV = {
+    next: "next__",
+    choice: "choice__",
+    custom: "______CUSTOM______"
 }
+export const CONDITION_PANEL_VIEW = {
+    word: {
+        type: PAL_CNR.word.type, next__: {
+            longueur: PAL_CNR.word.width, next__: CONST_PNLV.custom
+        }
+    } as KeyValue,
+    assetImg: {
+        type: PAL_CNR.assetImg.type, next__: {
+            format: PAL_CNR.assetImg.format, next__: CONST_PNLV.custom
+        }
+    } as KeyValue,
+    key: {
+        type: PAL_CNR.key.type, next__: {
+            Primitif: PAL_CNR.key.prim,
+            Object: PAL_CNR.key.object,
+            Tableau: PAL_CNR.key.array,
+            next__: {
+                choice__: [
+                    { Mot: PAL_CNR.key.string, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean, next__: CONST_PNLV.custom },
+                    CONST_PNLV.custom,
+                    CONST_PNLV.custom
+                ],
+            }
+        }
+    } as KeyValue,
+}
+

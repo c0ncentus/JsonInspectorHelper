@@ -2,7 +2,7 @@ import { cloneDeep, flattenDeep } from "lodash"
 import { Component, CSSProperties } from "react"
 import ReactModal from "react-modal"
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom"
-import { CONDITION_PANEL_VIEW, PANEL_VIEW_KEY } from "./CONST"
+import { CONDITION_PANEL_VIEW, CONST_PNLV, PANEL_VIEW_KEY } from "./CONST"
 import { rgbToAnotherRgb } from "./Lib"
 import { websiteToMenusItems, gene_main, websiteToRouter, BallButton } from "./Libx"
 import { ActionFuncParameter, ChoiceCPV, KeyValue, Letter, TypeProps, WebsiteStructure__ } from "./Model"
@@ -682,7 +682,7 @@ export class DropButton extends Component<{ imgMain: string, jsx_Picture: JSX.El
     }
 }
 interface PanelViewTsxProps {
-    arrValue: ChoiceCPV[],
+    arrValue: KeyValue,
     initAsstImg: { isRandom: boolean }
     initChoices: any[],
     onAction: ActionFuncParameter;
@@ -696,43 +696,94 @@ interface PanelViewTsxState {
 
 export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState>{
     constructor(props: any) { super(props); this.state = { choiceSlc: [], choicesLetter: [], isRandom: false } }
+
+    cooMax(obj: any) {
+        if (typeof obj !== "object") { return null }
+        const keys = Object.keys(obj);
+        if (keys.includes(CONST_PNLV.choice)) { return (obj[CONST_PNLV.choice] as any[]).length - 1 }
+        if (keys.includes(CONST_PNLV.next)) { return 0 }
+    }
+    arrByCoo(coo: number[], obj: any = this.props.arrValue, iCoo: number = 0): string[] | "CUSTOM" | null {
+        if (obj === CONST_PNLV.custom) { return "CUSTOM" }
+        if (coo.length - 1 === iCoo) {
+            if (typeof obj === "object") {
+                let key_ = Object.keys(obj);
+                return this.filterKeys(key_)
+            }
+            return obj
+        }
+        if (typeof obj !== "object" || coo.length - 1 < iCoo) { return null };
+        const actulaI = coo[iCoo];
+        const keys = Object.keys(obj);
+        if (actulaI !== 0 && keys.includes(CONST_PNLV.choice) === false
+            || (obj[CONST_PNLV.choice] as any[]).length - 1 < actulaI
+            && (keys.includes(CONST_PNLV.choice) === false && keys.includes(CONST_PNLV.next) === false)) {
+            return null
+        }
+        if (keys.includes(CONST_PNLV.choice)) { return this.arrByCoo(coo, obj[CONST_PNLV.choice][actulaI], iCoo + 1) }
+        if (keys.includes(CONST_PNLV.next)) { return this.arrByCoo(coo, obj[CONST_PNLV.next], iCoo + 1) }
+        return obj as string[];
+    }
+    filterKeys(keys: string[]) { return keys.filter(y => { return y !== CONST_PNLV.choice || y !== CONST_PNLV.next }) }
+    findDeepCoo(obj: any, key: string[], searchKey: string) {
+        // let keys = Object.keys(obj);
+        if (key.length === 0) { return obj[searchKey] === undefined ? null : [0] }
+        else {
+            let res: number[] = [];
+            let objElement = cloneDeep(obj);
+            for (let i = 0; i < key.length; i++) {
+                const thisKey = key[i];
+                const haveNext = Object.keys(objElement).some(x => x === CONST_PNLV.next);
+                if (haveNext) {
+                    objElement = objElement[CONST_PNLV.next];
+                    res.push(0)
+                } else {
+                    const index = (objElement[CONST_PNLV.choice] as any[])
+                        .findIndex(x => {
+                            return typeof x === "object" && Object.keys(x).includes(thisKey)
+                        })
+                    objElement = ((objElement[CONST_PNLV.choice] as any[])[index] as KeyValue)[thisKey]
+                    res.push(index)
+                }
+            }
+            return res
+        }
+        // else {
+
+        // }
+        // if (keys.includes(CONST_PNLV.choice)) { return this.arrByCoo(coo, obj[CONST_PNLV.choice][actulaI], iCoo + 1) }
+        // if (keys.includes(CONST_PNLV.next)) { return this.arrByCoo(coo, obj[CONST_PNLV.next], iCoo + 1) }
+    }
+
+    cooByState(obj: any = this.props.arrValue, iPrvs: number[] = [], iSearch: number = 0): number[] {
+        const { choiceSlc } = this.state;
+        if (choiceSlc.length === 0) { return [] }
+        
+
+    }
+
+    allArrByState(): string[][] {
+        let nbr = this.state.choiceSlc.length;
+        // this.cooMax()
+
+        return [[], []]
+    }
+    maxLvl(obj: any = this.props.arrValue, lvl: number = 0) {
+        if (typeof obj !== "object") { return lvl }; let res = lvl;
+        const keys = Object.keys(obj);
+        if (keys.includes(CONST_PNLV.choice)) { res = Math.max(...(obj[CONST_PNLV.choice] as any[]).map((el => { return this.getMaxLvl(el, lvl + 1) }))) }
+        if (keys.includes(CONST_PNLV.next)) { res = this.maxLvl(obj[CONST_PNLV.next], lvl + 1) }
+        return res
+    }
     customChoices(element: any) {
-        if (element !== "CUSTOM") { return null }
-        let haveGoodCustom: any[] | null = this.props.arrValue;
-        this.state.choiceSlc.forEach((el) => {
-            if (haveGoodCustom === null || typeof el !== "string" || (haveGoodCustom as KeyValue)[el as string] === undefined) { haveGoodCustom = null }
-            else { haveGoodCustom = (haveGoodCustom as KeyValue)[el as string] };
-        })
-        if (Array.isArray(haveGoodCustom)
-            && haveGoodCustom.length !== 0
-            && haveGoodCustom.every((x => typeof x === "string"))
-        ) { return null }
-        return haveGoodCustom;
+
     }
 
     chosenValue() {
-        if (this.state.choiceSlc.every((x) => typeof x === "string") === false
-            || this.state.choiceSlc.length !== this.props.arrValue.length) { return null }
-        else {
-            let haveGoodCustom: any | any[] | null = this.props.arrValue;
-            this.state.choiceSlc.forEach((el) => {
-                if (haveGoodCustom === null || typeof el !== "string" || (haveGoodCustom as KeyValue)[el as string] === undefined) { haveGoodCustom = null }
-                haveGoodCustom = (haveGoodCustom as KeyValue)[el as string];
-            })
-            return haveGoodCustom;
-        }
+
     }
     choiceToString(el: ChoiceCPV) {
-        const isArrayString = Array.isArray(el) && el.every(x => typeof x === "string");
-        let objCustomChoice: string[] = this.customChoices(el)!;
 
-        const arrayString = Array.isArray(el) && el.every(x => typeof x === "string") ? el : null;
-        const isChoices = (el !== null && typeof el === "object" && Object.keys(el)[0].replace(PANEL_VIEW_KEY, "").length === 1)
-
-        return (isArrayString ? arrayString!
-            : isChoices ? Object.keys(el)
-                : el !== "CUSTOM" ? (el as string[])
-                    : objCustomChoice!)
     }
     render() {
         const { isKey, onAction, path, iUpdate, onArrVal, arrValue } = this.props;
