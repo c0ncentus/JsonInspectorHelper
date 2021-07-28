@@ -7,18 +7,18 @@ import { allSquishChange, regex_Assets, rgbToAnotherRgb } from "./Lib"
 import { websiteToMenusItems, gene_main, websiteToRouter, BallButton } from "./Libx"
 import { ActionFuncParameter, ChoiceCPV, KeyValue, Letter, TypeProps, WebsiteStructure__ } from "./Model"
 
-interface DropDownSquishState { value: string, active: boolean, shield: boolean }
+interface DropDownSquishState { value: string, active: boolean, prvsInherent?: string }
 
 interface DropDownSquishProps { choices: string[], initValue?: string, onChange_?: (str: string) => any }
 export class DropDownSquish extends Component<DropDownSquishProps, DropDownSquishState> {
     constructor(props: any) {
         super(props)
-        this.state = { active: false, value: "", shield: false }
+        this.state = { active: false, value: "", prvsInherent: undefined }
     }
+    componentDidMount() { if (typeof this.props.initValue === "string") { this.setState({ prvsInherent: this.props.initValue, value: this.props.initValue! }) } else { this.setState({ prvsInherent: this.props.initValue }) } }
     componentDidUpdate() {
-        if (this.state.shield === true) {
-            this.setState({ shield: false })
-            if (typeof this.props.initValue === "string") { this.setState({ value: this.props.initValue }) }
+        if (this.props.initValue !== this.state.prvsInherent && typeof this.props.initValue === "string") {
+            { this.setState({ prvsInherent: this.props.initValue, value: this.props.initValue }) }
         }
     }
     handleActive(active: boolean) { this.setState({ active }) }
@@ -28,11 +28,8 @@ export class DropDownSquish extends Component<DropDownSquishProps, DropDownSquis
         return <form className="dropDownSquish">
             <input
                 className="chosen-value chosen-value1"
-                type="text"
-                value={this.state.value}
-                onChange={((e) => {
-                    this.handleValue(e.target.value);
-                })}
+                type="text" value={this.state.value}
+                onChange={((e) => { this.handleValue(e.target.value); })}
                 placeholder="Type to filter"
                 onClick={(() => { this.handleActive(!this.state.active) })} />
             <ul className={`value-list value-list1 ${this.state.active ? " open" : ""}`}>
@@ -41,11 +38,8 @@ export class DropDownSquish extends Component<DropDownSquishProps, DropDownSquis
                         onClick={((e) => {
                             this.handleValue(e.currentTarget.textContent!)
                             this.handleActive(!this.state.active);
-                            if (onChange_ !== undefined) {
-                                onChange_(li)
-                            }
-                        })}
-                        className={`valueFilter1${this.state.active ? "" : " closed"}`}>
+                            if (onChange_ !== undefined) { onChange_(li) }
+                        })} className={`valueFilter1${this.state.active ? "" : " closed"}`}>
                         {li}
                     </li>
                 })}
@@ -717,27 +711,25 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
         }
         if (obj === CONST_PNLV.custom) { }
         if (Array.isArray(obj) && obj.every(x => typeof x === "string")) { res = obj }
-        if (res === undefined) {
-            console.log("returnSomthing => undefined")
-            console.log(obj)
-            console.log(key)
-            console.log(i)
-            console.log(this.state.choiceSlc)
-        }
         return res
     }
     getCustom() {
         const { choiceSlc } = this.state;
         const { arrVal } = this.props;
-        let objEl = cloneDeep(arrVal)
+        let objEl: any = cloneDeep(arrVal)
         for (let i = 0; i < choiceSlc.length; i++) {
-            if (objEl === null || objEl === undefined || objEl[choiceSlc[i]] === undefined) { return null }
-            else { objEl = objEl[choiceSlc[i]] }
+            const choiceIsInTheLastArr = Array.isArray(objEl) && objEl.every(x => typeof x === "string") && objEl.filter(y => y === choiceSlc[i]).length === 1
+            if (choiceIsInTheLastArr === false && (objEl === null || objEl === undefined || objEl[choiceSlc[i]] === undefined)) { return null }
+            else {
+                if (choiceIsInTheLastArr === true) { objEl = choiceSlc[i] }
+                else { objEl = objEl[choiceSlc[i]] }
+
+            }
         }
         return objEl as any
     }
     choicesAvailable(): string[][] {
-        const { dropDownsVal } = this.props;
+        const { dropDownsVal,  } = this.props;
         const { choiceSlc } = this.state;
 
         let res: string[][] = []
@@ -764,7 +756,6 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
 
             }
         }
-        // res = compact(res)
         return res
     }
 
@@ -772,34 +763,38 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
     render() {
         const allArray = this.choicesAvailable();
         const CUSTOM = allArray.length === this.state.choiceSlc.length ? this.getCustom() : null
-        return <div style={{ display: "flex" }}>
-            <Glass_ text="Randomize Tout" />
-            {allArray.map((arrEl, i) => {
-                console.log(this.state.choiceSlc.length - 1 < i ? undefined : this.state.choiceSlc[i])
-                return <div>
-                    <DropDownSquish
-                        initValue={this.state.choiceSlc.length - 1 < i ? undefined : this.state.choiceSlc[i]}
+        return <div>
+            <div style={{ display: "flex" }}>
+                <Glass_ text="Randomize Tout" />
+                {allArray.map((arrEl, i) => {
+                    return <div>
+                        <DropDownSquish
+                            initValue={this.state.choiceSlc.length - 1 < i ? undefined : this.state.choiceSlc[i]}
+                            choices={arrEl}
+                            onChange_={(el) => { this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, el, i) }) }} />
+                        <Glass_ text={`Random ${i + 1}`} onClick={() => {
+                            this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, arrEl[Math.round(Math.random() * (arrEl.length - 1))], i, true) })
+                        }} />
+                    </div>
+                })}
 
-                        choices={arrEl}
-                        onChange_={(el) => { this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, el, i) }) }} />
-                    <Glass_ text={`Random ${i + 1}`} onClick={() => {
-                        console.log(allSquishChange(this.state.choiceSlc, arrEl[Math.round(Math.random() * (arrEl.length - 1))], i, true))
-                        this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, arrEl[Math.round(Math.random() * (arrEl.length - 1))], i, true) })
-                    }} />
-                </div>
-            })}
-            {
-                CUSTOM === null
-                    ? <></>
-                    : this.props.isKey
-                        ? <p style={{ fontSize: 50 }}>{CUSTOM}</p>
-                        : regex_Assets.test(CUSTOM)
-                            ? <img src={CUSTOM} style={{ width: 500, height: 500 }} />
-                            : <p style={{ fontSize: 20 }}>{CUSTOM}</p>
-            }
-            <Glass_ text="Valider" onClick={() => {
-                // CUSTOM
-            }} />
+
+            </div>
+            <div style={{textAlign:"center"}}>
+                <p style={{ fontSize: 30 }}>Résultat !</p>
+                {
+                    CUSTOM === null
+                        ? <></>
+                        : this.props.isKey
+                            ? <p style={{ fontSize: 50 }}>{CUSTOM}</p>
+                            : regex_Assets.test(CUSTOM)
+                                ? <img src={CUSTOM} style={{ width: 500, height: 500 }} />
+                                : <p style={{ fontSize: 20 }}>{CUSTOM}</p>
+                }
+                <Glass_ text="Valider" onClick={() => {
+                    console.log(CUSTOM)
+                }} />
+            </div>
         </div>
     }
 }
