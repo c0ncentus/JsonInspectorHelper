@@ -1,4 +1,4 @@
-import { ChoiceCPV, KeyValue, typeOfToJIType } from "./Model";
+import { KeyValue } from "./Model";
 
 export const INIT_VALUES_BY_TYPE = {
     word: "",
@@ -36,7 +36,7 @@ export const PANEL_CHOICE = {
 
 export const PAL_CNR = {
     word: {
-        type: ["Mot", "Titre", "Phrase", "Descriptif", "Paragraphe", "Article"],
+        type: ["Tag", "Button", "Menu", "Mot", "Titre", "Phrase", "Descriptif", "Paragraphe", "Article"],
         width: ["court", "moyen", "long"]
     },
     assetImg: { format: ["Square", "Phone", "Bac"], type: ["Jpg", "Png", "Svg"] },
@@ -59,7 +59,7 @@ export const CONDITION_PANEL_VIEW = {
     word: {
         type: PAL_CNR.word.type, next__: {
             longueur: PAL_CNR.word.width, next__: CONST_PNLV.custom
-        }
+        },
     } as KeyValue,
     assetImg: {
         type: PAL_CNR.assetImg.type, next__: {
@@ -67,18 +67,25 @@ export const CONDITION_PANEL_VIEW = {
         }
     } as KeyValue,
     key: {
-        type: PAL_CNR.key.type, next__: {
+        type: PAL_CNR.key.type,
+        next__: {
             Primitif: PAL_CNR.key.prim,
             Object: PAL_CNR.key.object,
             Tableau: PAL_CNR.key.array,
-            next__: {
-                choice__: [
-                    { Mot: PAL_CNR.key.string, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean, next__: CONST_PNLV.custom },
-                    CONST_PNLV.custom,
-                    CONST_PNLV.custom
-                ],
-            }
+            choice__: [
+                { Mot: PAL_CNR.key.string, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean },
+                CONST_PNLV.custom,
+                CONST_PNLV.custom
+            ],
+
         }
     } as KeyValue,
 }
 
+const key = {
+    Single:{
+        string:{}, number:{}, boolean:{}
+    },
+    Complex:{},
+    itemOfArray:{}
+}

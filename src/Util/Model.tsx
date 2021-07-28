@@ -10,6 +10,18 @@ export interface JipType {
 }
 export type Letter = ("A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z");
 
+type TextObjItem = { court: string[], moyen: string[], long: string[] }
+export interface TextObj {
+    Tag: TextObjItem;
+    Button: TextObjItem;
+    Menu: TextObjItem;
+    Mot: TextObjItem;
+    Titre: TextObjItem;
+    Phrase: TextObjItem;
+    Descriptif: TextObjItem;
+    Paragraphe: TextObjItem;
+    Article: TextObjItem;
+}
 export type ChoiceCPV = KeyValue;
 
 export type WordTypePanel = typeof PANEL_CHOICE.word.type[number];
@@ -98,7 +110,7 @@ export interface ExtraFormJip {
     deleteValue?: { supprKey?: string, suprrValue?: any, supprI?: number, isSuprAllSameValue?: boolean }
     IMG_ASST?: CustomPicture,
     IMG_INTERN?: JipAssets,
-    panelJsxValue?: TypeProps
+    TextTemplate?: TextObj
 }
 export interface FormGetJip {
     inherentValue: any, onAction: ActionFuncParameter,

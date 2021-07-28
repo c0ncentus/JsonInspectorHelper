@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { returnType, arrayByNum, allJipOperation, parentTo } from "./Util/Lib";
-import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets, ItemArray } from "./Util/Model";
+import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets, ItemArray, TextObj } from "./Util/Model";
 import { DropDownSquish, Glass_ } from "./Util/Package";
 import { RenderInputByType_Jip } from "./Type/RenderAll";
 import { cloneDeep, get, isEqual } from "lodash";
@@ -19,7 +19,7 @@ export interface JsonFormInspectProps {
     obj_: any, setting: JIPSetting,
     onValidate: (obj_: any) => any, onUpdate: (obj: any) => any
     isWithAccessory: boolean, isItemArray: ItemArray,
-    IMG_ASST: CustomPicture, IMG_INTERN: JipAssets, isMain: boolean,
+    IMG_ASST: CustomPicture, IMG_INTERN: JipAssets, TextTemplate: TextObj, isMain: boolean,
     inherentValue?: any, isUpdatingSecondary_Jip: boolean
 }
 
@@ -41,7 +41,7 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
         if (action === "getStateObj") { return objUpdate; }
         if (action === "addValue" || action === "deleteValue" || action === "updateValue") {
             if (this.props.isMain !== false && extra!.onArrVal === true) { this.setState({ isUpToDate: false }) }
-            const reObjOnDel = ( action === "deleteValue");
+            const reObjOnDel = (action === "deleteValue");
             if (reObjOnDel === true) {
                 this.setState({ objUpdate: null });
                 setTimeout(() => { this.setState({ objUpdate: allJipOperation(cloneDeep(objUpdate), path, action, extra) }) }, 500)
@@ -71,9 +71,9 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
                 && this.state.isUpToDate === false) {
                 this.setState({ objUpdate: this.props.inherentValue, isUpToDate: true })
             }
-            const { setting, IMG_INTERN, IMG_ASST, isItemArray } = this.props;
+            const { setting, IMG_INTERN, IMG_ASST, isItemArray, TextTemplate } = this.props;
             const maxLocalStorage = this.getMaxLocalStorage();
-            const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST }
+            const extra: ExtraFormJip = { inputKeys, IMG_INTERN, IMG_ASST, TextTemplate }
             return <div>
                 {this.props.isWithAccessory === true ?
                     <>

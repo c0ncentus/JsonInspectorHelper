@@ -682,7 +682,8 @@ export class DropButton extends Component<{ imgMain: string, jsx_Picture: JSX.El
     }
 }
 interface PanelViewTsxProps {
-    arrValue: KeyValue,
+    arrVal: KeyValue,
+    dropDownsVal: KeyValue,
     initAsstImg: { isRandom: boolean }
     initChoices: any[],
     onAction: ActionFuncParameter;
@@ -690,104 +691,71 @@ interface PanelViewTsxProps {
 }
 interface PanelViewTsxState {
     isRandom: boolean;
-    choicesLetter: Letter[];
-    choiceSlc: (string | undefined)[]
+    choiceSlc: (string)[]
 }
 
-export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState>{
-    constructor(props: any) { super(props); this.state = { choiceSlc: [], choicesLetter: [], isRandom: false } }
 
-    cooMax(obj: any) {
-        if (typeof obj !== "object") { return null }
+const IS_ONLY_ONE_Next = -5;
+export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState>{
+    constructor(props: any) { super(props); this.state = { choiceSlc: [], isRandom: false } }
+    nextObject(obj: any, key: string, i?: number) {
         const keys = Object.keys(obj);
-        if (keys.includes(CONST_PNLV.choice)) { return (obj[CONST_PNLV.choice] as any[]).length - 1 }
-        if (keys.includes(CONST_PNLV.next)) { return 0 }
-    }
-    arrByCoo(coo: number[], obj: any = this.props.arrValue, iCoo: number = 0): string[] | "CUSTOM" | null {
-        if (obj === CONST_PNLV.custom) { return "CUSTOM" }
-        if (coo.length - 1 === iCoo) {
-            if (typeof obj === "object") {
-                let key_ = Object.keys(obj);
-                return this.filterKeys(key_)
-            }
-            return obj
+        if (keys.includes(CONST_PNLV.next)) {
+            return obj[CONST_PNLV.next];
         }
-        if (typeof obj !== "object" || coo.length - 1 < iCoo) { return null };
-        const actulaI = coo[iCoo];
-        const keys = Object.keys(obj);
-        if (actulaI !== 0 && keys.includes(CONST_PNLV.choice) === false
-            || (obj[CONST_PNLV.choice] as any[]).length - 1 < actulaI
-            && (keys.includes(CONST_PNLV.choice) === false && keys.includes(CONST_PNLV.next) === false)) {
-            return null
+        if (keys.includes(CONST_PNLV.choice) && typeof i === "number") {
+            return (obj[CONST_PNLV.choice] as any[])[i!]
         }
-        if (keys.includes(CONST_PNLV.choice)) { return this.arrByCoo(coo, obj[CONST_PNLV.choice][actulaI], iCoo + 1) }
-        if (keys.includes(CONST_PNLV.next)) { return this.arrByCoo(coo, obj[CONST_PNLV.next], iCoo + 1) }
-        return obj as string[];
     }
-    filterKeys(keys: string[]) { return keys.filter(y => { return y !== CONST_PNLV.choice || y !== CONST_PNLV.next }) }
-    findDeepCoo(obj: any, key: string[], searchKey: string) {
-        // let keys = Object.keys(obj);
-        if (key.length === 0) { return obj[searchKey] === undefined ? null : [0] }
+
+    returnSomthing(obj: any, key: string, i: number) {
+        if (typeof obj === "object") {
+            if (i === IS_ONLY_ONE_Next) { return obj[this.ObjKeys(obj)[0]] }
+            return obj[this.ObjKeys(obj)[i]]
+        }
+        if (obj === "______CUSTOM______") { return [""] }
+        if (Array.isArray(obj) && obj.every(x => typeof x === "string")) { return obj }
+    }
+    getCustom() {
+        const { choiceSlc } = this.state;
+
+
+
+        const index = 1; // ??
+        const maxPoss = 0 // ???
+        const i = this.state.isRandom ? Math.random() * maxPoss : index
+
+    }
+    choicesAvailable(): string[][] {
+        const { dropDownsVal } = this.props;
+        const { choiceSlc } = this.state;
+
+        let res: string[][] = []
+        res.push(dropDownsVal[this.ObjKeys(dropDownsVal)[0]])
+        if (choiceSlc.length === 0) { return res }
         else {
-            let res: number[] = [];
-            let objElement = cloneDeep(obj);
-            for (let i = 0; i < key.length; i++) {
-                const thisKey = key[i];
-                const haveNext = Object.keys(objElement).some(x => x === CONST_PNLV.next);
-                if (haveNext) {
-                    objElement = objElement[CONST_PNLV.next];
-                    res.push(0)
-                } else {
-                    const index = (objElement[CONST_PNLV.choice] as any[])
-                        .findIndex(x => {
-                            return typeof x === "object" && Object.keys(x).includes(thisKey)
-                        })
-                    objElement = ((objElement[CONST_PNLV.choice] as any[])[index] as KeyValue)[thisKey]
-                    res.push(index)
+            let i: number = 0;
+            let elementObj: KeyValue | "______CUSTOM______" | any[] = {}
+            for (let j = 0; j < choiceSlc.length; j++) {
+                if (j === 0) {
+                    i = (res[0] as string[]).findIndex(x => x === choiceSlc[0]);
+                    elementObj = this.nextObject(dropDownsVal, choiceSlc[0] as string, i);
+                    res.push(this.returnSomthing(elementObj, choiceSlc[0] as string, (this.ObjKeys(elementObj).includes(CONST_PNLV.next) && this.ObjKeys(elementObj).length === 2) ? IS_ONLY_ONE_Next : i))
+                }
+                else {
+                    i = (res[1] as string[]).findIndex(x => x === choiceSlc[j])
+                    elementObj = this.nextObject(elementObj, choiceSlc[j] as string, i);
+                    res.push(this.returnSomthing(elementObj, choiceSlc[j] as string, this.ObjKeys(elementObj).length === 2 ? IS_ONLY_ONE_Next : i))
                 }
             }
-            return res
         }
-        // else {
-
-        // }
-        // if (keys.includes(CONST_PNLV.choice)) { return this.arrByCoo(coo, obj[CONST_PNLV.choice][actulaI], iCoo + 1) }
-        // if (keys.includes(CONST_PNLV.next)) { return this.arrByCoo(coo, obj[CONST_PNLV.next], iCoo + 1) }
-    }
-
-    cooByState(obj: any = this.props.arrValue, iPrvs: number[] = [], iSearch: number = 0): number[] {
-        const { choiceSlc } = this.state;
-        if (choiceSlc.length === 0) { return [] }
-        
-
-    }
-
-    allArrByState(): string[][] {
-        let nbr = this.state.choiceSlc.length;
-        // this.cooMax()
-
-        return [[], []]
-    }
-    maxLvl(obj: any = this.props.arrValue, lvl: number = 0) {
-        if (typeof obj !== "object") { return lvl }; let res = lvl;
-        const keys = Object.keys(obj);
-        if (keys.includes(CONST_PNLV.choice)) { res = Math.max(...(obj[CONST_PNLV.choice] as any[]).map((el => { return this.getMaxLvl(el, lvl + 1) }))) }
-        if (keys.includes(CONST_PNLV.next)) { res = this.maxLvl(obj[CONST_PNLV.next], lvl + 1) }
         return res
     }
-    customChoices(element: any) {
 
-    }
-
-    chosenValue() {
-
-    }
-    choiceToString(el: ChoiceCPV) {
-
-    }
+    ObjKeys(obj: any) { return Object.keys(obj).filter(x => { return x !== CONST_PNLV.choice || x !== CONST_PNLV.next }) }
     render() {
-        const { isKey, onAction, path, iUpdate, onArrVal, arrValue } = this.props;
-        const { isRandom, choicesLetter, choiceSlc } = this.state;
+        const { isRandom, choiceSlc } = this.state;
+        console.log(choiceSlc)
         return <div style={{ display: "flex" }}>
             <input type="checkbox"
                 checked={isRandom}
@@ -796,58 +764,46 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
                     this.setState({ isRandom: chkd })
                 }} />
 
-            {arrValue.map((el, i) => {
-
-                const isNotPassed = (this.state.choiceSlc.length < i)
-                    // el === null
-                    // || (isChoices && choicesLetter.length <= i)
-                    // || (objCustomChoice === null)
-                    ;
-                if (isNotPassed) { return <></> }
-                else {
-                    console.log("isPASssssssssed")
-                    console.log(el)
-                    return <DropDownSquish
-                        choices={this.choiceToString(el)}
-                        onChange_={(el) => {
-                            let count = cloneDeep(choiceSlc.length); let total = cloneDeep(choiceSlc.length);
-                            if (total - 1 < i) {
-                                while (count - 2 < i) {
-                                    this.setState({ choiceSlc: [...this.state.choiceSlc, undefined] });
-                                    count = count + 1;
-                                }
-                                this.setState({ choiceSlc: [...this.state.choiceSlc, el] });
-                            }
+            {this.choicesAvailable().map((arrEl, i) => {
+                return <DropDownSquish
+                    choices={arrEl}
+                    onChange_={(el) => {
+                        const total = this.state.choiceSlc.length;
+                        if (total - 1 < i) { this.setState({ choiceSlc: [...this.state.choiceSlc, el] }) }
+                        else {
+                            let newSelec = cloneDeep(choiceSlc);
+                            if (i === newSelec.length - 1) { newSelec[i] = el; this.setState({ choiceSlc: newSelec }) }
                             else {
-                                let newSelec = cloneDeep(choiceSlc);
-                                newSelec[i] = el;
-                                this.setState({ choiceSlc: newSelec })
+                                let buildArr: string[] = []
+                                if (i === 0) { this.setState({ choiceSlc: [el] }) }
+                                else {
+                                    let count = 0;
+                                    while (buildArr.length - 1 < i) {
+                                        buildArr.push(newSelec[count])
+                                        count = count + 1
+                                    }
+                                    this.setState({ choiceSlc: [] })
+                                    setTimeout(() => {
+                                        this.setState({ choiceSlc: buildArr })
+                                    }, 100);
+                                }
                             }
-                        }}
-                    />
-                }
+                        }
+                    }}
+                />
             })}
             <Glass_ text="Valider" onClick={() => {
-                if (this.state.choiceSlc.every(x => typeof x === "string")) {
-                    const valueChoosen = this.chosenValue()!
-                    onAction(path,
-                        "updateValue",
-                        {
-                            updateValue: {
-                                newKey: isKey ? valueChoosen : undefined,
-                                newValue: isKey ? undefined : valueChoosen,
-                                iUpdate
-                            },
-                            onArrVal
-                        })
-                }
-                else { alert("Tout les séléections ne sont pas séléctionnés ...") }
+
             }} />
         </div>
     }
 }
-
-export class BasicModal extends Component<{ iUpdate?: number, onArrVal?: boolean, onAction: ActionFuncParameter, path: string, type: "assetImg" | "key" | "word" }, { showModal: boolean }>{
+interface BasicModalProps {
+    iUpdate?: number, onArrVal?: boolean,
+    onAction: ActionFuncParameter, path: string, type: "assetImg" | "key" | "word",
+    data: KeyValue
+}
+export class BasicModal extends Component<BasicModalProps, { showModal: boolean }>{
     constructor(props: any) {
         super(props);
         this.state = { showModal: false };
@@ -857,16 +813,15 @@ export class BasicModal extends Component<{ iUpdate?: number, onArrVal?: boolean
     close() { this.setState({ showModal: false }); }
 
     render() {
-        const { onAction, path, type, iUpdate, onArrVal } = this.props;
+        const { onAction, path, type, iUpdate, onArrVal, data } = this.props;
         return (
             <div>
                 <Glass_ text="✊" onClick={() => { this.open() }} />
                 <ReactModal isOpen={this.state.showModal} contentLabel="Minimal Modal Example">
                     <Glass_ onClick={() => { this.close() }} text="Fermer" />
                     <PanelViewTsx  {...{
-                        isKey: type === "key", onAction, path, arrValue: CONDITION_PANEL_VIEW[type],
-                        onArrVal, iUpdate, initAsstImg: { isRandom: true }, initChoices: [""]
-
+                        isKey: type === "key", initAsstImg: { isRandom: true }, initChoices: [""], onAction, path, onArrVal, iUpdate,
+                        dropDownsVal: CONDITION_PANEL_VIEW[type], arrVal: data
                     }} />
                 </ReactModal>
             </div>
