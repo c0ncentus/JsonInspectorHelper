@@ -1,5 +1,6 @@
 import { CSSProperties, Component } from "react";
 import { Word_Jip, AssetImg_Jip, ImgHttpOrS, Number_Jip, Obj_Jip, Array_Jip, upFormVal } from ".";
+import { keyTemplate } from "../Util/CONST";
 import { returnImgByType } from "../Util/Lib";
 import { convertsButton, toTypeByType } from "../Util/Libx";
 import { FormGetRenderInputByType, FormGetJip, typeOfToJIType } from "../Util/Model";
@@ -22,7 +23,7 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
         const permission = { isAutoFill: setting.autoFillDangerous, key: isReadKey, value: isReadValue }
         const genData = { extra, permission, isItemArray, isKeys, inherentValue, onAction, path } as FormGetJip
         return <div style={{ display: "flex" }}>
-            {type === typeOfToJIType.word && isKeys === true ? <BasicModal {...{ onAction, path, type: "key", onArrVal: false,data:extra!. }} /> : <></>}
+            {type === typeOfToJIType.word && isKeys === true ? <BasicModal {...{ onAction, path, type: "key", onArrVal: false, data: keyTemplate }} /> : <></>}
             {(type === typeOfToJIType.word) ? <Word_Jip {...genData} />
                 : typeOfToJIType.assetImg === type ? <AssetImg_Jip {...genData} />
                     : (typeOfToJIType.http === type || typeOfToJIType.https === type) ? <ImgHttpOrS {...genData} />
@@ -37,9 +38,9 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
             {isKeys === false && isItemArray === false
                 ? <div style={{ display: "flex", marginLeft: -8 }} className="minus">
                     {typeOfToJIType.word === type
-                        ? <BasicModal {...{data:extra!.TextTemplate!, onAction, path, type: "word", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false }} />
+                        ? <BasicModal {...{ data: extra!.TextTemplate!, onAction, path, type: "word", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false }} />
                         : typeOfToJIType.assetImg
-                            ? <BasicModal {...{ data:extra!.IMG_ASST! ,onAction, path, type: "assetImg", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false,  }} />
+                            ? <BasicModal {...{ data: extra!.IMG_ASST!, onAction, path, type: "assetImg", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false, }} />
                             : <></>}
                     <DropButton
                         imgMain={returnImgByType(type!, extra!.IMG_INTERN!.Type)}
@@ -52,8 +53,6 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
 
                 </div>
                 : <></>}
-
-
         </div>
     }
 }

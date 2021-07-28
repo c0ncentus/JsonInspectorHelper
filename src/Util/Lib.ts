@@ -22,6 +22,36 @@ export const regex_Date = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)
 export const regex_BaseUrlHttp = /^.+?[^\/:](?=[?\/]|$)/gmi
 
 
+
+export function allSquishChange(choiceSlc: string[], el: string, i: number, isRandom: boolean = false) {
+    let newSelec = cloneDeep(choiceSlc);
+    if (isRandom === false) {
+        const total = newSelec.length;
+        if (total - 1 < i) { return [...newSelec, el] }
+        else {
+            if (i === newSelec.length - 1) { newSelec[i] = el; return newSelec }
+            else {
+                let buildArr: string[] = []
+                if (i === 0) { return [el] }
+                else {
+                    let count = 0;
+                    while (buildArr.length - 1 > i) { buildArr.push(newSelec[count]); count = count + 1 }
+                    return buildArr;
+                }
+            }
+        }
+    }
+    else {
+        let buildArr: string[] = [];
+        if (i === 0) { return [el] }
+        else {
+            let count = 0;
+            while (buildArr.length  < i) { buildArr.push(newSelec[count]); count = count + 1 }
+            buildArr.push(el);
+            return compact(buildArr);
+        }
+    }
+}
 export function allJipOperation(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
     // Obj
     if (objUpdate !== null && typeof objUpdate === "object" && Array.isArray(objUpdate) === false && extra!.onArrVal !== true) {

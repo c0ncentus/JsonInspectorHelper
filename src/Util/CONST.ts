@@ -74,18 +74,16 @@ export const CONDITION_PANEL_VIEW = {
             Tableau: PAL_CNR.key.array,
             choice__: [
                 { Mot: PAL_CNR.key.string, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean },
-                CONST_PNLV.custom,
-                CONST_PNLV.custom
+                // CONST_PNLV.custom,
+                // CONST_PNLV.custom
             ],
 
         }
     } as KeyValue,
 }
 
-const key = {
-    Single:{
-        string:{}, number:{}, boolean:{}
-    },
-    Complex:{},
-    itemOfArray:{}
+export const keyTemplate = {
+    Single: { string: PAL_CNR.key.string, number: PAL_CNR.key.number, boolean: PAL_CNR.key.boolean },
+    Complex: PAL_CNR.key.object,
+    ItemOf: PAL_CNR.key.array
 }
