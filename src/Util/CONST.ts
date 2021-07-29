@@ -1,5 +1,5 @@
 import { arrayByKey, arrayByNum } from "./Lib";
-import { CustomPicture, KeyValue } from "./Model";
+import { CustomPicture, KeyValue, TextObj } from "./Model";
 
 export const INIT_VALUES_BY_TYPE = {
     word: "",
@@ -56,19 +56,19 @@ export const CONST_PNLV = {
     choice: "choice__",
     custom: "______CUSTOM______"
 }
-export const CONDITION_PANEL_VIEW = (customPic: CustomPicture) => {
+export const CONDITION_PANEL_VIEW = (customPic: CustomPicture, txtI:TextObj) => {
     return {
         word: {
             type: PAL_CNR.word.type, choice__: [
-                { Tag: PAL_CNR.word.width, choice__: [] },
-                { Button: PAL_CNR.word.width, choice__: [] },
-                { Menu: PAL_CNR.word.width, choice__: [] },
-                { Mot: PAL_CNR.word.width, choice__: [] },
-                { Titre: PAL_CNR.word.width, choice__: [] },
-                { Phrase: PAL_CNR.word.width, choice__: [] },
-                { Descriptif: PAL_CNR.word.width, choice__: [] },
-                { Paragraphe: PAL_CNR.word.width, choice__: [] },
-                { Article: PAL_CNR.word.width, choice__: [] },
+                { Tag: PAL_CNR.word.width, choice__: [txtI.Tag.court, txtI.Tag.moyen, txtI.Tag.long] },
+                { Button: PAL_CNR.word.width, choice__: [txtI.Button.court, txtI.Button.moyen, txtI.Button.long] },
+                { Menu: PAL_CNR.word.width, choice__: [txtI.Menu.court, txtI.Menu.moyen, txtI.Menu.long] },
+                { Mot: PAL_CNR.word.width, choice__: [txtI.Mot.court, txtI.Mot.moyen, txtI.Mot.long] },
+                { Titre: PAL_CNR.word.width, choice__: [txtI.Titre.court, txtI.Titre.moyen, txtI.Titre.long] },
+                { Phrase: PAL_CNR.word.width, choice__: [txtI.Phrase.court, txtI.Phrase.moyen, txtI.Phrase.long] },
+                { Descriptif: PAL_CNR.word.width, choice__: [txtI.Descriptif.court, txtI.Descriptif.moyen, txtI.Descriptif.long] },
+                { Paragraphe: PAL_CNR.word.width, choice__: [txtI.Paragraphe.court, txtI.Paragraphe.moyen, txtI.Paragraphe.long] },
+                { Article: PAL_CNR.word.width, choice__: [txtI.Article.court, txtI.Article.moyen, txtI.Article.long] },
 
             ],
         } as KeyValue,

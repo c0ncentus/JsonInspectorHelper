@@ -2,27 +2,29 @@ import { cloneDeep, flattenDeep } from "lodash"
 import { Component, CSSProperties } from "react"
 import ReactModal from "react-modal"
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom"
+import { runInThisContext } from "vm"
 import { CONDITION_PANEL_VIEW, CONST_PNLV } from "./CONST"
 import { allSquishChange, rgbToAnotherRgb } from "./Lib"
 import { websiteToMenusItems, gene_main, websiteToRouter, BallButton } from "./Libx"
-import { ActionFuncParameter, CustomPicture, KeyValue, WebsiteStructure__ } from "./Model"
+import { ActionFuncParameter, CustomPicture, KeyValue, TextObj, WebsiteStructure__ } from "./Model"
 
 interface DropDownSquishState { value: string, active: boolean, prvsInherent?: string }
 
-interface DropDownSquishProps { choices: string[], initValue?: string, onChange_?: (str: string) => any }
+interface DropDownSquishProps { lght: number, choices: string[], initValue?: string, onChange_?: (str: string) => any }
 export class DropDownSquish extends Component<DropDownSquishProps, DropDownSquishState> {
     constructor(props: any) {
         super(props)
         this.state = { active: false, value: "", prvsInherent: undefined }
     }
     componentDidMount() { if (typeof this.props.initValue === "string") { this.setState({ prvsInherent: this.props.initValue, value: this.props.initValue! }) } else { this.setState({ prvsInherent: this.props.initValue }) } }
+    affectValue(value: string) { this.setState({ value: value.length > this.props.lght ? (value.substring(0, this.props.lght) + "...") : value }) }
     componentDidUpdate() {
         if (this.props.initValue !== this.state.prvsInherent && typeof this.props.initValue === "string") {
-            { this.setState({ prvsInherent: this.props.initValue, value: this.props.initValue }) }
+            { this.setState({ prvsInherent: this.props.initValue, }); this.affectValue(this.props.initValue) }
         }
     }
     handleActive(active: boolean) { this.setState({ active }) }
-    handleValue(value: string) { this.setState({ value }) }
+    handleValue(value: string) { this.affectValue(value) }
     render() {
         const { choices, onChange_ } = this.props
         return <form className="dropDownSquish">
@@ -701,7 +703,7 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
             if (keys.includes(CONST_PNLV.next)) { return obj[CONST_PNLV.next]; }
             if (keys.includes(CONST_PNLV.choice) && typeof i === "number") { return (obj[CONST_PNLV.choice] as any[])[i!] }
         } else {
-            if(haveNext===false){ this.setState({ isBlockingAt: { at: index!, block: true } });}
+            if (haveNext === false) { this.setState({ isBlockingAt: { at: index!, block: true } }); }
             if (Array.isArray(obj) && obj.every((x) => { return typeof x === "string" })) {
                 if (this.state.isBlockingAt.block === false) { this.setState({ isBlockingAt: { at: index!, block: true } }); }
                 return obj;
@@ -777,7 +779,7 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
                 <div className="grid">
                     {allArray.map((arrEl, i) => {
                         return <div>
-                            <DropDownSquish
+                            <DropDownSquish lght={7}
                                 initValue={this.state.choiceSlc.length - 1 < i ? undefined : this.state.choiceSlc[i]}
                                 choices={arrEl}
                                 onChange_={(el) => { this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, el, i) }) }} />
@@ -808,7 +810,7 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
 interface BasicModalProps {
     iUpdate?: number, onArrVal?: boolean,
     onAction: ActionFuncParameter, path: string, type: "assetImg" | "key" | "word",
-    data: KeyValue, custom: CustomPicture
+    data: KeyValue, custom: CustomPicture, textIndu: TextObj
 }
 export class BasicModal extends Component<BasicModalProps, { showModal: boolean }>{
     constructor(props: any) {
@@ -820,7 +822,7 @@ export class BasicModal extends Component<BasicModalProps, { showModal: boolean 
     close() { this.setState({ showModal: false }); }
 
     render() {
-        const { onAction, path, type, iUpdate, onArrVal, data, custom } = this.props;
+        const { onAction, path, type, iUpdate, onArrVal, data, custom, textIndu } = this.props;
         return <div className="BasicModal">
             <Glass_ text="✊" onClick={() => { this.open() }} />
             <Glass_ text="🎲" onClick={() => { this.open() }} />
@@ -828,7 +830,7 @@ export class BasicModal extends Component<BasicModalProps, { showModal: boolean 
                 <Glass_ onClick={() => { this.close() }} text="Fermer" />
                 <PanelViewTsx  {...{
                     isKey: type === "key", initAsstImg: { isRandom: true }, initChoices: [""], onAction, path, onArrVal, iUpdate,
-                    dropDownsVal: CONDITION_PANEL_VIEW(custom)[type],
+                    dropDownsVal: CONDITION_PANEL_VIEW(custom, textIndu)[type],
                     arrVal: data
                 }} />
             </ReactModal>
