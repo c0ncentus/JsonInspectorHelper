@@ -160,7 +160,7 @@ export class MegaRouter_ extends Component<{ struct: WebsiteStructure__ }, any>{
                             key={`router_${name}_${index}`}
                             exact path={`${newPath}/:${customParam.join("/:")}`}
                             render={(props) => {
-                                return function_(...customParam.map((el) => { return props.match.params[el] }))
+                                return function_(...customParam.map((el) => { return props.match.params[el]! }))
                             }}
                         />
                         : result = <Route key={`router_${name}_${index}`} exact path={newPath}>{component}</Route>
