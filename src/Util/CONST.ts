@@ -1,4 +1,5 @@
-import { KeyValue } from "./Model";
+import { arrayByKey, arrayByNum } from "./Lib";
+import { CustomPicture, KeyValue } from "./Model";
 
 export const INIT_VALUES_BY_TYPE = {
     word: "",
@@ -55,31 +56,58 @@ export const CONST_PNLV = {
     choice: "choice__",
     custom: "______CUSTOM______"
 }
-export const CONDITION_PANEL_VIEW = {
-    word: {
-        type: PAL_CNR.word.type, next__: {
-            longueur: PAL_CNR.word.width, next__: CONST_PNLV.custom
-        },
-    } as KeyValue,
-    assetImg: {
-        type: PAL_CNR.assetImg.type, next__: {
-            format: PAL_CNR.assetImg.format, next__: CONST_PNLV.custom
-        }
-    } as KeyValue,
-    key: {
-        type: PAL_CNR.key.type,
-        next__: {
-            Primitif: PAL_CNR.key.prim,
-            Object: PAL_CNR.key.object,
-            Tableau: PAL_CNR.key.array,
-            choice__: [
-                { Mot: PAL_CNR.key.string, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean },
-                // CONST_PNLV.custom,
-                // CONST_PNLV.custom
-            ],
+export const CONDITION_PANEL_VIEW = (customPic: CustomPicture) => {
+    return {
+        word: {
+            type: PAL_CNR.word.type, choice__: [
+                { Tag: PAL_CNR.word.width, choice__: [] },
+                { Button: PAL_CNR.word.width, choice__: [] },
+                { Menu: PAL_CNR.word.width, choice__: [] },
+                { Mot: PAL_CNR.word.width, choice__: [] },
+                { Titre: PAL_CNR.word.width, choice__: [] },
+                { Phrase: PAL_CNR.word.width, choice__: [] },
+                { Descriptif: PAL_CNR.word.width, choice__: [] },
+                { Paragraphe: PAL_CNR.word.width, choice__: [] },
+                { Article: PAL_CNR.word.width, choice__: [] },
 
-        }
-    } as KeyValue,
+            ],
+        } as KeyValue,
+        assetImg: BUILD_PANEL_VIEW_IMG(customPic) as KeyValue,
+        key: {
+            type: PAL_CNR.key.type,
+            next__: {
+                Primitif: PAL_CNR.key.prim,
+                Object: PAL_CNR.key.object,
+                Tableau: PAL_CNR.key.array,
+                choice__: [
+                    { Mot: { next__: PAL_CNR.key.string }, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean },
+                    // CONST_PNLV.custom,
+                    // CONST_PNLV.custom
+                ],
+
+            }
+        } as KeyValue,
+    }
+}
+
+export const BUILD_PANEL_VIEW_IMG = (customImg: CustomPicture) => {
+    const { Jpg, Png } = customImg;
+    return {
+        type: PAL_CNR.assetImg.type, choice__: [
+            {
+                format: PAL_CNR.assetImg.format, choice__: [
+                    arrayByKey(Jpg.Square), arrayByKey(Jpg.Phone), arrayByKey(Jpg.Bac)
+                ]
+            },
+            {
+                format: PAL_CNR.assetImg.format, choice__: [
+                    arrayByKey(Png.Square), arrayByKey(Png.Phone), arrayByKey(Png.Bac)
+                ]
+            },
+
+            { format: PAL_CNR.assetImg.format, choice__: ["0", "0", "0"] }
+        ]
+    }
 }
 
 export const keyTemplate = {
@@ -87,3 +115,22 @@ export const keyTemplate = {
     Complex: PAL_CNR.key.object,
     ItemOf: PAL_CNR.key.array
 }
+
+export const creteriaImgAsst = [
+    { key: "__src__", isRequired: false },
+    { key: "__Type__", isRequired: true },
+    { key: "__Format__", isRequired: false },
+    { key: "__isRdm__", isRequired: false },
+    { key: "__i__", isRequired: false },
+]
+
+export const creteriaComponentTrsf = [
+    { key: "CpntName__", isRequired: true },
+    { key: "props", isRequired: false },
+]
+
+
+export const creteriaComponent = [
+    { key: "$$type$$", isRequired: true },
+    { key: "props", isRequired: false },
+]

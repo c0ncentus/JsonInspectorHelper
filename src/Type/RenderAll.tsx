@@ -1,6 +1,6 @@
 import { CSSProperties, Component } from "react";
 import { Word_Jip, AssetImg_Jip, ImgHttpOrS, Number_Jip, Obj_Jip, Array_Jip, upFormVal } from ".";
-import { keyTemplate } from "../Util/CONST";
+import { BUILD_PANEL_VIEW_IMG, keyTemplate } from "../Util/CONST";
 import { returnImgByType } from "../Util/Lib";
 import { convertsButton, toTypeByType } from "../Util/Libx";
 import { FormGetRenderInputByType, FormGetJip, typeOfToJIType } from "../Util/Model";
@@ -22,8 +22,10 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
         // || (isKey === true && this.props.setting.UPDATE_EXIST.value === false && this.ALL_PATH_INIT_OBJECT.includes(path) === false);
         const permission = { isAutoFill: setting.autoFillDangerous, key: isReadKey, value: isReadValue }
         const genData = { extra, permission, isItemArray, isKeys, inherentValue, onAction, path } as FormGetJip
+        const KeyManip = type === typeOfToJIType.word && isKeys === true ? <BasicModal {...{ onAction, path, type: "key", onArrVal: false, data: keyTemplate, custom: extra!.IMG_ASST! }} /> : <></>
+
         return <div style={{ display: "flex" }}>
-            {type === typeOfToJIType.word && isKeys === true ? <BasicModal {...{ onAction, path, type: "key", onArrVal: false, data: keyTemplate }} /> : <></>}
+            {KeyManip}
             {(type === typeOfToJIType.word) ? <Word_Jip {...genData} />
                 : typeOfToJIType.assetImg === type ? <AssetImg_Jip {...genData} />
                     : (typeOfToJIType.http === type || typeOfToJIType.https === type) ? <ImgHttpOrS {...genData} />
@@ -35,23 +37,17 @@ export class RenderInputByType_Jip extends Component<FormGetRenderInputByType, a
                                             : typeOfToJIType.null === type ? <img style={{ ...cssImgOnlyRender, width: 55, height: 55, marginRight: 5 }} src={returnImgByType(null, extra!.IMG_INTERN!.Type)} />
                                                 : typeOfToJIType.undefined === type ? <img style={{ ...cssImgOnlyRender, width: 55, height: 55, marginRight: 5 }} src={returnImgByType(undefined, extra!.IMG_INTERN!.Type)} />
                                                     : <></>}
-            {isKeys === false && isItemArray === false
-                ? <div style={{ display: "flex", marginLeft: -8 }} className="minus">
-                    {typeOfToJIType.word === type
-                        ? <BasicModal {...{ data: extra!.TextTemplate!, onAction, path, type: "word", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false }} />
-                        : typeOfToJIType.assetImg
-                            ? <BasicModal {...{ data: extra!.IMG_ASST!, onAction, path, type: "assetImg", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false, }} />
-                            : <></>}
-                    <DropButton
-                        imgMain={returnImgByType(type!, extra!.IMG_INTERN!.Type)}
-                        jsx_Picture={
-                            toTypeByType(type!.main,
-                                inherentValue, ((value: any) => { upFormVal(onAction, path, value, isItemArray) }),
-                                extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type)
-                        } />
-                    {convertsButton(((value: any) => { upFormVal(onAction, path, value, isItemArray) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)}
-
-                </div>
+            {isKeys === false ? <div style={{ display: "flex", marginLeft: -8 }} className="minus">
+                {typeOfToJIType.word === type ? <BasicModal {...{ data: extra!.TextTemplate!, onAction, path, type: "word", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false, custom: extra!.IMG_ASST! }} /> : <></>}
+                {typeOfToJIType.assetImg === type ? <BasicModal {...{ data: extra!.IMG_ASST!, custom: extra!.IMG_ASST!, onAction, path, type: "assetImg", iUpdate: isItemArray !== false ? isItemArray : undefined, onArrVal: isItemArray !== false, }} /> : <></>}
+                {isItemArray === false
+                    ? <div style={{ display: "flex" }}>
+                        <DropButton imgMain={returnImgByType(type!, extra!.IMG_INTERN!.Type)} jsx_Picture={toTypeByType(type!.main, inherentValue, ((value: any) => { upFormVal(onAction, path, value, isItemArray) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type)} />
+                        {convertsButton(((value: any) => { upFormVal(onAction, path, value, isItemArray) }), extra!.IMG_ASST!.Jpg.Bac[0], extra!.IMG_INTERN!.Type, extra!.IMG_INTERN!.Extra.multi!)}
+                    </div>
+                    : <></>
+                }
+            </div>
                 : <></>}
         </div>
     }

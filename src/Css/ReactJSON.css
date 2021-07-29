@@ -275,6 +275,26 @@
   z-index: 999;
 }
 
-.BasicModal .dropDownSquish {
-  width: 11rem;
+.PanelViewTsx_Cpnt .dropDownSquish {
+  width: 8rem !important;
+}
+
+.PanelViewTsx_Cpnt .minify .container {
+  width: 8rem !important;
+}
+
+.PanelViewTsx_Cpnt .grid {
+  display: grid;
+  position: relative;
+  width: 30vw;
+  /* grid-auto-columns: auto auto auto; */
+  grid-template-columns: auto auto auto;
+  /* gap: ; */
+}
+
+.pRes {
+  font-size: 20px;
+  position: absolute;
+  left: -50vw;
+  width: 57vw;
 }

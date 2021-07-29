@@ -63,7 +63,6 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     uploadTemplateSave() { }
     render() {
         const { inputKeys, objUpdate, isLoad } = this.state;
-
         if (isLoad === false) { return <></> }
         else {
             if (this.props.isMain === false

@@ -1,11 +1,9 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType } from "./Lib";
-import { typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem, ActionFuncParameter, Letter, KeyValue } from "./Model";
-import { DropButton, DropDownSquish, Glass_ } from "./Package";
-import { CONDITION_PANEL_VIEW, INIT_VALUES_BY_TYPE, PANEL_VIEW_KEY } from "./CONST";
-import { cloneDeep } from "lodash";
-
+import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType, extremTest_Assets } from "./Lib";
+import { typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
+import { DropButton, } from "./Package";
+import { INIT_VALUES_BY_TYPE } from "./CONST";
 export class BallButton extends Component<{ imgMain: string }, any>{ render() { return <section className="BallButton_Cpnt"><figure className="ball bubble" style={{ background: `url(${this.props.imgMain})` }} /></section> } }
 
 export function convertsButton(func: (value: any) => any, assetsImgInit: string, imgType: JipType, multi: string) {
@@ -57,7 +55,7 @@ export function toTypeByType(type: MainTypeProps, value: any, func: (value: any)
                 ? regex_https.test(value)
                     ? <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https, imgType)} /></div>
                     : <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http, imgType)} /></div>
-                : regex_Assets ?
+                : extremTest_Assets(value) ?
                     <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg, imgType)} /></div>
                     : <></>,
 

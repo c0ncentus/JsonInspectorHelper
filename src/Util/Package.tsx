@@ -1,11 +1,11 @@
-import { cloneDeep, compact, flattenDeep } from "lodash"
+import { cloneDeep, flattenDeep } from "lodash"
 import { Component, CSSProperties } from "react"
 import ReactModal from "react-modal"
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom"
-import { CONDITION_PANEL_VIEW, CONST_PNLV, PANEL_VIEW_KEY } from "./CONST"
-import { allSquishChange, regex_Assets, rgbToAnotherRgb } from "./Lib"
+import { CONDITION_PANEL_VIEW, CONST_PNLV } from "./CONST"
+import { allSquishChange, rgbToAnotherRgb } from "./Lib"
 import { websiteToMenusItems, gene_main, websiteToRouter, BallButton } from "./Libx"
-import { ActionFuncParameter, ChoiceCPV, KeyValue, Letter, TypeProps, WebsiteStructure__ } from "./Model"
+import { ActionFuncParameter, CustomPicture, KeyValue, WebsiteStructure__ } from "./Model"
 
 interface DropDownSquishState { value: string, active: boolean, prvsInherent?: string }
 
@@ -686,31 +686,37 @@ interface PanelViewTsxProps {
 }
 interface PanelViewTsxState {
     isRandom: boolean;
-    choiceSlc: (string)[]
+    choiceSlc: (string)[],
+    isBlockingAt: { block: boolean, at: number }
 }
 
 
 const IS_ONLY_ONE_Next = -5;
 export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState>{
-    constructor(props: any) { super(props); this.state = { choiceSlc: [], isRandom: false } }
-    nextObject(obj: any, key: string, i?: number) {
+    constructor(props: any) { super(props); this.state = { choiceSlc: [], isRandom: false, isBlockingAt: { block: false, at: 100 } } }
+    nextObject(obj: any, key: string, i?: number, index?: number, haveNext?: boolean) {
+        if (this.state.isBlockingAt.at === index! && this.state.isBlockingAt.block === true) { return undefined }
         if (typeof obj === "object" && Array.isArray(obj) === false) {
             const keys = Object.keys(obj);
             if (keys.includes(CONST_PNLV.next)) { return obj[CONST_PNLV.next]; }
             if (keys.includes(CONST_PNLV.choice) && typeof i === "number") { return (obj[CONST_PNLV.choice] as any[])[i!] }
         } else {
-            if (Array.isArray(obj) && obj.every((x) => { return typeof x === "string" })) { return obj }
+            if(haveNext===false){ this.setState({ isBlockingAt: { at: index!, block: true } });}
+            if (Array.isArray(obj) && obj.every((x) => { return typeof x === "string" })) {
+                if (this.state.isBlockingAt.block === false) { this.setState({ isBlockingAt: { at: index!, block: true } }); }
+                return obj;
+            }
         }
     }
 
-    returnSomthing(obj: any, key: string, i: number): string[] {
-        let res = [""];
+    returnSomthing(obj: any, key: string, i: number): string[] | undefined {
+        let res = undefined;
         if (typeof obj === "object") {
             if (i === IS_ONLY_ONE_Next) { res = obj[this.ObjKeys(obj)[0]] }
             else { res = obj[this.ObjKeys(obj)[i]] }
         }
         if (obj === CONST_PNLV.custom) { }
-        if (Array.isArray(obj) && obj.every(x => typeof x === "string")) { res = obj }
+        if (Array.isArray(obj) && obj.every(x => typeof x === "string")) { res = obj; }
         return res
     }
     getCustom() {
@@ -729,7 +735,7 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
         return objEl as any
     }
     choicesAvailable(): string[][] {
-        const { dropDownsVal,  } = this.props;
+        const { dropDownsVal, } = this.props;
         const { choiceSlc } = this.state;
 
         let res: string[][] = []
@@ -739,61 +745,62 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
             let i: number = 0;
             let elementObj: KeyValue | "______CUSTOM______" | any[] = {}
             for (let j = 0; j < choiceSlc.length; j++) {
+                if (res.length - 1 < j) { return res }
                 i = (res[j] as string[]).findIndex(x => x === choiceSlc[j])
-                elementObj = this.nextObject(
-                    j === 0 ? dropDownsVal : elementObj,
-                    choiceSlc[j],
-                    i === -1 ? undefined : i
-                );
-                if (elementObj === undefined) { }
+                console.log(elementObj)
+                let haveNextOrChoice = false;
+                if (typeof elementObj === "object" && Array.isArray(elementObj) === false) { haveNextOrChoice = true }
+                else { haveNextOrChoice = false }
+                elementObj = this.nextObject(j === 0 ? dropDownsVal : elementObj, choiceSlc[j], i === -1 ? undefined : i, j, haveNextOrChoice);
+                if (elementObj === undefined) { return res }
                 else {
-                    res.push(
-                        this.returnSomthing(
-                            elementObj, choiceSlc[j],
-                            this.ObjKeys(elementObj).length === 2 ? IS_ONLY_ONE_Next : i)
-                    )
+                    const resPush = this.returnSomthing(elementObj, choiceSlc[j], this.ObjKeys(elementObj).length === 2 ? IS_ONLY_ONE_Next : i)
+                    if (resPush !== undefined) { res.push(resPush) }
                 }
-
             }
+        }
+        if (this.state.isBlockingAt.block === true) {
+            let newRes: string[][] = [];
+            for (let p = 0; p < this.state.isBlockingAt.at; p++) { newRes.push(res[p]); if (res.length - 1 < p) { return newRes } }
         }
         return res
     }
 
     ObjKeys(obj: any) { return Object.keys(obj).filter(x => { return x !== CONST_PNLV.choice || x !== CONST_PNLV.next }) }
     render() {
+        const { path, onAction, isKey, iUpdate, onArrVal } = this.props;
         const allArray = this.choicesAvailable();
-        const CUSTOM = allArray.length === this.state.choiceSlc.length ? this.getCustom() : null
+        const CUSTOM = allArray.length === this.state.choiceSlc.length ? this.getCustom() : null;
         return <div>
-            <div style={{ display: "flex" }}>
-                <Glass_ text="Randomize Tout" />
-                {allArray.map((arrEl, i) => {
-                    return <div>
-                        <DropDownSquish
-                            initValue={this.state.choiceSlc.length - 1 < i ? undefined : this.state.choiceSlc[i]}
-                            choices={arrEl}
-                            onChange_={(el) => { this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, el, i) }) }} />
-                        <Glass_ text={`Random ${i + 1}`} onClick={() => {
-                            this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, arrEl[Math.round(Math.random() * (arrEl.length - 1))], i, true) })
-                        }} />
-                    </div>
-                })}
+            <div style={{ display: "flex", position: "relative" }} className="PanelViewTsx_Cpnt">
+                <div style={{ position: "absolute", top: -50, left: 200 }}><Glass_ text="Randomize Tout" /></div>
+                <div className="grid">
+                    {allArray.map((arrEl, i) => {
+                        return <div>
+                            <DropDownSquish
+                                initValue={this.state.choiceSlc.length - 1 < i ? undefined : this.state.choiceSlc[i]}
+                                choices={arrEl}
+                                onChange_={(el) => { this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, el, i) }) }} />
+                            <div className="minify">
+                                <Glass_ text={`Random ${i + 1}`} onClick={() => { this.setState({ choiceSlc: allSquishChange(this.state.choiceSlc, arrEl[Math.round(Math.random() * (arrEl.length - 1))], i, true) }) }} />
+                            </div>
+                        </div>
+                    })}
+                </div>
 
 
             </div>
-            <div style={{textAlign:"center"}}>
-                <p style={{ fontSize: 30 }}>Résultat !</p>
+            <div style={{ position: "absolute", right: 100, top: 0 }}>
                 {
                     CUSTOM === null
                         ? <></>
                         : this.props.isKey
-                            ? <p style={{ fontSize: 50 }}>{CUSTOM}</p>
-                            : regex_Assets.test(CUSTOM)
+                            ? <p className="pRes" style={{ fontSize: 50 }}>{CUSTOM}</p>
+                            : /\/static*/gm.test(CUSTOM)
                                 ? <img src={CUSTOM} style={{ width: 500, height: 500 }} />
-                                : <p style={{ fontSize: 20 }}>{CUSTOM}</p>
+                                : <p className="pRes">{CUSTOM}</p>
                 }
-                <Glass_ text="Valider" onClick={() => {
-                    console.log(CUSTOM)
-                }} />
+                {CUSTOM === null ? <></> : <div style={{ position: "absolute", top: 75, left: "-15vw" }}><Glass_ text="Valider" onClick={() => { if (CUSTOM !== null) { onAction(path, "updateValue", { updateValue: { iUpdate, newValue: isKey ? undefined : CUSTOM, newKey: isKey ? CUSTOM : undefined }, onArrVal: false }) } }} /></div>}
             </div>
         </div>
     }
@@ -801,7 +808,7 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
 interface BasicModalProps {
     iUpdate?: number, onArrVal?: boolean,
     onAction: ActionFuncParameter, path: string, type: "assetImg" | "key" | "word",
-    data: KeyValue
+    data: KeyValue, custom: CustomPicture
 }
 export class BasicModal extends Component<BasicModalProps, { showModal: boolean }>{
     constructor(props: any) {
@@ -813,18 +820,18 @@ export class BasicModal extends Component<BasicModalProps, { showModal: boolean 
     close() { this.setState({ showModal: false }); }
 
     render() {
-        const { onAction, path, type, iUpdate, onArrVal, data } = this.props;
-        return (
-            <div className="BasicModal">
-                <Glass_ text="✊" onClick={() => { this.open() }} />
-                <ReactModal isOpen={this.state.showModal} contentLabel="Minimal Modal Example">
-                    <Glass_ onClick={() => { this.close() }} text="Fermer" />
-                    <PanelViewTsx  {...{
-                        isKey: type === "key", initAsstImg: { isRandom: true }, initChoices: [""], onAction, path, onArrVal, iUpdate,
-                        dropDownsVal: CONDITION_PANEL_VIEW[type], arrVal: data
-                    }} />
-                </ReactModal>
-            </div>
-        );
+        const { onAction, path, type, iUpdate, onArrVal, data, custom } = this.props;
+        return <div className="BasicModal">
+            <Glass_ text="✊" onClick={() => { this.open() }} />
+            <Glass_ text="🎲" onClick={() => { this.open() }} />
+            <ReactModal isOpen={this.state.showModal} contentLabel="Minimal Modal Example">
+                <Glass_ onClick={() => { this.close() }} text="Fermer" />
+                <PanelViewTsx  {...{
+                    isKey: type === "key", initAsstImg: { isRandom: true }, initChoices: [""], onAction, path, onArrVal, iUpdate,
+                    dropDownsVal: CONDITION_PANEL_VIEW(custom)[type],
+                    arrVal: data
+                }} />
+            </ReactModal>
+        </div>
     }
 }

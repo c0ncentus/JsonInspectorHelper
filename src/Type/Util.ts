@@ -36,3 +36,19 @@ export function upFormVal(onAction: ActionFuncParameter, path: string, value: an
         }
     )
 }
+
+
+export function detectSpecialObj(obj: any, cr: { key: string, isRequired: boolean }[]): boolean {
+    if (typeof obj !== "object" && Array.isArray(obj) === false) { return false }
+    const keys = Object.keys(obj);
+    return cr.every(x => { return x.isRequired === true ? keys.includes(x.key) : true })
+}
+
+
+export const AssetImgObj = {
+    __src__: "",
+    __Type__: "Png",
+    __Format__: "Square",
+    __isRdm__: true,
+    __i__: 3,
+}

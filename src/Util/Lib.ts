@@ -1,4 +1,6 @@
 import { cloneDeep, set, compact, uniq, get, has } from "lodash";
+import { detectSpecialObj } from "../Type/Util";
+import { creteriaImgAsst } from "./CONST";
 import { ItemArray, TypeProps, JipType, SupprtJip, typeOfToJIType, ActionFunc, ExtraFormJip } from "./Model";
 
 export const regex_lastArray = /^.*\[\d+\]/gm
@@ -14,14 +16,20 @@ export const regex_Img = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|webp|svg)
 export const regex_Img_http = /^http(s?)\:\/\//gm
 export const regex_https = /^https/gm
 
-export const regex_Assets = /^\/static\/media\/.+/gm;
+export const regex_Assets = /^\/static.+/gm;
 
 export const regex_Number = /^\d+$/;
 export const regex_Boolean = /^(true|false)$/;
 export const regex_Date = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/gm
 export const regex_BaseUrlHttp = /^.+?[^\/:](?=[?\/]|$)/gmi
 
-
+export function extremTest_Assets(str: any) {
+    if (typeof str !== "string") { return false };
+    const REPLACE = "/static";
+    let newStr = str.replaceAll(REPLACE, "")
+    return newStr.length + REPLACE.length === str.length;
+}
+export function arrayByKey(obj: any) { return arrayByNum(Object.keys(obj).length) }
 
 export function allSquishChange(choiceSlc: string[], el: string, i: number, isRandom: boolean = false) {
     let newSelec = cloneDeep(choiceSlc);
@@ -46,7 +54,7 @@ export function allSquishChange(choiceSlc: string[], el: string, i: number, isRa
         if (i === 0) { return [el] }
         else {
             let count = 0;
-            while (buildArr.length  < i) { buildArr.push(newSelec[count]); count = count + 1 }
+            while (buildArr.length < i) { buildArr.push(newSelec[count]); count = count + 1 }
             buildArr.push(el);
             return compact(buildArr);
         }
@@ -141,8 +149,6 @@ export function operationArr(objUpdate: any, path: string, action: ActionFunc, e
         else { arrayObj.splice(supprI !== undefined ? supprI : arrayObj.findIndex((x: any) => x === suprrValue), 1) }
         res = path === "" ? arrayObj : set(objUpdate, path, arrayObj);
         res = arrayObj;
-
-        console.log(res)
     }
     if (action === "updateValue") {
         let newArray = objOfRes;
@@ -416,10 +422,7 @@ export function parentTo(path: string) {
 
 //lol.ki[0] => lol.ki
 // lol.ju[9].ki =>lol.ju
-export function parentArrayTo(path: string) {
-    console.log(getLastArrayByPath(path))
-    return (getLastArrayByPath(path) as string).replace(/\[\d+\]$/gm, "");
-}
+export function parentArrayTo(path: string) { return (getLastArrayByPath(path) as string).replace(/\[\d+\]$/gm, ""); }
 
 export function ptF(arr: string[], withSlash: boolean = true): string { return `${withSlash ? `/` : ""}${arr.join("/")}` }
 
@@ -489,14 +492,21 @@ export function returnType(value: any): TypeProps | null {
     if (value === null) { res = "null" }
     if (["bigint", "function", "symbol"].includes(typeofValue)) { return null }
     if (typeofValue === "string") {
-        if (regex_Img.test(value)) { res = "img" }
+        // if (regex_Img.test(value)) { res = "img" }
         if (regex_Img_http.test(value)) { res = regex_https.test(res) ? "https" : "http" }
-        if (regex_Assets.test(value)) { res = "assetImg" }
+        if (extremTest_Assets(value)) { res = "assetImg" }
         if (regexColor.test(value)) { res = "color" }
     }
-    if (typeofValue === "object" && value !== null) { if (isArray) { res = "array" } else { res = "object" } }
+    if (typeofValue === "object" && value !== null) {
+        if (isArray) { res = "array" }
+        else {
+            res = "object"
+            if (detectSpecialObj(value, creteriaImgAsst)) { res = "assetImg" }
+        }
+    }
     if (typeofValue === "number") { res = "number" }
     if (typeofValue === "boolean") { res = "boolean" }
+    console.log(res)
     return typeOfToJIType[res];
 }
 
