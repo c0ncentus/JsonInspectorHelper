@@ -36,17 +36,7 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     reboot() { this.setState({ objUpdate: this.props.obj_ }) }
     onAction(path: string, action: ActionFunc, extra?: ExtraFormJip): any {
         const objUpdate = cloneDeep(this.state.objUpdate);
-        if (action === "onValidate") {
-            // if (this.props.isMain === true) {
-                this.props.onValidate(objUpdate)
-            // } else {
-            //     this.props.onActionForSecondary!(
-            //         this.props.pathSecondary!,
-            //         "updateValue",
-            //         { onArrVal: true, updateValue: { newValue: this.state.objUpdate } }
-            //     )
-            // }
-        }
+        if (action === "onValidate") {this.props.onValidate(objUpdate)}
         if (action === "getJip") { return this.props; }
         if (action === "getStateObj") { return objUpdate; }
         if (action === "addValue" || action === "deleteValue" || action === "updateValue") {
