@@ -1,11 +1,11 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType } from "./Lib";
-import {  typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
-import { DropButton } from "./Package";
+import { regex_Img, regexColor, regex_Img_http, regex_https, regex_Assets, regex_Boolean, regex_Number, ptF, returnImgByType, extremTest_Assets } from "./Lib";
+import { typeOfToJIType, MainTypeProps, SubSubTypeProps, SubTypeProps, SupprtJip, TypeProps, JipType, WebsiteStructure__, router, Menuing, MenuItem } from "./Model";
+import { DropButton, } from "./Package";
 import { INIT_VALUES_BY_TYPE } from "./CONST";
-
 export class BallButton extends Component<{ imgMain: string }, any>{ render() { return <section className="BallButton_Cpnt"><figure className="ball bubble" style={{ background: `url(${this.props.imgMain})` }} /></section> } }
+
 export function convertsButton(func: (value: any) => any, assetsImgInit: string, imgType: JipType, multi: string) {
     return <DropButton
         imgMain={multi}
@@ -23,9 +23,6 @@ export function convertsButton(func: (value: any) => any, assetsImgInit: string,
                 <div onClick={() => { func(INIT_VALUES_BY_TYPE.https) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https, imgType)} /></div>,
                 <div onClick={() => { func(INIT_VALUES_BY_TYPE.http) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http, imgType)} /></div>,
                 <div onClick={() => { func(assetsImgInit) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg, imgType)} /></div>,
-
-
-
             ]
         } />
 }
@@ -58,7 +55,7 @@ export function toTypeByType(type: MainTypeProps, value: any, func: (value: any)
                 ? regex_https.test(value)
                     ? <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.https, imgType)} /></div>
                     : <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.http, imgType)} /></div>
-                : regex_Assets ?
+                : extremTest_Assets(value) ?
                     <div onClick={() => { func(value) }}><BallButton imgMain={returnImgByType(typeOfToJIType.assetImg, imgType)} /></div>
                     : <></>,
 
@@ -121,10 +118,7 @@ export function toTypeBySubType(type: SubTypeProps, func: (value: any) => any, a
 
 
 export function strButTo(value: string, imgType: JipType) {
-    let possibilities: SupprtJip = regexColor.test(value) ? "color"
-        : regex_Img.test(value) ? "img"
-            : regex_Boolean.test(value) ? "boolean"
-                : regex_Number.test(value) ? "number" : "word";
+    let possibilities: SupprtJip = regexColor.test(value) ? "color" : regex_Img.test(value) ? "img" : regex_Boolean.test(value) ? "boolean" : regex_Number.test(value) ? "number" : "word";
     return <BallButton imgMain={returnImgByType(typeOfToJIType[possibilities], imgType)} />
 }
 

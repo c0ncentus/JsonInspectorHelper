@@ -1,6 +1,9 @@
-import { cloneDeep, set, max, compact, uniq, get } from "lodash";
-import { FormPushJip, ItemArray, Handle, KeyValue, TypeProps, JipType, SupprtJip, typeOfToJIType, JipAssets } from "./Model";
-import { process } from "uniqid";
+import { cloneDeep, set, compact, uniq, get, has } from "lodash";
+import { detectSpecialObj } from "../Type/Util";
+import { creteriaImgAsst } from "./CONST";
+import { ItemArray, TypeProps, JipType, SupprtJip, typeOfToJIType, ActionFunc, ExtraFormJip } from "./Model";
+
+export const regex_lastArray = /^.*\[\d+\]/gm
 
 export const rgx_dot = /\./gm
 export const rgx_crochePath = /\[\w+\]/gm
@@ -13,15 +16,147 @@ export const regex_Img = /((http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|webp|svg)
 export const regex_Img_http = /^http(s?)\:\/\//gm
 export const regex_https = /^https/gm
 
-export const regex_Assets = /^\/static\/media\/.+/gm;
+export const regex_Assets = /^\/static.+/gm;
 
 export const regex_Number = /^\d+$/;
 export const regex_Boolean = /^(true|false)$/;
 export const regex_Date = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/gm
 export const regex_BaseUrlHttp = /^.+?[^\/:](?=[?\/]|$)/gmi
 
+export function extremTest_Assets(str: any) {
+    if (typeof str !== "string") { return false };
+    const REPLACE = "/static";
+    let newStr = str.replaceAll(REPLACE, "")
+    return newStr.length + REPLACE.length === str.length;
+}
+export function arrayByKey(obj: any) { return arrayByNum(Object.keys(obj).length) }
+
+export function allSquishChange(choiceSlc: string[], el: string, i: number, isRandom: boolean = false) {
+    let newSelec = cloneDeep(choiceSlc);
+    if (isRandom === false) {
+        const total = newSelec.length;
+        if (total - 1 < i) { return [...newSelec, el] }
+        else {
+            if (i === newSelec.length - 1) { newSelec[i] = el; return newSelec }
+            else {
+                let buildArr: string[] = []
+                if (i === 0) { return [el] }
+                else {
+                    let count = 0;
+                    while (buildArr.length - 1 > i) { buildArr.push(newSelec[count]); count = count + 1 }
+                    return buildArr;
+                }
+            }
+        }
+    }
+    else {
+        let buildArr: string[] = [];
+        if (i === 0) { return [el] }
+        else {
+            let count = 0;
+            while (buildArr.length < i) { buildArr.push(newSelec[count]); count = count + 1 }
+            buildArr.push(el);
+            return compact(buildArr);
+        }
+    }
+}
+export function allJipOperation(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
+    // Obj
+    if (objUpdate !== null && typeof objUpdate === "object" && Array.isArray(objUpdate) === false && extra!.onArrVal !== true) {
+        return operationObj(cloneDeep(objUpdate), path, action, extra)
+    }
+    // []
+    if (Array.isArray(objUpdate) === true || extra!.onArrVal === true) {
+        return operationArr(objUpdate, path, action, extra);
+    }
+    // type primitif
+    if (["number", "string", "boolean", "undefined"].includes(typeof objUpdate) || objUpdate === null) {
+        return extra === undefined ? undefined : extra.updateValue === undefined ? undefined : extra!.updateValue!.newValue;
+    }
+}
 
 
+export function operationObj(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
+
+    let addValue: any = undefined; let updateValue: any = undefined; let deleteValue: any = undefined;
+    if (extra !== undefined && extra.addValue !== undefined) { addValue = extra.addValue }
+    if (extra !== undefined && extra.updateValue !== undefined) { updateValue = extra.updateValue }
+    if (extra !== undefined && extra.deleteValue !== undefined) { deleteValue = extra.deleteValue }
+    let res = undefined;
+
+    if (action === "addValue") {
+        const { newKey, newValue } = addValue!;
+        const isObject = typeof newKey === "string"
+        if (extra!.onArrVal === true) {
+            const parentPath = parentArrayTo(path)
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            parentObj.push(newValue);
+            res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+        }
+        else {
+            const parentPath = parentTo(path);
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            if (isObject && (Object.keys(parentObj) as string[]).includes(newKey) === false) {
+                parentObj[newKey!] = newValue;
+                res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+            }
+        }
+    }
+
+    if (action === "deleteValue") {
+        const { supprKey } = deleteValue!;
+        const isObject = typeof supprKey === "string"
+        const parentPath = parentTo(path);
+        let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+        let anotherObj: any = {};
+        Object.keys(parentObj).forEach((key) => { if (key === supprKey) { } else { anotherObj[key] = cloneDeep(parentObj[key]) } })
+        res = parentPath === "" ? anotherObj : set(objUpdate, parentPath, anotherObj);
+    }
+
+    if (action === "updateValue") {
+        const { newKey, newValue, iUpdate } = updateValue!;
+        const isObject = typeof newKey === "string"
+        if (extra!.onArrVal! === true) {
+            const parentPath = parentArrayTo(path)
+            let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+            parentObj[iUpdate] = newValue;
+            res = parentPath === "" ? parentObj : set(objUpdate, parentPath, parentObj);
+        }
+        else {
+            if (isObject) {
+                const parentPath = parentTo(path);
+                let parentObj: any | any[] = parentPath === "" ? objUpdate : get(objUpdate, parentPath);
+                const ancientKey = lastKeyByType("Object", path)!;
+                parentObj[newKey!] = newValue === undefined ? get(objUpdate, path) : newValue;
+                let anotherObj: any = {};
+                Object.keys(parentObj).forEach((key) => { anotherObj[key === ancientKey ? newKey : key] = cloneDeep(parentObj[key]); })
+                res = parentPath === "" ? anotherObj : set(objUpdate, parentPath, anotherObj);
+            }
+            else { res = has(objUpdate, path) ? set(objUpdate, path, newValue) : "" }
+        }
+    }
+    return res;
+}
+
+export function operationArr(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
+    let res = undefined;
+    const objOfRes = path === "" ? objUpdate : get(objUpdate, path);
+    if (action === "addValue") { res = [...objOfRes, undefined]; }
+    if (action === "deleteValue") {
+        const { isSuprAllSameValue, supprI, supprKey, suprrValue } = extra!.deleteValue!;
+        let arrayObj: any[] = path === "" ? objUpdate : get(objUpdate, path);
+        if (isSuprAllSameValue) { arrayObj = arrayObj.filter((x: any) => x !== suprrValue); }
+        else { arrayObj.splice(supprI !== undefined ? supprI : arrayObj.findIndex((x: any) => x === suprrValue), 1) }
+        res = path === "" ? arrayObj : set(objUpdate, path, arrayObj);
+        res = arrayObj;
+    }
+    if (action === "updateValue") {
+        let newArray = objOfRes;
+        newArray[extra!.updateValue!.iUpdate!] = extra!.updateValue!.newValue;
+        res = newArray;
+    }
+    return path === "" ? res : set(objUpdate, path, res)
+}
 
 export const renameKey = (object: any, key: string, newKey: string) => {
     const clonedObj = cloneDeep(object);
@@ -38,36 +173,6 @@ function renameGoodKey(objRef: any, pathParent: string, key: string, newKey: str
     return pathParent === ""
         ? renamObj
         : set(objTemp, pathParent + "." + newKey, renamObj)
-}
-export function buildObjByTriJip(obj: FormPushJip[][]): any {
-    let tempObj = {};
-    obj.forEach((contain) => {
-        contain.forEach((element) => {
-            tempObj = set(tempObj, element.path, element.value)
-        })
-    })
-    obj.forEach((contain) => {
-        contain.forEach((element) => {
-            tempObj = renameGoodKey(tempObj,
-                extractKeyByPath(element.path, "Object", { type: "PrvsLast", levelOnlyKey: 0 }, "")!,
-                lastKeyByType("Object", element.path)!,
-                element.key)
-        })
-    })
-    return tempObj;
-}
-export function onValidateJip(obj: FormPushJip[]): any {
-    return buildObjByTriJip(byLvlDeep(obj));
-}
-function byLvlDeep(obj: FormPushJip[]): FormPushJip[][] {
-    const objPlusDeepLvl = obj.map((elObj) => { return { ...elObj, lvl: deepPathString(elObj.path, true) } });
-    const lvlMax = Math.max(...objPlusDeepLvl.map((elObj) => { return elObj.lvl }));
-    let res: FormPushJip[][] = [];
-    for (let index = 1; index < lvlMax + 1; index++) {
-        const element = objPlusDeepLvl.filter(x => { return x.lvl === index }).map((elObj) => { const { lvl, ...rest } = elObj; return rest; });
-        res.push(element);
-    }
-    return res
 }
 
 export function newIIA(iia: ItemArray, value: (string | number)) { return typeof iia === "boolean" || typeof iia !== "object" ? [value] : [...iia, value] }
@@ -193,45 +298,13 @@ export function hslToHex(h: number, s: number, l: number) {
     return `#${f(0)}${f(8)}${f(4)}`;
 }
 
-export function detectObjsPath(obj: FormPushJip[]): string[] {
-    const allPathHaveValue = compact(obj.map((el) => {
-        return deepPathString(el.path, false) === 1
-            ? undefined
-            : el.path
-    }))
-    const originalPath: string[] = typeof obj.find(x => x.path === "") === "object" ? [""] : []
-    if (obj.length === 0 || allPathHaveValue.length === 0 || allPathHaveValue[0] === undefined) { return originalPath }
-    const objTemp = [];
-
-
-    if (allPathHaveValue[0][0] !== "[") { objTemp.push("") }
-
-    allPathHaveValue.forEach((path) => {
-        const split = path.split(".");
-        //lol.loz
-        const deepObj = deepPathString(path, false);
-        if (deepObj < 2) { return }
-        else {
-            let joinSplatter = ""
-            for (let i = 0; i < split.length - 1; i++) {
-                const res = joinSplatter === "" ? split[i] : joinSplatter + "." + split[i];
-                objTemp.push(res);
-                joinSplatter = res;
-            }
-        }
-    })
-    originalPath.forEach((e) => { objTemp.push(e) })
-
-    return uniq(objTemp)
-}
-
-export function pathLoBuild(key: string, type: "Array" | "MixedObject" | "MixedArray" | "Simple" | "Object", extra: { sub: string, i: number } = { sub: "", i: 0 }) {
+export function pathLoBuild(basePath: string, type: "Array" | "MixedObject" | "MixedArray" | "Simple" | "Object", extra: { sub: string, i: number } = { sub: "", i: 0 }) {
     const { i, sub } = extra;
-    if (type === "Simple") { return key };
-    if (type === "Array") { return `${key}[${i}]` };
-    if (type === "Object") { return key === "" ? sub : `${key}.${sub}` };
-    if (type === "MixedArray") { return `${key}[${i}].${sub}` };
-    if (type === "MixedObject") { return key === "" ? `${sub}[${i}]` : `${key}.${sub}[${i}]` };
+    if (type === "Simple") { return basePath };
+    if (type === "Array") { return `${basePath}[${i}]` };
+    if (type === "Object") { return basePath === "" ? sub : `${basePath}.${sub}` };
+    if (type === "MixedArray") { return `${basePath}[${i}].${sub}` };
+    if (type === "MixedObject") { return basePath === "" ? `${sub}[${i}]` : `${basePath}.${sub}[${i}]` };
     return ""
 }
 
@@ -271,14 +344,7 @@ export function extractKeyByPath(path: string,
             if (isSplitObj === false) { return path.replaceAll(/\[.*\]/gs, "") }
             else {
                 const splitDot = path.split(".").reverse();
-                let found = false; let res = "";
-                splitDot.forEach((els) => {
-                    if (found === false) {
-                        const r: string = els; const verify = r.replace(/\[.*\]/gs, "");
-                        if (verify.length !== 0 && /\w+/.test(verify)) { found = true; res = verify }
-                    }
-                })
-                return res
+                return splitDot[0]
             }
         }
         if (objSub.type === "PrvsLast") {
@@ -318,33 +384,7 @@ function remplacePath(pathParent: string[], pathB: string[]) {
     return pathStrA + "." + pathStrBCut;
 }
 
-function setPathKey(actualKey: FormPushJip, newKey: string): FormPushJip {
-    const deep = deepPathString(actualKey.path, false);
-    const newPath = deep === 1 ? newKey : [...compact(actualKey.path.split(".").map((el, i) => { return deep - 1 === i ? el : undefined })), actualKey.value].join(".")
-    return {
-        ...actualKey,
-        key: newKey,
-        isUpToDate: true,
-        path: newPath,
-    }
-}
-
-export function setPathKeyInVal(obj: FormPushJip[], actual: { id: string, value: any, key: string }): any[] {
-    if (obj.length === 0) { return [] }
-    const { id, key, value } = actual;
-    const originalObj = obj.find(x => x.id === id)!;
-    const path = originalObj.path; let objTemp = cloneDeep(obj);
-
-    objTemp[objTemp.findIndex(x => x.id === id)] = { ...setPathKey(originalObj, key), key, value, isUpToDate: true };
-    const isSplitMain = rgx_dot.test(path);
-    const pathSplit = isSplitMain ? path.split(".") : [path];
-    obj
-        .map(r => { return { path: r.path, id: r.id } })
-        .filter(x => deepPathString(x.path, false) > deepPathString(path, false))
-        .filter((xEl) => { return rgx_dot.test(xEl.path) && typeof detectedPath(pathSplit, xEl.path.split(".")) === "number" })
-        .forEach((solve) => { objTemp[objTemp.findIndex(y => y.id === solve.id)].path = remplacePath(pathSplit, solve.path.split(".")) as string })
-    return objTemp
-}
+export function getLastArrayByPath(path: string): string | false { return regex_lastArray.test(path) ? path.match(regex_lastArray)![0] : path }
 
 export function allChildrenKeysByPath(pathRef: string, allPath: string[]): string[] {
     const lvlRef = deepPathString(pathRef, false);
@@ -371,14 +411,18 @@ export function allChildrenKeysByPath(pathRef: string, allPath: string[]): strin
 }
 
 export function parentTo(path: string) {
-    return deepPathString(path, false) === 1 || rgx_dot.test(path) === false
-        ? ""
-        : compact(path
-            .split(".")
-            .map((el, i, arr) => {
-                return arr.length - 1 === i ? undefined : el
-            })).join(".")
+    if (deepPathString(path, false) < 2 || path === "") { return "" }
+    else {
+        let split = path.split(".");
+        split.pop();
+        return split.join(".");
+    }
 }
+
+
+//lol.ki[0] => lol.ki
+// lol.ju[9].ki =>lol.ju
+export function parentArrayTo(path: string) { return (getLastArrayByPath(path) as string).replace(/\[\d+\]$/gm, ""); }
 
 export function ptF(arr: string[], withSlash: boolean = true): string { return `${withSlash ? `/` : ""}${arr.join("/")}` }
 
@@ -434,16 +478,6 @@ export function getObjPath(initialObj: any, obj: any, pathArray: string[], res: 
     }
     return uniq(compact(newRes));
 }
-// 
-export function initToValidate(obj: any): FormPushJip[] {
-    const root = { id: process(), isUpToDate: true, key: "", path: "", value: obj }
-    let res = getObjPath(obj, obj, [], []).map((el) => {
-        return { ...el, isUpToDate: true, id: process() }
-    })
-    if (res.filter(x => x.path === "").length === 0) { res.push(root) }
-    else { return [root, ...res.filter(x => x.path !== "")] }
-    return res;
-}
 
 export function returnImgByType(value: TypeProps | null | undefined, img: JipType): string {
     return (value === undefined || (value !== null && value!.main === "undefined")) ? img.undefined : (value === null || value.main === "null") ? img.null :
@@ -458,12 +492,18 @@ export function returnType(value: any): TypeProps | null {
     if (value === null) { res = "null" }
     if (["bigint", "function", "symbol"].includes(typeofValue)) { return null }
     if (typeofValue === "string") {
-        if (regex_Img.test(value)) { res = "img" }
+        // if (regex_Img.test(value)) { res = "img" }
         if (regex_Img_http.test(value)) { res = regex_https.test(res) ? "https" : "http" }
-        if (regex_Assets.test(value)) { res = "assetImg" }
+        if (extremTest_Assets(value)) { res = "assetImg" }
         if (regexColor.test(value)) { res = "color" }
     }
-    if (typeofValue === "object" && value !== null) { if (isArray) { res = "array" } else { res = "object" } }
+    if (typeofValue === "object" && value !== null) {
+        if (isArray) { res = "array" }
+        else {
+            res = "object"
+            if (detectSpecialObj(value, creteriaImgAsst)) { res = "assetImg" }
+        }
+    }
     if (typeofValue === "number") { res = "number" }
     if (typeofValue === "boolean") { res = "boolean" }
     return typeOfToJIType[res];
@@ -477,3 +517,6 @@ export function swap(input: any, index_A: number, index_B: number) {
     cloneInput[index_B] = temp;
     return cloneInput;
 }
+
+
+export function arrayByNum(num: number) { return Array.from(new Array(num)).map((el, i) => { return i.toString() }) }

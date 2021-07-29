@@ -4836,7 +4836,6 @@
 
 .selectionator .search:before {
     content: "\f078";
-    display: inline-block;
     font-family: FontAwesome;
     font-style: normal;
     font-weight: normal;
@@ -5057,9 +5056,9 @@
 }
 
 .BallButton_Cpnt {
-    width: 100px;
-    height: 100px;
-    margin: 20px;
+    width: 60px;
+    height: 60px;
+    margin: 10px;
     perspective: 1200px;
     perspective-origin: 50% 50%;
 }

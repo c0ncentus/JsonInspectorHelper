@@ -110,9 +110,11 @@
 .jsonInspector .minus .glassEffect .container {
   width: 30px
 }
-.ButtonsAdd .glassEffect .container{
+
+.ButtonsAdd .glassEffect .container {
   width: 100px !important;
 }
+
 .displayHide__input {
   width: 40px;
   background-color: #4fa46b;
@@ -262,5 +264,37 @@
   position: absolute;
   z-index: 2;
   top: 0px;
-  right: 38px;
+  right: -4px;
+}
+
+.JIP_Valid .glassEffect .container {
+  width: 150px !important;
+}
+
+.BasicModal .dropDownSquish .chosen-value, .value-list {
+  z-index: 999;
+}
+
+.PanelViewTsx_Cpnt .dropDownSquish {
+  width: 8rem !important;
+}
+
+.PanelViewTsx_Cpnt .minify .container {
+  width: 8rem !important;
+}
+
+.PanelViewTsx_Cpnt .grid {
+  display: grid;
+  position: relative;
+  width: 30vw;
+  /* grid-auto-columns: auto auto auto; */
+  grid-template-columns: auto auto auto;
+  /* gap: ; */
+}
+
+.pRes {
+  font-size: 20px;
+  position: absolute;
+  left: -50vw;
+  width: 57vw;
 }

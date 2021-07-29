@@ -1,6 +1,5 @@
 import { Component } from "react";
-import { Value_JipState } from ".";
-import { inHlForm } from "./Util";
+import { upFormVal, Value_JipState } from ".";
 import { FormGetJip } from "../Util/Model";
 
 export class Boolean_Jip extends Component<FormGetJip, Value_JipState>{
@@ -15,12 +14,12 @@ export class Boolean_Jip extends Component<FormGetJip, Value_JipState>{
         this.setState({ value: realValue })
     }
     form() {
-        const { handleValue, isItemArray } = this.props
+        const { isItemArray, onAction, path } = this.props
         return <input style={{ width: 40, height: 40 }} type="checkbox" checked={this.state.value}
             onChange={(e) => {
                 const value = e.currentTarget.checked;
                 this.setState({ value });
-                inHlForm(handleValue, value, isItemArray)
+                upFormVal(onAction, path, value, isItemArray)
             }}
         />
     }

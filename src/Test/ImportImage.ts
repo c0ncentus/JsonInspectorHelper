@@ -1,7 +1,4 @@
-import { JsonFormInspect } from "../Main";
 import { CustomPicture, JipAssets, KeyValue } from "../Util/Model";
-import { objJipDemo } from "./Settings/ObjDemo";
-import { permission } from "./Settings/Permissions";
 
 function assign(obj: { [x: string]: any; }, keyPath: string[], value: any) {
     const lastKeyIndex = keyPath.length - 1;
@@ -35,5 +32,5 @@ export function importFolder(r: any, isImgArray: boolean = true, isDeep: boolean
 }
 
 
-export const IMG_ASST = importFolder(require.context("./Assets/Custom", true), false, true) as CustomPicture;
-export const IMG_INTERN = importFolder(require.context("./Assets/Jip", true), false, true) as JipAssets
+export const IMG_ASST = importFolder(require.context("./Assets/Image/Custom", true), false, true) as CustomPicture;
+export const IMG_INTERN = importFolder(require.context("./Assets/Image/Jip", true), false, true) as JipAssets

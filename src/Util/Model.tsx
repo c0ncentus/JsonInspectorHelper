@@ -1,41 +1,62 @@
+import { PANEL_CHOICE } from "./CONST";
 
 export interface JipType {
-    assetImg: string,
-    http: string,
-    https: string,
-    array: string,
-    object: string,
-    date: string,
+    assetImg: string, http: string, https: string, img: string, blob: string, color: string,
+    array: string, object: string,
     number: string,
-    blob: string,
     boolean: string,
-    color: string,
-    word: string,
-    undefined: string,
-    img: string,
-    null: string
+    word: string, date: string,
+    undefined: string, null: string
 }
+export type Letter = ("A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z");
+
+type TextObjItem = { court: string[], moyen: string[], long: string[] }
+export interface TextObj {
+    Tag: TextObjItem;
+    Button: TextObjItem;
+    Menu: TextObjItem;
+    Mot: TextObjItem;
+    Titre: TextObjItem;
+    Phrase: TextObjItem;
+    Descriptif: TextObjItem;
+    Paragraphe: TextObjItem;
+    Article: TextObjItem;
+}
+export type ChoiceCPV = KeyValue;
+
+export type WordTypePanel = typeof PANEL_CHOICE.word.type[number];
+export type WordWidthPanel = typeof PANEL_CHOICE.word.width[number];
+export type KeyTypePanel = typeof PANEL_CHOICE.key.type[number];
+export type KeyPrimPanel = typeof PANEL_CHOICE.key.prim[number];
+export type KeyStringPanel = typeof PANEL_CHOICE.key.string[number];
+export type KeyNumberPanel = typeof PANEL_CHOICE.key.number[number];
+export type KeyBooleanPanel = typeof PANEL_CHOICE.key.boolean[number];
+export type KeyArrayPanel = typeof PANEL_CHOICE.key.array[number];
+export type KeyObjectPanel = typeof PANEL_CHOICE.key.object[number];
+export type AsstImgTypePanel = typeof PANEL_CHOICE.assetImg.type[number];
+export type AsstImgFormatPanel = typeof PANEL_CHOICE.assetImg.format[number];
+
+
+export type SupprtJip = typeof SUPPORTED_JIP[number];
+
+export type AllTypeSupport = {
+    word: TypeProps; color: TypeProps; img: TypeProps; number: TypeProps; array: TypeProps;
+    object: TypeProps; boolean: TypeProps; undefined: TypeProps, null: TypeProps, http: TypeProps
+    , https: TypeProps, assetImg: TypeProps
+}
+
+
 export interface JsonForm { key: string, value: string }
 export interface ExtraImg {
-    multi: string,
-    inputHttp: string,
-    AscString: string,
-    DescString: string,
-    AscNum: string,
-    DescNum: string,
-    logoHttp: string,
-    logoHttps: string
+    multi: string, inputHttp: string, AscString: string, DescString: string, AscNum: string,
+    DescNum: string, logoHttp: string, logoHttps: string
 }
 
 export type KeyValue = { [key: string]: any; };
 
 export type JsonTypePref = "string" | "img" | "color" | "number" | "boolean" | "object"
 
-export interface JipAssets {
-    JsonForm: JsonForm,
-    Type: JipType,
-    Extra: ExtraImg
-}
+export interface JipAssets { JsonForm: JsonForm, Type: JipType, Extra: ExtraImg }
 
 interface ImgItem {
     Square: string[],
@@ -45,111 +66,69 @@ interface ImgItem {
     Other?: string[]
 }
 
-export interface CustomPicture {
-    Png: ImgItem
-    Jpg: ImgItem
-    Svg?: any,
-}
+export interface CustomPicture { Png: ImgItem; Jpg: ImgItem; Svg?: any, }
 
-export interface BehaviorParent {
-    menu?: JSX.Element;
-}
+export interface BehaviorParent { menu?: JSX.Element; }
+
 export class WebsiteStructure {
     function_?: (...arg: string[]) => JSX.Element;
-    cpnt: JSX.Element;
-    title: string;
+    cpnt: JSX.Element; title: string;
     cpntBehavior?: BehaviorParent;
-    items?: WebsiteStructure[];
-    customParam?: string[]
+    items?: WebsiteStructure[]; customParam?: string[]
     constructor(obj: any) {
-        this.customParam = obj.customParam;
-        this.cpnt = obj.cpnt;
-        this.title = obj.title;
-        this.items = obj.items;
-        this.cpntBehavior = obj.cpntBehavior;
+        this.customParam = obj.customParam; this.cpntBehavior = obj.cpntBehavior;
+        this.cpnt = obj.cpnt; this.title = obj.title; this.items = obj.items;
         this.function_ = obj.function;
     }
 };
 export class WebsiteStructure__ {
-    function_?: (...arg: string[]) => JSX.Element;
-    cpnt: JSX.Element;
-    title: string;
-    cpntBehavior?: BehaviorParent;
-    items?: WebsiteStructure__[];
-    customParam?: string[]
+    function_?: (...arg: string[]) => JSX.Element; cpnt: JSX.Element; title: string; cpntBehavior?: BehaviorParent; items?: WebsiteStructure__[]; customParam?: string[]
     constructor(obj: any) {
-        this.customParam = obj.customParam;
-        this.cpnt = obj.cpnt;
-        this.title = obj.title;
-        this.items = obj.items;
-        this.cpntBehavior = obj.cpntBehavior;
-        this.function_ = obj.function;
+        this.customParam = obj.customParam; this.cpnt = obj.cpnt; this.title = obj.title; this.items = obj.items; this.cpntBehavior = obj.cpntBehavior; this.function_ = obj.function;
     }
 };
-type RouterItem = {
-    name: string;
-    path: string[];
-    component: JSX.Element;
-    customParam?: string[];
-    function_?: (...arg: string[]) => JSX.Element;
-};
+
+type RouterItem = { name: string; path: string[]; component: JSX.Element; customParam?: string[]; function_?: (...arg: string[]) => JSX.Element; };
 export type router = RouterItem[];
 
 
-export interface MenuItem {
-    title: string;
-    cpntBehavior?: JSX.Element;
-    specialLink?: string
-}
+export interface MenuItem { title: string; cpntBehavior?: JSX.Element; specialLink?: string }
 
-export interface Menuing {
-    title: string;
-    specialLink: string;
-    items: MenuItem[];
-}
+export interface Menuing { title: string; specialLink: string; items: MenuItem[]; }
 
-export type ActionFunc = "getJipReplica" | "getObj" | "getObjByPath"
-    | "addValidate" | "deleteValidate" | "onValidate"
+export type ActionFunc = "getJip" | "getStateObj"
+    | "addValue" | "deleteValue" | "updateValue"
+    | "getObjByPath" | "onValidate"
     | "setPanel" | "getValS";
-export type ActionFuncParameter = (id: string, action: ActionFunc, extra?: ExtraFormJip, isKeys?: boolean) => any;
+export type ActionFuncParameter = (path: string, action: ActionFunc, extra?: ExtraFormJip) => any;
 export interface ExtraFormJip {
     inputKeys?: string,
     colorMode?: TPS_ColorMode | null,
-    add?: {value:any | any[], key:string, id:string, path:string},
-    isObjectAdd?: boolean,
-    pushValue?: { newKey?: string, newValue?: string, },
-    IMG_ASST?: CustomPicture
-    IMG_INTERN?: JipAssets
+    onArrVal?: boolean
+    addValue?: { newKey?: string, newValue?: string, },
+    updateValue?: { newKey?: string, newValue?: any, iUpdate?: number }
+    deleteValue?: { supprKey?: string, suprrValue?: any, supprI?: number, isSuprAllSameValue?: boolean }
+    IMG_ASST?: CustomPicture,
+    IMG_INTERN?: JipAssets,
+    TextTemplate?: TextObj
 }
 export interface FormGetJip {
-    inherentValue: any, handleValue: Handle,
-    permission: { value: boolean, key: boolean, isAutoFill: boolean },
-    extra?: ExtraFormJip, isItemArray?: ItemArray, isKeys: boolean, initValue?: any
-}
-
-export interface FormPushJip {
-    path: string,
-    key: string,
-    id: string
-    value: any,
-    isUpToDate: boolean,
+    inherentValue: any, onAction: ActionFuncParameter,
+    permission: { value: boolean, key: boolean, isAutoFill: boolean }, path: string,
+    extra?: ExtraFormJip, isItemArray?: ItemArray, isKeys: boolean, initValue?: any,
 }
 
 
 interface BaseGetComplex {
     isItemArray: ItemArray,
-    id?: string,
     onAction: ActionFuncParameter,
-    handleValue?: Handle,
     deep: number,
     extra: ExtraFormJip,
     inherentValue?: any
     setting: JIPSetting,
+    path: string
 }
 
-export type Handle = (
-    isKeys: boolean, key?: string, value?: any, pathItem?: string,
-    isAddOnArray?: boolean, valueAdd?: any, id?: string) => any;
 export type ItemArray = number | false
 export interface FormGetRenderInputByType extends BaseGetComplex {
     isKeys: boolean,
@@ -160,26 +139,16 @@ export interface FormGetPairKey extends BaseGetComplex {
     initKey: string,
     initValue: any,
     isWithAccessory: boolean,
-    idParent: string
-    newPath: string,
 }
 export interface FormGetObjectJip extends BaseGetComplex { path: string }
-export interface FormGetAddButt extends BaseGetComplex {
-    onAdding: (value: any, newId: string) => any
-}
+export interface FormGetAddButt extends BaseGetComplex { }
 
 export interface JIPSetting {
     autoFillDangerous: boolean
     NEW: boolean;
     ONLY_READ: boolean;
-    UPDATE_EXIST: {
-        keys: boolean;
-        value: boolean;
-    };
-    UPDATE_NEW: {
-        keys: boolean;
-        value: boolean;
-    }
+    UPDATE_EXIST: { keys: boolean; value: boolean; };
+    UPDATE_NEW: { keys: boolean; value: boolean; }
 }
 
 export interface GlobalJIPSetting { start: { css: JIPSetting }, training: JIPSetting }
@@ -215,13 +184,7 @@ export const SUPPORTED_JIP = [
     "undefined", "null"
 ] as const;
 
-export type SupprtJip = typeof SUPPORTED_JIP[number];
 
-export type AllTypeSupport = {
-    word: TypeProps; color: TypeProps; img: TypeProps; number: TypeProps; array: TypeProps;
-    object: TypeProps; boolean: TypeProps; undefined: TypeProps, null: TypeProps, http: TypeProps
-    , https: TypeProps, assetImg: TypeProps
-}
 
 export const typeOfToJIType: AllTypeSupport = {
     assetImg: { main: "String", sub: "Img", subSub: "assetImg" },

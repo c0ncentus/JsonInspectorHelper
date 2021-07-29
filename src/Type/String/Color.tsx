@@ -1,8 +1,8 @@
 import { Component } from "react";
 import { SketchPicker } from "react-color";
-import { inHlForm, Value_JipState } from "..";
+import { upFormVal, Value_JipState } from "..";
 import { INIT_VALUES_BY_TYPE } from "../../Util/CONST";
-import {  regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../../Util/Lib";
+import { regex_Rgb, regex_Hex, regex_Hsl, rgbToHex, strToRgb, rgbToHsl, hslToHex, strToHsl, hslToRgb, hexToRGB, hexToHsl } from "../../Util/Lib";
 import { FormGetJip, TPS_ColorMode } from "../../Util/Model";
 import { DropDownSquish } from "../../Util/Package";
 
@@ -20,7 +20,7 @@ export class Color_Jip extends Component<FormGetJip, Value_JipState>{
 
     }
     render() {
-        const { handleValue, extra, isItemArray } = this.props;
+        const { extra, isItemArray, onAction, path } = this.props;
 
         return <div >{/*className="SmalPick"*/}
             <SketchPicker color={this.state.value} onChange={(e: any) => {
@@ -32,9 +32,9 @@ export class Color_Jip extends Component<FormGetJip, Value_JipState>{
                 if (/rgb/gm.test(value) || extra!.colorMode! === "Rgb") { colorValueSend = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` }
                 if (/hsl/gm.test(value) === true || extra!.colorMode! === "Hsl") { colorValueSend = `hsl(${hsl.h}, ${hsl.s * 100}%, ${hsl.l * 100}%)` }
                 this.setState({ value: colorValueSend });
-                inHlForm(handleValue, colorValueSend, isItemArray)
+                upFormVal(onAction, path, colorValueSend, isItemArray)
             }} />
-            <DropDownSquish choices={["Rgb", "Hsl", "Hex"]} onChange_={(color: string) => {
+            <DropDownSquish lght={10} choices={["Rgb", "Hsl", "Hex"]} onChange_={(color: string) => {
                 if (this.state.colorMode === color) { }
                 else {
                     let value = this.state.value;

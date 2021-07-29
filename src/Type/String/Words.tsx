@@ -1,7 +1,7 @@
 import { Component, CSSProperties } from "react";
-import { Value_JipState } from "..";
-import { inHlForm } from "../Util";
+import { upFormVal, Value_JipState } from "..";
 import { FormGetJip } from "../../Util/Model";
+import { Glass_ } from "../../Util/Package";
 // subStrChoice: "mot" | "titre" | "descriptif" | "Paragraphe" | null,
 const cssStyleInput: CSSProperties = { width: 200, height: 35, margin: 30, border: "black solid 2px" };
 
@@ -12,25 +12,24 @@ export class Word_Jip extends Component<FormGetJip, Value_JipState>{
         this.setState({ value: inherentValue });
     }
     form() {
-        const { permission, isKeys, handleValue, isItemArray } = this.props;
+        const { permission, isKeys, onAction, isItemArray, path, inherentValue } = this.props;
         return ((isKeys && permission.key) || (permission.value && isKeys === false))
             ? <p>{this.state.value}</p>
-            : <input
-                style={{ ...cssStyleInput, margin: 5, width: 50 }}
-                onChange={(e) => {
-                    const value = e.currentTarget.value; this.setState({ value });
-                    inHlForm(handleValue, isKeys ? undefined : this.state.value, isItemArray,
-                        isKeys ? this.state.value : undefined, isKeys)
-                }}
-                value={this.state.value}
-            />
+            : <div style={{ display: "flex" }} className="minus">
+                <input style={{ ...cssStyleInput, margin: 5, width: 50 }}
+                    onChange={(e) => { const value = e.currentTarget.value; this.setState({ value }); }}
+                    value={this.state.value}
+                />
+                {this.state.value !== inherentValue
+                    ? <Glass_ text="✔️" onClick={() => {upFormVal(onAction, path, this.state.value, isItemArray, isKeys)}} />
+                    : <></>}
+            </div>
     }
     render() {
-        const { isKeys, isItemArray, initValue, extra } = this.props;
-        if (this.state.firstChange !== initValue) { this.setState({ firstChange: initValue, value: initValue }) }
+        const { isKeys, isItemArray, extra } = this.props;
         return typeof isItemArray === "number"
             ? this.form()
-            : <div style={{ position: "relative",  marginRight: isKeys === false ? 10 : 0 }}>
+            : <div style={{ position: "relative", marginRight: isKeys === false ? 10 : 0 }}>
                 {isKeys
                     ? <div style={{ display: "flex" }}>
                         <img style={{ height: 20, width: 20 }} src={extra!.IMG_INTERN!.JsonForm.key} />

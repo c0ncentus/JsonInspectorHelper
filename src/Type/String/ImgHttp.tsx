@@ -22,7 +22,7 @@ export class ImgHttpOrS extends Component<FormGetJip, Value_JipState>{
         return `http${this.state.isHttps ? "s" : ""}://${this.state.baseUrl}${this.state.value}`;
     }
     render() {
-        const { handleValue, extra } = this.props;
+        const { extra } = this.props;
         return <div className="Http_s" style={{ position: "relative", width: 375, height: 200 }}>
             <InputHttp {...{ color: "", img:{
                 http:extra!.IMG_INTERN!.Extra.logoHttp,
