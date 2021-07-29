@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { returnType, arrayByNum, allJipOperation, parentTo } from "./Util/Lib";
-import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets, ItemArray, TextObj } from "./Util/Model";
+import { CustomPicture, JIPSetting, ActionFunc, ExtraFormJip, JipAssets, ItemArray, TextObj, ActionFuncParameter } from "./Util/Model";
 import { DropDownSquish, Glass_ } from "./Util/Package";
 import { RenderInputByType_Jip } from "./Type/RenderAll";
 import { cloneDeep, get, isEqual } from "lodash";
@@ -20,7 +20,8 @@ export interface JsonFormInspectProps {
     onValidate: (obj_: any) => any, onUpdate: (obj: any) => any
     isWithAccessory: boolean, isItemArray: ItemArray,
     IMG_ASST: CustomPicture, IMG_INTERN: JipAssets, TextTemplate: TextObj, isMain: boolean,
-    inherentValue?: any, isUpdatingSecondary_Jip: boolean
+    inherentValue?: any, isUpdatingSecondary_Jip: boolean,
+    // pathSecondary?: string, onActionForSecondary?: ActionFuncParameter
 }
 
 
@@ -35,8 +36,17 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
     reboot() { this.setState({ objUpdate: this.props.obj_ }) }
     onAction(path: string, action: ActionFunc, extra?: ExtraFormJip): any {
         const objUpdate = cloneDeep(this.state.objUpdate);
-        // if(action==="setPanel"){return panelView(path, this.onAction, t )}
-        if (action === "onValidate") { return objUpdate }
+        if (action === "onValidate") {
+            // if (this.props.isMain === true) {
+                this.props.onValidate(objUpdate)
+            // } else {
+            //     this.props.onActionForSecondary!(
+            //         this.props.pathSecondary!,
+            //         "updateValue",
+            //         { onArrVal: true, updateValue: { newValue: this.state.objUpdate } }
+            //     )
+            // }
+        }
         if (action === "getJip") { return this.props; }
         if (action === "getStateObj") { return objUpdate; }
         if (action === "addValue" || action === "deleteValue" || action === "updateValue") {
@@ -94,7 +104,7 @@ export class JsonFormInspect extends Component<JsonFormInspectProps, JsonFormIns
                         </div>
                         <div style={{ display: "flex" }}>
                             <p>Stockage navigateur: </p>
-                            <DropDownSquish onChange_={((choice) => {
+                            <DropDownSquish lght={8} onChange_={((choice) => {
                                 const res = localStorage.getItem(STORE_KEY_LOCAL + choice)!
                                 this.setState({ objUpdate: isJson(res) ? JSON.parse(res) : res })
                             })} choices={arrayByNum(this.getMaxLocalStorage())} />

@@ -99,6 +99,7 @@ export class Array_Jip extends Component<Array_JipProps, Array_JipState> {
                                 onAction(path, "updateValue", { updateValue: { iUpdate: i, newValue: obj }, onArrVal: true })
                             }), onUpdate: (() => { }), isWithAccessory: false, isItemArray: i, isMain: false,
                             isUpdatingSecondary_Jip: i === this.state.iUpdating ? true : false
+                            
                         }} />
                         <DropButton
                             imgMain={returnImgByType(type!, extra?.IMG_INTERN!.Type)}

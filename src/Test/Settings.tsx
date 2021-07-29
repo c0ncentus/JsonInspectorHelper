@@ -8,7 +8,7 @@ export const demoJip = <JsonFormInspect {...{
     IMG_ASST, IMG_INTERN, TextTemplate: demoTextIndu,
     isWithAccessory: true,
     setting: permission.BasicCrud,
-    obj_: objJipDemo.basicArr,
+    obj_: objJipDemo.allPrimitive,
     onUpdate: (() => { }), // not available
     onValidate: ((obj) => { console.log(obj) }),
     isItemArray: false, isMain: true, isUpdatingSecondary_Jip: true

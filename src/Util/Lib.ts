@@ -506,7 +506,6 @@ export function returnType(value: any): TypeProps | null {
     }
     if (typeofValue === "number") { res = "number" }
     if (typeofValue === "boolean") { res = "boolean" }
-    console.log(res)
     return typeOfToJIType[res];
 }
 

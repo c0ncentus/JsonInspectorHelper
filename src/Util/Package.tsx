@@ -715,7 +715,11 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
         let res = undefined;
         if (typeof obj === "object") {
             if (i === IS_ONLY_ONE_Next) { res = obj[this.ObjKeys(obj)[0]] }
-            else { res = obj[this.ObjKeys(obj)[i]] }
+            else { 
+                res = obj[this.ObjKeys(obj)[i]] 
+                console.log("here")
+                if (typeof res ==="object" &&  Object.keys(res).includes(CONST_PNLV.next)){ res = res[CONST_PNLV.next] }
+            }
         }
         if (obj === CONST_PNLV.custom) { }
         if (Array.isArray(obj) && obj.every(x => typeof x === "string")) { res = obj; }
@@ -749,11 +753,12 @@ export class PanelViewTsx extends Component<PanelViewTsxProps, PanelViewTsxState
             for (let j = 0; j < choiceSlc.length; j++) {
                 if (res.length - 1 < j) { return res }
                 i = (res[j] as string[]).findIndex(x => x === choiceSlc[j])
+                // let haveNextOrChoice = false;
+                // if (typeof elementObj === "object" && Array.isArray(elementObj) === false) { haveNextOrChoice = true }
+                // else { haveNextOrChoice = false }
+
+                elementObj = this.nextObject(j === 0 ? dropDownsVal : elementObj, choiceSlc[j], i === -1 ? undefined : i, j, false);
                 console.log(elementObj)
-                let haveNextOrChoice = false;
-                if (typeof elementObj === "object" && Array.isArray(elementObj) === false) { haveNextOrChoice = true }
-                else { haveNextOrChoice = false }
-                elementObj = this.nextObject(j === 0 ? dropDownsVal : elementObj, choiceSlc[j], i === -1 ? undefined : i, j, haveNextOrChoice);
                 if (elementObj === undefined) { return res }
                 else {
                     const resPush = this.returnSomthing(elementObj, choiceSlc[j], this.ObjKeys(elementObj).length === 2 ? IS_ONLY_ONE_Next : i)

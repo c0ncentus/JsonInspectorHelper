@@ -81,8 +81,8 @@ export const CONDITION_PANEL_VIEW = (customPic: CustomPicture, txtI:TextObj) => 
                 Tableau: PAL_CNR.key.array,
                 choice__: [
                     { Mot: { next__: PAL_CNR.key.string }, Nombre: PAL_CNR.key.number, Boolean: PAL_CNR.key.boolean },
-                    // CONST_PNLV.custom,
-                    // CONST_PNLV.custom
+                    ["WIP"],
+                    ["WIP"]
                 ],
 
             }

@@ -34,7 +34,7 @@ export class Color_Jip extends Component<FormGetJip, Value_JipState>{
                 this.setState({ value: colorValueSend });
                 upFormVal(onAction, path, colorValueSend, isItemArray)
             }} />
-            <DropDownSquish choices={["Rgb", "Hsl", "Hex"]} onChange_={(color: string) => {
+            <DropDownSquish lght={10} choices={["Rgb", "Hsl", "Hex"]} onChange_={(color: string) => {
                 if (this.state.colorMode === color) { }
                 else {
                     let value = this.state.value;
