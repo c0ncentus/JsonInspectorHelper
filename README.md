@@ -17,7 +17,7 @@ Modify :
 (Create / delete / update) depends on permission you assign.
 
 # Get stated
-``` TypeScript
+``` Javascript
  <JsonFormInspect
         setting={JsonInspectSettings.training}
         IMG_ASST={this.props.IMG_ASST}
@@ -26,10 +26,23 @@ Modify :
         onUpdate={(obj) => { this.handleObj(obj) }}
         onValidate={() => { }}
 />
+
+
+
+// What is needed
+
+
 ```
 
 # Drawbacks:
+
+## Priority Lvl 1
 - Valid always is show for Array input always => Expected : when Array input is the same ; dont't show the button
 - there is no notification about if it's changes correctly.=> Expected trigger notification about update, add, remove - notification about verificaation if changes is apply.
 - On Array when content is filled and you will change; you cannot on UI, => expected : you can (no changes the props because the props is not "re-hydrated")
 - lot of legacy code and too complex code (algo) => Expected Only the code is usefull is here and maybe Unit Test (none)
+
+
+## Priority Lvl 2
+- Setting
+- more advanced seeting on bubble on what kind of type/subType is authorized or not
