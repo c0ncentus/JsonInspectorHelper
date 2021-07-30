@@ -26,6 +26,10 @@ Modify :
         onUpdate={(obj) => { this.handleObj(obj) }}
         onValidate={() => { }}
 />
-
-
 ```
+
+# Drawbacks:
+- Valid always is show for Array input => when Array input is the same ; dont't show the button
+- there is no notification about if it's changes correctly. so notification about what it's trigger and if the object is what expect is needed.
+- On Array content is fill it will no changes the props bacause the props is not "re-hydrated"
+- lot of legacy code and too complex code (algo)
