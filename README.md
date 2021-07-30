@@ -46,3 +46,8 @@ Modify :
 ## Priority Lvl 2
 - Setting
 - more advanced seeting on bubble on what kind of type/subType is authorized or not
+- ability to copy the json
+- ability to moove to text=>JIP or JIP=>text
+
+## Priority Lvl 3
+- load JSON on the project
