@@ -28,6 +28,7 @@ Modify :
         setting={BasicCrud}
         IMG_INTERN={imgJip}
         IMG_ASST={themeRed}
+        TextTemplate= {textIndu}
         obj_={ArgtoJson(this.state.obj)}
         onValidate={() => { }}
 />
@@ -80,6 +81,20 @@ interface ImgItem {
     Other?: string[]
 }
 
+
+//                    => const textIndu: TextObj
+type TextObjItem = { court: string[], moyen: string[], long: string[] }
+export interface TextObj {
+    Tag: TextObjItem;
+    Button: TextObjItem;
+    Menu: TextObjItem;
+    Mot: TextObjItem;
+    Titre: TextObjItem;
+    Phrase: TextObjItem;
+    Descriptif: TextObjItem;
+    Paragraphe: TextObjItem;
+    Article: TextObjItem;
+}
 //                    => obj_ is a JSON Object or value; do not support yet TSX
     const obj= {specific:"Custom"}
 
