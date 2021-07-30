@@ -1,3 +1,6 @@
+# Definition
+JIP = JsonInspectorHelper
+
 # For What ?
 
 Techno : ReactJs v17
@@ -23,10 +26,9 @@ Modify :
         isWithAccessory= {true} isItemArray= {false} isMain= {true} isUpdatingSecondary_Jip= {true} onUpdate= {(() => { })} 
         // 2 
         setting={BasicCrud}
-        IMG_ASST={this.props.IMG_ASST}
+        IMG_INTERN={imgJip}
+        IMG_ASST={themeRed}
         obj_={ArgtoJson(this.state.obj)}
-        isWithAccessory={true}
-        onUpdate={(obj) => { this.handleObj(obj) }}
         onValidate={() => { }}
 />
 
@@ -44,20 +46,27 @@ const BasicCrud = {
         UPDATE_NEW: { keys: true, value: true }
     };
 
-//                  => for Asset you must respect this scheme
+//                  => const imgJip: JipAssets; for Asset you must respect this scheme
 export interface JipAssets { JsonForm: JsonForm, Type: JipType, Extra: ExtraImg }
 
-//next to key input and next to value input
+//                              next to key input and next to value input
 export interface JsonForm { key: string, value: string }
 
-// all type supported link to a picture
+//                              all type supported link to a picture
 export interface JipType {
     assetImg: string, http: string, https: string, img: string, blob: string, color: string,
     array: string, object: string,
     number: string, boolean: string, word: string, date: string,
     undefined: string, null: string
 }
+//                              for taping on bubble or other
+export interface ExtraImg {
+    multi: string, // changing type with init default value 
+    inputHttp: string, logoHttps: string, logoHttp: string // on inputHttp
+    AscString: string, DescString: string, AscNum: string, DescNum: string,  // not support yet on array of string or Number
+}
 
+//                  => obj const themeRed:CustomPicture={...} THE most important custom features in JIP
 export interface CustomPicture { 
     Png: ImgItem; 
     Jpg: ImgItem; 
@@ -71,16 +80,18 @@ interface ImgItem {
     Other?: string[]
 }
 
+//                    => obj_ is a JSON Object or value; do not support yet TSX
+    const obj= {specific:"Custom"}
 
-export interface JsonForm { key: string, value: string }
-export interface ExtraImg {
-    multi: string, inputHttp: string, AscString: string, DescString: string, AscNum: string,
-    DescNum: string, logoHttp: string, logoHttps: string
-}
+//                    => onValidate when taping "VALIDER" do something ...
 
 ```
 
 # Drawbacks:
+
+## Depends on github community
+- translate on english 
+- tanslate on german - italian- spanish - japan - chinese - latin (because of fun)
 
 ## Priority Lvl 1
 - Valid always is show for Array input always => Expected : when Array input is the same ; dont't show the button
@@ -88,16 +99,33 @@ export interface ExtraImg {
 - On Array when content is filled and you will change; you cannot on UI, => expected : you can (no changes the props because the props is not "re-hydrated")
 - lot of legacy code and too complex code (algo) => Expected Only the code is usefull is here and maybe Unit Test (none)
 
+ENDING V1
 
 ## Priority Lvl 2
 - Setting
 - more advanced seeting on bubble on what kind of type/subType is authorized or not
 - ability to copy the json
 - ability to moove to text=>JIP or JIP=>text
+- support TSX Class Component and maybe Components
+ENDING V2
 
 ## Priority Lvl 3
 - load JSON on the project
 - possibility to not have ImgAssets and TextIndustrialized
 - rework all "// 1" params because if not the same value will affect the component and maybe some effect will not work att all or not needed
-- support SVG
+
+ENDING V3
+
+## Proirity Lvl 4
 -  adding more detail on ui if JPG or PNG or SVG and if format "Square", "Phone" or "Bac" ; same with  word(key) and word(value)
+- support SVG
+- adding content for sorting array of string and array of number && adding some settings
+- adding some support for custom audio with http ressources 
+- adding all images support via http or internly with redux or other system 
+
+ENDING V4
+
+## PRIORITY LVL 5
+- manage Localstorage (or maybe with extern lib)
+
+
