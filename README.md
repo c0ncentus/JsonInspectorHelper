@@ -29,7 +29,7 @@ Modify :
 ```
 
 # Drawbacks:
-- Valid always is show for Array input => when Array input is the same ; dont't show the button
-- there is no notification about if it's changes correctly. so notification about what it's trigger and if the object is what expect is needed.
-- On Array content is fill it will no changes the props bacause the props is not "re-hydrated"
-- lot of legacy code and too complex code (algo)
+- Valid always is show for Array input always => Expected : when Array input is the same ; dont't show the button
+- there is no notification about if it's changes correctly.=> Expected trigger notification about update, add, remove - notification about verificaation if changes is apply.
+- On Array when content is filled and you will change; you cannot on UI, => expected : you can (no changes the props because the props is not "re-hydrated")
+- lot of legacy code and too complex code (algo) => Expected Only the code is usefull is here and maybe Unit Test (none)
