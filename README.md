@@ -19,7 +19,10 @@ Modify :
 # Get stated
 ``` Javascript
  <JsonFormInspect
-        setting={JsonInspectSettings.training}
+        //  1
+        isWithAccessory= {true} isItemArray= {false} isMain= {true} isUpdatingSecondary_Jip= {true} onUpdate= {(() => { })} 
+        // 2 
+        setting={BasicCrud}
         IMG_ASST={this.props.IMG_ASST}
         obj_={ArgtoJson(this.state.obj)}
         isWithAccessory={true}
@@ -30,7 +33,50 @@ Modify :
 
 
 // What is needed
+// Copy past 1 (params no very "usefull" but required)
+// All 2 is custom params
+//                  =>you must copy this Setting 
+const BasicCrud = {
+        autoFillDangerous: false,
+        NEW: true,
+        ONLY_READ: false,
+        UPDATE_EXIST: { keys: true, value: true },
+        UPDATE_NEW: { keys: true, value: true }
+    };
 
+//                  => for Asset you must respect this scheme
+export interface JipAssets { JsonForm: JsonForm, Type: JipType, Extra: ExtraImg }
+
+//next to key input and next to value input
+export interface JsonForm { key: string, value: string }
+
+// all type supported link to a picture
+export interface JipType {
+    assetImg: string, http: string, https: string, img: string, blob: string, color: string,
+    array: string, object: string,
+    number: string, boolean: string, word: string, date: string,
+    undefined: string, null: string
+}
+
+export interface CustomPicture { 
+    Png: ImgItem; 
+    Jpg: ImgItem; 
+    Svg?: any,  // SVG is not supported Yet
+}
+interface ImgItem {
+    Square: string[],
+    Phone: string[],
+    Bac: string[],
+    Small?: string[],
+    Other?: string[]
+}
+
+
+export interface JsonForm { key: string, value: string }
+export interface ExtraImg {
+    multi: string, inputHttp: string, AscString: string, DescString: string, AscNum: string,
+    DescNum: string, logoHttp: string, logoHttps: string
+}
 
 ```
 
@@ -51,3 +97,7 @@ Modify :
 
 ## Priority Lvl 3
 - load JSON on the project
+- possibility to not have ImgAssets and TextIndustrialized
+- rework all "// 1" params because if not the same value will affect the component and maybe some effect will not work att all or not needed
+- support SVG
+-  adding more detail on ui if JPG or PNG or SVG and if format "Square", "Phone" or "Bac" ; same with  word(key) and word(value)
