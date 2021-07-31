@@ -118,6 +118,8 @@ export interface TextObj {
 
 - |UI, BUG| fix margin on bubbles ...
 
+- |FEATURE|  ability to moove to text=>JIP or JIP=>text
+
 
 ENDING V1
 
@@ -125,7 +127,6 @@ ENDING V1
 - Setting
 - more advanced seeting on bubble on what kind of type/subType is authorized or not
 - ability to copy the json
-- ability to moove to text=>JIP or JIP=>text
 - support TSX Class Component and maybe Components
 ENDING V2
 
