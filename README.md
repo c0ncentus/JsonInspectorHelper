@@ -109,10 +109,13 @@ export interface TextObj {
 - tanslate on german - italian- spanish - japan - chinese - latin (because of fun)
 
 ## Priority Lvl 1
-- Valid always is show for Array input always => Expected : when Array input is the same ; dont't show the button
-- there is no notification about if it's changes correctly.=> Expected trigger notification about update, add, remove - notification about verificaation if changes is apply.
-- On Array when content is filled and you will change; you cannot on UI, => expected : you can (no changes the props because the props is not "re-hydrated")
-- lot of legacy code and too complex code (algo) => Expected Only the code is usefull is here and maybe Unit Test (none)
+- |UI, WISIG| Valid always is show for Array input always => Expected : when Array input is the same ; dont't show the button
+- |UI, WISIG| there is no notification about if it's changes correctly.=> Expected trigger notification about update, add, remove - notification about verificaation if changes is apply.
+- |BUG, UI| On Array when content is filled and you will change; you cannot on UI, => expected : you can (no changes the props because the props is not "re-hydrated")
+- |BUG, QUALITY| lot of legacy code and too complex code (algo) => Expected Only the code is usefull is here and maybe Unit Test (none)
+
+- |FEATURE| Duplicate object, Array thanks to key input or in a array (objWay or ArrayWay)
+
 
 ENDING V1
 
