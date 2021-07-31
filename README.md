@@ -116,6 +116,8 @@ export interface TextObj {
 
 - |FEATURE| Duplicate object, Array thanks to key input or in a array (objWay or ArrayWay)
 
+- |UI, BUG| fix margin on bubbles ...
+
 
 ENDING V1
 
