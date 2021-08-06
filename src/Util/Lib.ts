@@ -60,6 +60,7 @@ export function allSquishChange(choiceSlc: string[], el: string, i: number, isRa
         }
     }
 }
+
 export function allJipOperation(objUpdate: any, path: string, action: ActionFunc, extra?: ExtraFormJip) {
     // Obj
     if (objUpdate !== null && typeof objUpdate === "object" && Array.isArray(objUpdate) === false && extra!.onArrVal !== true) {

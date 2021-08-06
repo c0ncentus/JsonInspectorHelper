@@ -135,18 +135,33 @@ ENDING V2
 - possibility to not have ImgAssets and TextIndustrialized
 - rework all "// 1" params because if not the same value will affect the component and maybe some effect will not work att all or not needed
 
+
+
+- Update a lot of content
+    => SVG (photo,bac, square)
+    => GIF (photo,bac, square) 
+    => OTHER_IMG
+    - fa icon => SVG only [10px ; 200px ]
+    - Mask (photo,bac, square) => PNG only
+    - SeparatorLine (longSmall) => PNG or SVG only
+    - BorderCorner (square) => PNG or SVG only
+    - Close (square) => PNG or SVG only
+    - Add (square) => PNG or SVG only
+    
+    => audio files (~[ 1s ; 10s ] ; ~[ 40s ; 1min10s ] ; ~[ 2min40s ; 3min 40 ] ; ~[ 15min ; 22min ])
+    
+
 ENDING V3
 
 ## Proirity Lvl 4
 -  adding more detail on ui if JPG or PNG or SVG and if format "Square", "Phone" or "Bac" ; same with  word(key) and word(value)
-- support SVG
 - adding content for sorting array of string and array of number && adding some settings
-- adding some support for custom audio with http ressources 
-- adding all images support via http or internly with redux or other system 
+
 
 ENDING V4
 
 ## PRIORITY LVL 5
+
 - manage Localstorage (or maybe with extern lib)
-
-
+- adding some support for custom audio with http ressources 
+- adding all images support via http or internly with redux or other system 
